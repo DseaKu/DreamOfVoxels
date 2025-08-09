@@ -1,0 +1,10 @@
+# Build artifacts
+build/
+game
+compile_commands.json
+
+# OS-specific files
+.DS_Store
+
+
+.cache/
