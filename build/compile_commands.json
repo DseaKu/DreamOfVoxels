@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/minimop/Workspace/Raylib/build",
+  "command": "/usr/bin/cc  -isystem /opt/homebrew/Cellar/raylib/5.5/include -std=gnu99 -arch arm64 -I/opt/homebrew/Cellar/raylib/5.5/include -o CMakeFiles/game.dir/main.c.o -c /Users/minimop/Workspace/Raylib/main.c",
+  "file": "/Users/minimop/Workspace/Raylib/main.c",
+  "output": "CMakeFiles/game.dir/main.c.o"
+}
+]

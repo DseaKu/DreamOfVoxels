@@ -1,0 +1,3 @@
+/Users/minimop/Workspace/Raylib/build/CMakeFiles/game.dir
+/Users/minimop/Workspace/Raylib/build/CMakeFiles/edit_cache.dir
+/Users/minimop/Workspace/Raylib/build/CMakeFiles/rebuild_cache.dir
