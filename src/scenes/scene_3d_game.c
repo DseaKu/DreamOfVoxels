@@ -12,7 +12,9 @@ int Scene3DGame(void) {
   SetTargetFPS(60);
 
   Player player = InitPlayer();
-  Block blocks = CreatePlaneGround();
+  Block blocks[MAX_BLOCKS] = {0};
+  int blockCount = 0;
+  CreatePlaneGround(blocks, &blockCount);
 
   while (!WindowShouldClose()) {
     // Update

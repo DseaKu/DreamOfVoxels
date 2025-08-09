@@ -10,6 +10,6 @@ typedef struct Block {
   bool active;
 } Block;
 
-Block CreatePlaneGround();
+void CreatePlaneGround(Block *blocks, int *blockCount);
 
 #endif // BLOCK_H
