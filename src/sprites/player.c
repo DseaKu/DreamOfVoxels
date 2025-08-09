@@ -1,4 +1,4 @@
-#include "../../includes/sprites/player.h"
+#include "sprites/player.h"
 
 Player InitPlayer(void) {
     Player player = {0};

@@ -1,4 +1,5 @@
-#include "../../includes/scenes/scene_3d_game.h"
+#include "scenes/scene_3d_game.h"
+#include "sprites/player.h"
 
 int scene_3d_game(void) {
 

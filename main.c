@@ -1,4 +1,4 @@
-#include "includes/scenes/scene_3d_game.h"
+#include "scenes/scene_3d_game.h"
 #include <stdio.h>
 
 int main(void) {

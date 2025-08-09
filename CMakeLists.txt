@@ -6,7 +6,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(raylib CONFIG REQUIRED)
 
-file(GLOB_RECURSE SOURCES "src/*.c")
+set(SOURCES
+  src/scenes/scene_3d_game.c
+  src/sprites/player.c
+)
 
 add_executable(game main.c ${SOURCES})
 

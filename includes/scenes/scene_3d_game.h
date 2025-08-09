@@ -1,8 +1,7 @@
 #ifndef SCENE_3D_GAME_H
 #define SCENE_3D_GAME_H
 
-#include "../std_includes.h"
-#include "../sprites/player.h"
+#include "std_includes.h"
 
 #define MAX_BLOCKS 10000
 
