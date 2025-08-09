@@ -1,4 +1,5 @@
 #include "scenes/scene_3d_game.h"
+#include "sprites/block.h"
 #include "sprites/player.h"
 
 int Scene3DGame(void) {
@@ -7,23 +8,11 @@ int Scene3DGame(void) {
   const int screenHeight = MAX_SCREEN_HEIGHT;
 
   InitWindow(screenWidth, screenHeight, "Raylib ");
-
-  Player player = InitPlayer();
-
-  Block blocks[MAX_BLOCKS] = {0};
-  int blockCount = 0;
-
-  // Create a ground plane
-  for (int x = -8; x < 8; x++) {
-    for (int z = -8; z < 8; z++) {
-      blocks[blockCount].position = (Vector3){(float)x, 0.0f, (float)z};
-      blocks[blockCount].active = true;
-      blockCount++;
-    }
-  }
-
   DisableCursor();
   SetTargetFPS(60);
+
+  Player player = InitPlayer();
+  Block blocks = CreatePlaneGround();
 
   while (!WindowShouldClose()) {
     // Update
