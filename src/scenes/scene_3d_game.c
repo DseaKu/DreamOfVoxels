@@ -7,13 +7,7 @@ int scene_3d_game(void) {
 
   InitWindow(screenWidth, screenHeight, "Raylib ");
 
-  Player player = {0};
-  player.camera.position = (Vector3){0.0f, 2.0f, 4.0f};
-  player.camera.target = (Vector3){0.0f, 1.8f, 0.0f};
-  player.camera.up = (Vector3){0.0f, 1.0f, 0.0f};
-  player.camera.fovy = 60.0f;
-  player.camera.projection = CAMERA_PERSPECTIVE;
-  player.speed = 0.1f;
+  Player player = InitPlayer();
 
   Block blocks[MAX_BLOCKS] = {0};
   int blockCount = 0;
@@ -32,7 +26,7 @@ int scene_3d_game(void) {
 
   while (!WindowShouldClose()) {
     // Update
-    UpdateCamera(&player.camera, CAMERA_FIRST_PERSON);
+    UpdatePlayer(&player);
 
     // Block placement and removal
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
