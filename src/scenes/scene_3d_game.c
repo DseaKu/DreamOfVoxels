@@ -1,7 +1,7 @@
 #include "scenes/scene_3d_game.h"
 #include "sprites/player.h"
 
-int scene_3d_game(void) {
+int Scene3DGame(void) {
 
   const int screenWidth = MAX_SCREEN_WIDTH;
   const int screenHeight = MAX_SCREEN_HEIGHT;

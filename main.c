@@ -3,7 +3,7 @@
 
 int main(void) {
 
-  if (!(scene_3d_game() == 0)) {
+  if (!(Scene3DGame() == 0)) {
     printf("Error:\nscene_3d_game\n\n");
   }
 

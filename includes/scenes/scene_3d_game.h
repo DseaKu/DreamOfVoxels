@@ -12,6 +12,6 @@ typedef struct Block {
   bool active;
 } Block;
 
-int scene_3d_game(void);
+int Scene3DGame(void);
 
 #endif // SCENE_3D_GAME_H
