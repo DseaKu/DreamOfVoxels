@@ -1,3 +1,4 @@
+#include <float.h>
 #include "scenes/scene_3d_game.h"
 #include "sprites/block.h"
 #include "sprites/player.h"
@@ -9,7 +10,7 @@ int Scene3DGame(void) {
 
   InitWindow(screenWidth, screenHeight, "Raylib ");
   DisableCursor();
-  SetTargetFPS(60);
+  SetTargetFPS(TARGET_FPS);
 
   Player player = InitPlayer();
   Block blocks[MAX_BLOCKS] = {0};
@@ -27,15 +28,15 @@ int Scene3DGame(void) {
                  Vector3Subtract(player.camera.target, player.camera.position)};
 
       RayCollision closestCollision = {0};
-      closestCollision.distance = 3.402823466e+38F;
+      closestCollision.distance = FLT_MAX;
       closestCollision.hit = false;
 
       int closestBlock = -1;
 
       for (int i = 0; i < blockCount; i++) {
         if (blocks[i].active) {
-          BoundingBox bb = {Vector3SubtractValue(blocks[i].position, 0.5f),
-                            Vector3AddValue(blocks[i].position, 0.5f)};
+          BoundingBox bb = {Vector3SubtractValue(blocks[i].position, HALF_BLOCK_SIZE),
+                            Vector3AddValue(blocks[i].position, HALF_BLOCK_SIZE)};
           RayCollision collision = GetRayCollisionBox(ray, bb);
 
           if (collision.hit && collision.distance < closestCollision.distance) {
@@ -68,8 +69,8 @@ int Scene3DGame(void) {
     // Draw blocks
     for (int i = 0; i < blockCount; i++) {
       if (blocks[i].active) {
-        DrawCube(blocks[i].position, 1.0f, 1.0f, 1.0f, GRAY);
-        DrawCubeWires(blocks[i].position, 1.0f, 1.0f, 1.0f, MAROON);
+        DrawCube(blocks[i].position, BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, GRAY);
+        DrawCubeWires(blocks[i].position, BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, MAROON);
       }
     }
 
