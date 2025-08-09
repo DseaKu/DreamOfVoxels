@@ -4,6 +4,8 @@
 #include "std_includes.h"
 
 #define MAX_BLOCKS 10000
+#define MAX_SCREEN_WIDTH 1200
+#define MAX_SCREEN_HEIGHT 800
 
 typedef struct Block {
   Vector3 position;

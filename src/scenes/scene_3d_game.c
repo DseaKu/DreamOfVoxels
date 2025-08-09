@@ -3,8 +3,8 @@
 
 int scene_3d_game(void) {
 
-  const int screenWidth = 800;
-  const int screenHeight = 450;
+  const int screenWidth = MAX_SCREEN_WIDTH;
+  const int screenHeight = MAX_SCREEN_HEIGHT;
 
   InitWindow(screenWidth, screenHeight, "Raylib ");
 
