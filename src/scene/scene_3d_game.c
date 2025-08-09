@@ -1,11 +1,11 @@
-#include "../../includes/scene/scene_3d_game.h"
+#include "../../includes/scenes/scene_3d_game.h"
 
 int scene_3d_game(void) {
 
   const int screenWidth = 800;
   const int screenHeight = 450;
 
-  InitWindow(screenWidth, screenHeight, "Raylib Minecraft");
+  InitWindow(screenWidth, screenHeight, "Raylib ");
 
   Player player = {0};
   player.camera.position = (Vector3){0.0f, 2.0f, 4.0f};
