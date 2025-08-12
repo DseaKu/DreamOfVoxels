@@ -46,7 +46,7 @@ int Scene3DGame(void) {
 
     EndMode3D();
 
-    DrawText("Lol!", 10, 10, 20, DARKGRAY);
+    DrawFPS(screenWidth - 100, 10);
 
     EndDrawing();
   }
