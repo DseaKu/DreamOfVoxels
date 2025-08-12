@@ -19,10 +19,12 @@ int Scene3DGame(void) {
   CreatePlaneGround(blocks, &blockCount);
 
   while (!WindowShouldClose()) {
-    StartPerformanceTracker("UpdatePlayer");
+    StartPerformanceTracker("CompleteLoop");
 
+    StartPerformanceTracker("UpdatePlayer");
     // Player movement
     UpdatePlayer(&player);
+    EndPerformanceTracker("UpdatePlayer");
 
     StartPerformanceTracker("BlockPlacment");
     // Block placement
@@ -31,6 +33,7 @@ int Scene3DGame(void) {
       BlockPlacment(MAX_PLACMENT_DISTANCE, &player, blocks, &blockCount,
                     BLOCK_SIZE);
     }
+    EndPerformanceTracker("BlockPlacment");
 
     // Draw
     StartPerformanceTracker("Drawing");
@@ -54,9 +57,8 @@ int Scene3DGame(void) {
 
     EndDrawing();
 
-    EndPerformanceTracker("UpdatePlayer");
-    EndPerformanceTracker("BlockPlacment");
     EndPerformanceTracker("Drawing");
+    EndPerformanceTracker("CompleteLoop");
   }
 
   CloseWindow();

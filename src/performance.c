@@ -20,6 +20,8 @@ void StartPerformanceTracker(const char *name) {
     if (tracker_count < MAX_PERFORMANCE_TRACKERS) {
       index = tracker_count++;
       trackers[index].name = name;
+      trackers[index].total_elapsed_time = 0.0;
+      trackers[index].runs = 0;
     } else {
       // Handle error: too many trackers
       return;
@@ -35,13 +37,20 @@ void EndPerformanceTracker(const char *name) {
     trackers[index].elapsed_time =
         ((double)(trackers[index].end_time - trackers[index].start_time)) /
         CLOCKS_PER_SEC;
+    trackers[index].total_elapsed_time += trackers[index].elapsed_time;
+    trackers[index].runs++;
   }
 }
 
 void PrintPerformanceTrackers(void) {
   printf("--- Performance Report ---\n");
   for (int i = 0; i < tracker_count; i++) {
-    printf("%s: %f ms\n", trackers[i].name, trackers[i].elapsed_time * 1000);
+    if (trackers[i].runs > 0) {
+      printf("%s: %f ms (avg over %d runs)\n", trackers[i].name,
+             (trackers[i].total_elapsed_time * 1000) / trackers[i].runs,
+             trackers[i].runs);
+    }
   }
   printf("--------------------------\n");
 }
+

@@ -11,6 +11,8 @@ typedef struct {
     clock_t start_time;
     clock_t end_time;
     double elapsed_time;
+    double total_elapsed_time;
+    int runs;
 } PerformanceTracker;
 
 void StartPerformanceTracker(const char* name);
