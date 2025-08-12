@@ -1,7 +1,7 @@
 #include "scenes/scene_3d_game.h"
-#include "performance.h"
 #include "sprites/block.h"
 #include "sprites/player.h"
+#include "utils/performance.h"
 
 int Scene3DGame(void) {
 
@@ -21,10 +21,8 @@ int Scene3DGame(void) {
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
-    StartPerformanceTracker("UpdatePlayer");
     // Player movement
     UpdatePlayer(&player);
-    EndPerformanceTracker("UpdatePlayer");
 
     StartPerformanceTracker("BlockPlacment");
     // Block placement
@@ -36,20 +34,14 @@ int Scene3DGame(void) {
     EndPerformanceTracker("BlockPlacment");
 
     // Draw
-    StartPerformanceTracker("Drawing");
+    StartPerformanceTracker("DrawingBlocks");
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
     BeginMode3D(player.camera);
 
     // Draw blocks
-    for (int i = 0; i < blockCount; i++) {
-      if (blocks[i].active) {
-        DrawCube(blocks[i].position, BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, GRAY);
-        DrawCubeWires(blocks[i].position, BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE,
-                      MAROON);
-      }
-    }
+    DrawBlocks(blocks, blockCount, BLOCK_SIZE);
 
     EndMode3D();
 
@@ -57,7 +49,7 @@ int Scene3DGame(void) {
 
     EndDrawing();
 
-    EndPerformanceTracker("Drawing");
+    EndPerformanceTracker("DrawingBlocks");
     EndPerformanceTracker("CompleteLoop");
   }
 

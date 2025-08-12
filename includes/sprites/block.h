@@ -16,4 +16,6 @@ void CreatePlaneGround(Block *blocks, int *blockCount);
 void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
                    int *blockCount, float block_size);
 
+void DrawBlocks(Block *blocks, int block_count, float block_size);
+
 #endif // BLOCK_H
