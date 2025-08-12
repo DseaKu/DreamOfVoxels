@@ -10,6 +10,7 @@ set(SOURCES
   src/scenes/scene_3d_game.c
   src/sprites/player.c
   src/sprites/block.c
+  src/performance.c
 )
 
 add_executable(game main.c ${SOURCES})

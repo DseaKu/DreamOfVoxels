@@ -1,4 +1,5 @@
 #include "scenes/scene_3d_game.h"
+#include "performance.h"
 #include "sprites/block.h"
 #include "sprites/player.h"
 
@@ -18,10 +19,12 @@ int Scene3DGame(void) {
   CreatePlaneGround(blocks, &blockCount);
 
   while (!WindowShouldClose()) {
+    StartPerformanceTracker("UpdatePlayer");
 
     // Player movement
     UpdatePlayer(&player);
 
+    StartPerformanceTracker("BlockPlacment");
     // Block placement
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
         IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
@@ -30,6 +33,7 @@ int Scene3DGame(void) {
     }
 
     // Draw
+    StartPerformanceTracker("Drawing");
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
@@ -49,9 +53,15 @@ int Scene3DGame(void) {
     DrawFPS(screenWidth - 100, 10);
 
     EndDrawing();
+
+    EndPerformanceTracker("UpdatePlayer");
+    EndPerformanceTracker("BlockPlacment");
+    EndPerformanceTracker("Drawing");
   }
 
   CloseWindow();
+
+  PrintPerformanceTrackers();
 
   return 0;
 }
