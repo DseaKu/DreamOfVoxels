@@ -1,7 +1,6 @@
 #include "scenes/scene_3d_game.h"
 #include "sprites/block.h"
 #include "sprites/player.h"
-#include <float.h>
 
 int Scene3DGame(void) {
 
@@ -23,10 +22,11 @@ int Scene3DGame(void) {
     // Player movement
     UpdatePlayer(&player);
 
-    // Block placement and removal
+    // Block placement
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
         IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
-      BlockPlacment(1000.0, &player, blocks, &blockCount, BLOCK_SIZE);
+      BlockPlacment(MAX_PLACMENT_DISTANCE, &player, blocks, &blockCount,
+                    BLOCK_SIZE);
     }
 
     // Draw

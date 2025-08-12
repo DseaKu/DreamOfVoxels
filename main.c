@@ -4,7 +4,7 @@
 int main(void) {
 
   if (!(Scene3DGame() == 0)) {
-    printf("Error:\nscene_3d_game\n\n");
+    printf("Error at:\ncene3DGame\n\n");
   }
 
   return 0;

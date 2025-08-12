@@ -9,6 +9,7 @@
 #define TARGET_FPS 60
 #define BLOCK_SIZE 1.0f
 #define HALF_BLOCK_SIZE (BLOCK_SIZE / 2.0f)
+#define MAX_PLACMENT_DISTANCE 1000.0
 
 int Scene3DGame(void);
 
