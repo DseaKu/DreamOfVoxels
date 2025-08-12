@@ -1,9 +1,11 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
+#include "sprites/player.h"
 #include "std_includes.h"
 
 #define MAX_BLOCKS 10000
+#define MAX_LENGTH 2
 
 typedef struct Block {
   Vector3 position;
@@ -11,5 +13,7 @@ typedef struct Block {
 } Block;
 
 void CreatePlaneGround(Block *blocks, int *blockCount);
+void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
+                   int *blockCount, float block_size);
 
 #endif // BLOCK_H
