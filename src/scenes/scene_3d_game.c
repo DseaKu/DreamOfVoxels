@@ -24,8 +24,8 @@ int Scene3DGame(void) {
     // Player movement
     UpdatePlayer(&player);
 
-    StartPerformanceTracker("BlockPlacment");
     // Block placement
+    StartPerformanceTracker("BlockPlacment");
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
         IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
       BlockPlacment(MAX_PLACMENT_DISTANCE, &player, blocks, &blockCount,
@@ -33,15 +33,17 @@ int Scene3DGame(void) {
     }
     EndPerformanceTracker("BlockPlacment");
 
-    // Draw
-    StartPerformanceTracker("DrawingBlocks");
+    // Begin draw
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
+    // Begin 3D drawing
     BeginMode3D(player.camera);
 
     // Draw blocks
+    StartPerformanceTracker("DrawingBlocks");
     DrawBlocks(blocks, blockCount, BLOCK_SIZE);
+    EndPerformanceTracker("DrawingBlocks");
 
     EndMode3D();
 
@@ -49,7 +51,6 @@ int Scene3DGame(void) {
 
     EndDrawing();
 
-    EndPerformanceTracker("DrawingBlocks");
     EndPerformanceTracker("CompleteLoop");
   }
 
