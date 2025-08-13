@@ -3,7 +3,16 @@
 #include <stdbool.h>
 
 void InitBlocks(
-    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]) {}
+    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]) {
+
+  for (int z = 0; z < PLAYGROUND_Z_MAX; z++) {
+    for (int x = 0; x < PLAYGROUND_X_MAX; x++) {
+      for (int y = 0; y < PLAYGROUND_Y_MAX; y++) {
+        blocks[z][x][y].state = FACE_ALL;
+      }
+    }
+  }
+}
 
 void DrawCubeFace(
     Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]) {}
