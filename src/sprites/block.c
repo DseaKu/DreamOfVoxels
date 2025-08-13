@@ -2,6 +2,9 @@
 #include <raylib.h>
 #include <stdbool.h>
 
+void InitBlocks(
+    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]) {}
+
 void DrawCubeFace(
     Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]) {}
 

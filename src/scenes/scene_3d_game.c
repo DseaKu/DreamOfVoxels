@@ -15,6 +15,7 @@ int Scene3DGame(void) {
   Player player = InitPlayer();
 
   Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX] = {0};
+  InitBlocks(blocks);
 
   // Set all visible faces to true
   UpdateAllBlockFaces(blocks);

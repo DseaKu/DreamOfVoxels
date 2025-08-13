@@ -2,7 +2,6 @@
 #define BLOCK_H
 
 #include "scenes/scene_3d_game.h"
-#include "sprites/player.h"
 #include "std_includes.h"
 #include <stdint.h>
 
@@ -15,6 +14,7 @@
 #define FACE_BACK (1 << 3)   // 0b001000
 #define FACE_LEFT (1 << 4)   // 0b010000
 #define FACE_RIGHT (1 << 5)  // 0b100000
+#define FACE_FULL (FACE_TOP | FACE_BOTTOM | FACE_FRONT | FACE_BACK | FACE_LEFT | FACE_RIGHT)
 
 typedef struct Block {
   uint8_t state;
