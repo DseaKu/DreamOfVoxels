@@ -18,17 +18,22 @@ typedef struct BlockFaces {
 } BlockFaces;
 
 typedef struct Block {
-  Vector3 position;
   bool active;
+  Vector3 position;
   BlockFaces faces;
 } Block;
 
-void RemovePlacment(float max_placment_distance, Player *player, Block *blocks,
-                    float block_size, int y_max, int x_max, int z_max);
+void InitBlocks(int y_max, int x_max, int z_max,
+                Block blocks[y_max][x_max][z_max], float block_size);
 
-void DrawBlocks(Block *blocks, float block_size, int y_max, int x_max,
-                int z_max);
+void RemovePlacement(float max_placement_distance, Player *player, int y_max,
+                     int x_max, int z_max,
+                     Block blocks[y_max][x_max][z_max], float block_size);
 
-void UpdateAllBlockFaces(Block *blocks, int y_max, int x_max, int z_max);
+void DrawBlocks(int y_max, int x_max, int z_max,
+                Block blocks[y_max][x_max][z_max], float block_size);
+
+void UpdateAllBlockFaces(int y_max, int x_max, int z_max,
+                         Block blocks[y_max][x_max][z_max]);
 
 #endif // BLOCK_H
