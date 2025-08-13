@@ -1,6 +1,7 @@
 #include "sprites/block.h"
 #include <raylib.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 // void CreatePlaneGround(Block *blocks, int *blockCount, int y_max, int x_max)
 // {
@@ -33,51 +34,38 @@ void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
     for (int x = 0; x < x_max; x++) {
       for (int z = 0; z < z_max; z++) {
         int index = y * x_max * z_max + x * z_max + z;
+        blocks[index].active = true;
       }
     }
   }
-  // // The function accepts a simple pointer to int.
-  // void process_flat(int *arr, int d1, int d2, int d3) {
-  //     printf("Processing a 'flattened' array:\n");
-  //     for (int i = 0; i < d1; i++) {
-  //         for (int j = 0; j < d2; j++) {
-  //             for (int k = 0; k < d3; k++) {
-  //                 // Manual index calculation is required.
-  //                 int index = i * d2 * d3 + j * d3 + k;
-  //                 printf("%d ", arr[index]);
-  //             }
-  //             printf("\n");
-  //         }
-  //         printf("\n");
+  // int closestBlock = -1;
+  //
+  // for (int i = 0; i < *blockCount; i++) {
+  //   if (blocks[i].active) {
+  //     BoundingBox bb = {Vector3SubtractValue(blocks[i].position, block_size),
+  //                       Vector3AddValue(blocks[i].position, block_size)};
+  //     RayCollision collision = GetRayCollisionBox(ray, bb);
+  //
+  //     if (collision.hit && collision.distance < closestCollision.distance) {
+  //       closestCollision = collision;
+  //       closestBlock = i;
   //     }
+  //   }
   // }
-  int closestBlock = -1;
-
-  for (int i = 0; i < *blockCount; i++) {
-    if (blocks[i].active) {
-      BoundingBox bb = {Vector3SubtractValue(blocks[i].position, block_size),
-                        Vector3AddValue(blocks[i].position, block_size)};
-      RayCollision collision = GetRayCollisionBox(ray, bb);
-
-      if (collision.hit && collision.distance < closestCollision.distance) {
-        closestCollision = collision;
-        closestBlock = i;
-      }
-    }
-  }
-
-  if (closestBlock != -1) {
-    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
-      if (*blockCount < MAX_BLOCKS) {
-        blocks[*blockCount].position =
-            Vector3Add(blocks[closestBlock].position, closestCollision.normal);
-        blocks[*blockCount].active = true;
-        (*blockCount)++;
-      }
-    } else {
-      blocks[closestBlock].active = false;
-    }
-  }
+  //
+  // if (closestBlock != -1) {
+  //   if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+  //     if (*blockCount < MAX_BLOCKS) {
+  //       blocks[*blockCount].position =
+  //           Vector3Add(blocks[closestBlock].position,
+  //           closestCollision.normal);
+  //       blocks[*blockCount].active = true;
+  //       (*blockCount)++;
+  //     }
+  //   } else {
+  //     blocks[closestBlock].active = false;
+  //   }
+  // }
 };
 void DrawBlocks(Block *blocks, int block_count, float block_size) {
 
