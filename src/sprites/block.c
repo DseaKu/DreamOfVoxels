@@ -2,13 +2,13 @@
 #include <raylib.h>
 #include <stdbool.h>
 
-void CreatePlaneGround(Block *blocks, int *blockCount) {
+void CreatePlaneGround(Block *blocks, int *blockCount, int y_max, int x_max) {
 
   *blockCount = 0;
 
   // Create a ground plane
-  for (int x = -MAX_LENGTH / 2; x < MAX_LENGTH / 2; x++) {
-    for (int z = -MAX_LENGTH / 2; z < MAX_LENGTH / 2; z++) {
+  for (int x = 0; x < x_max; x++) {
+    for (int z = 0; z < y_max; z++) {
       blocks[*blockCount].position = (Vector3){(float)x, 0.0f, (float)z};
       blocks[*blockCount].active = true;
       (*blockCount)++;
@@ -64,12 +64,82 @@ void DrawBlocks(Block *blocks, int block_count, float block_size) {
 
   for (int i = 0; i < block_count; i++) {
     if (blocks[i].active) {
-      // Toggle faces and wire
-      if (disable_faces) {
-        DrawCube(blocks[i].position, block_size, block_size, block_size, GRAY);
-      } else {
-        DrawCubeWires(blocks[i].position, block_size, block_size, block_size,
-                      MAROON);
+      Vector3 pos = blocks[i].position;
+      float s = block_size / 2.0f;
+
+      // Calculate vertices relative to block position
+      Vector3 v[8];
+      v[0] = (Vector3){pos.x - s, pos.y - s, pos.z + s};
+      v[1] = (Vector3){pos.x + s, pos.y - s, pos.z + s};
+      v[2] = (Vector3){pos.x + s, pos.y + s, pos.z + s};
+      v[3] = (Vector3){pos.x - s, pos.y + s, pos.z + s};
+      v[4] = (Vector3){pos.x - s, pos.y - s, pos.z - s};
+      v[5] = (Vector3){pos.x + s, pos.y - s, pos.z - s};
+      v[6] = (Vector3){pos.x + s, pos.y + s, pos.z - s};
+      v[7] = (Vector3){pos.x - s, pos.y + s, pos.z - s};
+
+      if (disable_faces) { // Draw solid faces
+        if (blocks[i].faces.FRONT) {
+          DrawTriangle3D(v[0], v[1], v[2], GRAY);
+          DrawTriangle3D(v[0], v[2], v[3], GRAY);
+        }
+        if (blocks[i].faces.BACK) {
+          DrawTriangle3D(v[5], v[4], v[7], GRAY);
+          DrawTriangle3D(v[5], v[7], v[6], GRAY);
+        }
+        if (blocks[i].faces.TOP) {
+          DrawTriangle3D(v[3], v[2], v[6], GRAY);
+          DrawTriangle3D(v[3], v[6], v[7], GRAY);
+        }
+        if (blocks[i].faces.BOTTOM) {
+          DrawTriangle3D(v[4], v[5], v[1], GRAY);
+          DrawTriangle3D(v[4], v[1], v[0], GRAY);
+        }
+        if (blocks[i].faces.RIGHT) {
+          DrawTriangle3D(v[1], v[5], v[6], GRAY);
+          DrawTriangle3D(v[1], v[6], v[2], GRAY);
+        }
+        if (blocks[i].faces.LEFT) {
+          DrawTriangle3D(v[4], v[0], v[3], GRAY);
+          DrawTriangle3D(v[4], v[3], v[7], GRAY);
+        }
+      } else { // Draw wireframe of faces
+        if (blocks[i].faces.FRONT) {
+          DrawLine3D(v[0], v[1], MAROON);
+          DrawLine3D(v[1], v[2], MAROON);
+          DrawLine3D(v[2], v[3], MAROON);
+          DrawLine3D(v[3], v[0], MAROON);
+        }
+        if (blocks[i].faces.BACK) {
+          DrawLine3D(v[5], v[4], MAROON);
+          DrawLine3D(v[4], v[7], MAROON);
+          DrawLine3D(v[7], v[6], MAROON);
+          DrawLine3D(v[6], v[5], MAROON);
+        }
+        if (blocks[i].faces.TOP) {
+          DrawLine3D(v[3], v[2], MAROON);
+          DrawLine3D(v[2], v[6], MAROON);
+          DrawLine3D(v[6], v[7], MAROON);
+          DrawLine3D(v[7], v[3], MAROON);
+        }
+        if (blocks[i].faces.BOTTOM) {
+          DrawLine3D(v[4], v[5], MAROON);
+          DrawLine3D(v[5], v[1], MAROON);
+          DrawLine3D(v[1], v[0], MAROON);
+          DrawLine3D(v[0], v[4], MAROON);
+        }
+        if (blocks[i].faces.RIGHT) {
+          DrawLine3D(v[1], v[5], MAROON);
+          DrawLine3D(v[5], v[6], MAROON);
+          DrawLine3D(v[6], v[2], MAROON);
+          DrawLine3D(v[2], v[1], MAROON);
+        }
+        if (blocks[i].faces.LEFT) {
+          DrawLine3D(v[4], v[0], MAROON);
+          DrawLine3D(v[0], v[3], MAROON);
+          DrawLine3D(v[3], v[7], MAROON);
+          DrawLine3D(v[7], v[4], MAROON);
+        }
       }
     }
   }
@@ -102,7 +172,8 @@ void UpdateAllBlockFaces(Block *blocks, int blockCount) {
     // Check bottom face
     Vector3 bottom_neighbor_pos = {current_pos.x, current_pos.y - 1.0f,
                                    current_pos.z};
-    blocks[i].faces.BOTTOM = !IsBlockAt(bottom_neighbor_pos, blocks, blockCount);
+    blocks[i].faces.BOTTOM =
+        !IsBlockAt(bottom_neighbor_pos, blocks, blockCount);
 
     // Check front face (positive Z)
     Vector3 front_neighbor_pos = {current_pos.x, current_pos.y,

@@ -16,7 +16,7 @@ int Scene3DGame(void) {
   Block blocks[MAX_BLOCKS] = {0};
   int blockCount = 0;
 
-  CreatePlaneGround(blocks, &blockCount);
+  CreatePlaneGround(blocks, &blockCount, PLAYGROUND_Y_MAX, PLAYGROUND_X_MAX);
 
   UpdateAllBlockFaces(blocks, blockCount);
 
@@ -32,30 +32,24 @@ int Scene3DGame(void) {
         IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
       BlockPlacment(MAX_PLACMENT_DISTANCE, &player, blocks, &blockCount,
                     BLOCK_SIZE);
-      UpdateAllBlockFaces(blocks, blockCount);
+      // UpdateAllBlockFaces(blocks, blockCount);
     }
     EndPerformanceTracker("BlockPlacment");
 
     // Begin draw
     BeginDrawing();
     ClearBackground(RAYWHITE);
+    DrawCircle(screen_width / 2, screen_height / 2, 2, BLACK);
+    DrawFPS(screen_width - 100, 10);
 
-    // Begin 3D drawing
     BeginMode3D(player.camera);
-
     // Draw blocks
     StartPerformanceTracker("DrawingBlocks");
     DrawBlocks(blocks, blockCount, BLOCK_SIZE);
     EndPerformanceTracker("DrawingBlocks");
 
     EndMode3D();
-
-    DrawCircle(screen_width / 2, screen_height / 2, 2, BLACK);
-
-    DrawFPS(screen_width - 100, 10);
-
     EndDrawing();
-
     EndPerformanceTracker("CompleteLoop");
   }
 

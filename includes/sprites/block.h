@@ -5,17 +5,8 @@
 #include "std_includes.h"
 
 #define MAX_BLOCKS 10000
-#define MAX_LENGTH 10
 
-typedef enum {
-  TOP,
-  BOTTOM,
-  FRONT,
-  BACK,
-  LEFT,
-  RIGHT
-} CubeFace;
-
+typedef enum { TOP, BOTTOM, FRONT, BACK, LEFT, RIGHT } CubeFace;
 
 typedef struct BlockFaces {
   bool TOP;
@@ -32,7 +23,7 @@ typedef struct Block {
   BlockFaces faces;
 } Block;
 
-void CreatePlaneGround(Block *blocks, int *blockCount);
+void CreatePlaneGround(Block *blocks, int *blockCount, int y_max, int x_max);
 void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
                    int *blockCount, float block_size);
 
