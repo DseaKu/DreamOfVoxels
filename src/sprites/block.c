@@ -2,8 +2,8 @@
 #include <raylib.h>
 #include <stdbool.h>
 
-void RemoveBlock(float max_placment_distance, Player *player, Block *blocks,
-                 float block_size, int y_max, int x_max, int z_max) {
+void RemovePlacment(float max_placment_distance, Player *player, Block *blocks,
+                    float block_size, int y_max, int x_max, int z_max) {
 
   Vector3 direction = Vector3Normalize(
       Vector3Subtract(player->camera.target, player->camera.position));
