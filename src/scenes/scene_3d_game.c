@@ -13,13 +13,11 @@ int Scene3DGame(void) {
   SetTargetFPS(TARGET_FPS);
 
   Player player = InitPlayer();
+
   Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX] = {0};
-  InitBlocks(PLAYGROUND_Z_MAX, PLAYGROUND_X_MAX, PLAYGROUND_Y_MAX, blocks,
-             BLOCK_SIZE);
 
   // Set all visible faces to true
-  UpdateAllBlockFaces(PLAYGROUND_Z_MAX, PLAYGROUND_X_MAX, PLAYGROUND_Y_MAX,
-                      blocks);
+  UpdateAllBlockFaces();
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
@@ -30,10 +28,8 @@ int Scene3DGame(void) {
     // Block placement
     StartPerformanceTracker("BlockPlacment");
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-      RemovePlacement(MAX_PLACMENT_DISTANCE, &player, PLAYGROUND_Z_MAX,
-                      PLAYGROUND_X_MAX, PLAYGROUND_Y_MAX, blocks, BLOCK_SIZE);
-      UpdateAllBlockFaces(PLAYGROUND_Z_MAX, PLAYGROUND_X_MAX, PLAYGROUND_Y_MAX,
-                          blocks);
+      RemoveBlock();
+      UpdateAllBlockFaces();
     }
     EndPerformanceTracker("BlockPlacment");
 
@@ -42,14 +38,14 @@ int Scene3DGame(void) {
     ClearBackground(RAYWHITE);
     DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
     DrawFPS(screen_width - 100, 10);
-
     BeginMode3D(player.camera);
+
     // Draw blocks
     StartPerformanceTracker("DrawingBlocks");
-    DrawBlocks(PLAYGROUND_Z_MAX, PLAYGROUND_X_MAX, PLAYGROUND_Y_MAX, blocks,
-               BLOCK_SIZE);
+    DrawCubeFace();
     EndPerformanceTracker("DrawingBlocks");
 
+    // End draw
     EndMode3D();
     EndDrawing();
     EndPerformanceTracker("CompleteLoop");
