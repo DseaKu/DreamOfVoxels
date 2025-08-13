@@ -13,12 +13,10 @@ int Scene3DGame(void) {
   SetTargetFPS(TARGET_FPS);
 
   Player player = InitPlayer();
-  Block blocks[MAX_BLOCKS] = {0};
+  Block blocks[PLAYGROUND_Y_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Z_MAX] = {0};
   int blockCount = 0;
 
-  CreatePlaneGround(blocks, &blockCount, PLAYGROUND_Y_MAX, PLAYGROUND_X_MAX);
-
-  UpdateAllBlockFaces(blocks, blockCount);
+  // UpdateAllBlockFaces(blocks, blockCount);
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
@@ -26,12 +24,14 @@ int Scene3DGame(void) {
     // Player movement
     UpdatePlayer(&player);
 
+    BlockPlacment(MAX_PLACMENT_DISTANCE, &player, &blocks[0][0][0], &blockCount,
+                  BLOCK_SIZE, PLAYGROUND_Y_MAX, PLAYGROUND_X_MAX,
+                  PLAYGROUND_Z_MAX);
+
     // Block placement
     StartPerformanceTracker("BlockPlacment");
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
         IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
-      BlockPlacment(MAX_PLACMENT_DISTANCE, &player, blocks, &blockCount,
-                    BLOCK_SIZE);
       // UpdateAllBlockFaces(blocks, blockCount);
     }
     EndPerformanceTracker("BlockPlacment");
@@ -45,7 +45,7 @@ int Scene3DGame(void) {
     BeginMode3D(player.camera);
     // Draw blocks
     StartPerformanceTracker("DrawingBlocks");
-    DrawBlocks(blocks, blockCount, BLOCK_SIZE);
+    // DrawBlocks(blocks, blockCount, BLOCK_SIZE);
     EndPerformanceTracker("DrawingBlocks");
 
     EndMode3D();

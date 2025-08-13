@@ -2,22 +2,24 @@
 #include <raylib.h>
 #include <stdbool.h>
 
-void CreatePlaneGround(Block *blocks, int *blockCount, int y_max, int x_max) {
-
-  *blockCount = 0;
-
-  // Create a ground plane
-  for (int x = 0; x < x_max; x++) {
-    for (int z = 0; z < y_max; z++) {
-      blocks[*blockCount].position = (Vector3){(float)x, 0.0f, (float)z};
-      blocks[*blockCount].active = true;
-      (*blockCount)++;
-    }
-  }
-}
+// void CreatePlaneGround(Block *blocks, int *blockCount, int y_max, int x_max)
+// {
+//
+//   *blockCount = 0;
+//
+//   // Create a ground plane
+//   for (int x = 0; x < x_max; x++) {
+//     for (int z = 0; z < y_max; z++) {
+//       blocks[*blockCount].position = (Vector3){(float)x, 0.0f, (float)z};
+//       blocks[*blockCount].active = true;
+//       (*blockCount)++;
+//     }
+//   }
+// }
 
 void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
-                   int *blockCount, float block_size) {
+                   int *blockCount, float block_size, int y_max, int x_max,
+                   int z_max) {
 
   Vector3 direction = Vector3Normalize(
       Vector3Subtract(player->camera.target, player->camera.position));
@@ -27,6 +29,28 @@ void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
   closestCollision.distance = max_placment_distance;
   closestCollision.hit = false;
 
+  for (int y = 0; y < y_max; y++) {
+    for (int x = 0; x < x_max; x++) {
+      for (int z = 0; z < z_max; z++) {
+        int index = y * x_max * z_max + x * z_max + z;
+      }
+    }
+  }
+  // // The function accepts a simple pointer to int.
+  // void process_flat(int *arr, int d1, int d2, int d3) {
+  //     printf("Processing a 'flattened' array:\n");
+  //     for (int i = 0; i < d1; i++) {
+  //         for (int j = 0; j < d2; j++) {
+  //             for (int k = 0; k < d3; k++) {
+  //                 // Manual index calculation is required.
+  //                 int index = i * d2 * d3 + j * d3 + k;
+  //                 printf("%d ", arr[index]);
+  //             }
+  //             printf("\n");
+  //         }
+  //         printf("\n");
+  //     }
+  // }
   int closestBlock = -1;
 
   for (int i = 0; i < *blockCount; i++) {
