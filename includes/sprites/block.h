@@ -3,24 +3,27 @@
 
 #include "sprites/player.h"
 #include "std_includes.h"
+#include <stdint.h>
 
 // #define MAX_BLOCKS 10000
 
 typedef enum { TOP, BOTTOM, FRONT, BACK, LEFT, RIGHT } CubeFace;
 
-typedef struct BlockFaces {
-  bool TOP;
-  bool BOTTOM;
-  bool FRONT;
-  bool BACK;
-  bool LEFT;
-  bool RIGHT;
-} BlockFaces;
+// Bitmask for block state. Uses a single uint8_t.
+// Bit 6: Active state (1 for active, 0 for inactive).
+// Bits 0-5: Visible faces.
+#define BLOCK_ACTIVE (1 << 6) // 0b01000000
+
+#define FACE_TOP    (1 << 0) // 0b000001
+#define FACE_BOTTOM (1 << 1) // 0b000010
+#define FACE_FRONT  (1 << 2) // 0b000100
+#define FACE_BACK   (1 << 3) // 0b001000
+#define FACE_LEFT   (1 << 4) // 0b010000
+#define FACE_RIGHT  (1 << 5) // 0b100000
 
 typedef struct Block {
-  bool active;
+  uint8_t state;
   Vector3 position;
-  BlockFaces faces;
 } Block;
 
 void InitBlocks(int z_max, int x_max, int y_max,

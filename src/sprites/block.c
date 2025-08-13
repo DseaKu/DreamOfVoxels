@@ -47,7 +47,7 @@ void InitBlocks(int z_max, int x_max, int y_max,
   for (int z = 0; z < z_max; z++) {
     for (int x = 0; x < x_max; x++) {
       for (int y = 0; y < y_max; y++) {
-        blocks[z][x][y].active = true;
+        blocks[z][x][y].state = BLOCK_ACTIVE;
         blocks[z][x][y].position =
             (Vector3){(x - x_max / 2) * block_size, z * block_size,
                       (y - y_max / 2) * block_size};
@@ -73,7 +73,7 @@ void RemovePlacement(float max_placement_distance, Player *player, int z_max,
   for (int z = 0; z < z_max; z++) {
     for (int x = 0; x < x_max; x++) {
       for (int y = 0; y < y_max; y++) {
-        if (!blocks[z][x][y].active)
+        if (!(blocks[z][x][y].state & BLOCK_ACTIVE))
           continue;
 
         BoundingBox bb = {
@@ -96,7 +96,7 @@ void RemovePlacement(float max_placement_distance, Player *player, int z_max,
   }
 
   if (hit_z != -1) {
-    blocks[hit_z][hit_x][hit_y].active = false;
+    blocks[hit_z][hit_x][hit_y].state = 0;
   }
 }
 void DrawBlocks(int z_max, int x_max, int y_max,
@@ -104,18 +104,18 @@ void DrawBlocks(int z_max, int x_max, int y_max,
   for (int z = 0; z < z_max; z++) {
     for (int x = 0; x < x_max; x++) {
       for (int y = 0; y < y_max; y++) {
-        if (blocks[z][x][y].active) {
-          if (blocks[z][x][y].faces.TOP)
+        if (blocks[z][x][y].state & BLOCK_ACTIVE) {
+          if (blocks[z][x][y].state & FACE_TOP)
             DrawCubeFace(TOP, blocks[z][x][y].position, block_size, RED);
-          if (blocks[z][x][y].faces.BOTTOM)
+          if (blocks[z][x][y].state & FACE_BOTTOM)
             DrawCubeFace(BOTTOM, blocks[z][x][y].position, block_size, GREEN);
-          if (blocks[z][x][y].faces.FRONT)
+          if (blocks[z][x][y].state & FACE_FRONT)
             DrawCubeFace(FRONT, blocks[z][x][y].position, block_size, BLUE);
-          if (blocks[z][x][y].faces.BACK)
+          if (blocks[z][x][y].state & FACE_BACK)
             DrawCubeFace(BACK, blocks[z][x][y].position, block_size, YELLOW);
-          if (blocks[z][x][y].faces.LEFT)
+          if (blocks[z][x][y].state & FACE_LEFT)
             DrawCubeFace(LEFT, blocks[z][x][y].position, block_size, PURPLE);
-          if (blocks[z][x][y].faces.RIGHT)
+          if (blocks[z][x][y].state & FACE_RIGHT)
             DrawCubeFace(RIGHT, blocks[z][x][y].position, block_size, ORANGE);
 
           DrawCubeWires(blocks[z][x][y].position, block_size, block_size,
@@ -132,53 +132,42 @@ void UpdateAllBlockFaces(int z_max, int x_max, int y_max,
     for (int x = 0; x < x_max; x++) {
       for (int y = 0; y < y_max; y++) {
 
-        // If the block is not active, none of its faces should be rendered.
-        if (!blocks[z][x][y].active) {
-          blocks[z][x][y].faces =
-              (BlockFaces){false, false, false, false, false, false};
+        if (!(blocks[z][x][y].state & BLOCK_ACTIVE)) {
+          blocks[z][x][y].state = 0; // Ensure inactive blocks have no faces
           continue;
         }
 
+        // Reset face bits, keep active bit
+        blocks[z][x][y].state = BLOCK_ACTIVE;
+
         // Check Top Face (z + 1)
-        if (z + 1 >= z_max || !blocks[z + 1][x][y].active) {
-          blocks[z][x][y].faces.TOP = true;
-        } else {
-          blocks[z][x][y].faces.TOP = false;
+        if (z + 1 >= z_max || !(blocks[z + 1][x][y].state & BLOCK_ACTIVE)) {
+          blocks[z][x][y].state |= FACE_TOP;
         }
 
         // Check Bottom Face (z - 1)
-        if (z - 1 < 0 || !blocks[z - 1][x][y].active) {
-          blocks[z][x][y].faces.BOTTOM = true;
-        } else {
-          blocks[z][x][y].faces.BOTTOM = false;
+        if (z - 1 < 0 || !(blocks[z - 1][x][y].state & BLOCK_ACTIVE)) {
+          blocks[z][x][y].state |= FACE_BOTTOM;
         }
 
         // Check Front Face (y + 1)
-        if (y + 1 >= y_max || !blocks[z][x][y + 1].active) {
-          blocks[z][x][y].faces.FRONT = true;
-        } else {
-          blocks[z][x][y].faces.FRONT = false;
+        if (y + 1 >= y_max || !(blocks[z][x][y + 1].state & BLOCK_ACTIVE)) {
+          blocks[z][x][y].state |= FACE_FRONT;
         }
 
         // Check Back Face (y - 1)
-        if (y - 1 < 0 || !blocks[z][x][y - 1].active) {
-          blocks[z][x][y].faces.BACK = true;
-        } else {
-          blocks[z][x][y].faces.BACK = false;
+        if (y - 1 < 0 || !(blocks[z][x][y - 1].state & BLOCK_ACTIVE)) {
+          blocks[z][x][y].state |= FACE_BACK;
         }
 
         // Check Right Face (x + 1)
-        if (x + 1 >= x_max || !blocks[z][x + 1][y].active) {
-          blocks[z][x][y].faces.RIGHT = true;
-        } else {
-          blocks[z][x][y].faces.RIGHT = false;
+        if (x + 1 >= x_max || !(blocks[z][x + 1][y].state & BLOCK_ACTIVE)) {
+          blocks[z][x][y].state |= FACE_RIGHT;
         }
 
         // Check Left Face (x - 1)
-        if (x - 1 < 0 || !blocks[z][x - 1][y].active) {
-          blocks[z][x][y].faces.LEFT = true;
-        } else {
-          blocks[z][x][y].faces.LEFT = false;
+        if (x - 1 < 0 || !(blocks[z][x - 1][y].state & BLOCK_ACTIVE)) {
+          blocks[z][x][y].state |= FACE_LEFT;
         }
       }
     }
