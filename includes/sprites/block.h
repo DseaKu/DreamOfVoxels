@@ -5,7 +5,7 @@
 #include "std_includes.h"
 
 #define MAX_BLOCKS 10000
-#define MAX_LENGTH 100
+#define MAX_LENGTH 10
 
 typedef struct Block {
   Vector3 position;

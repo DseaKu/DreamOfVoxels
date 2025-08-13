@@ -1,4 +1,6 @@
 #include "sprites/block.h"
+#include <raylib.h>
+#include <stdbool.h>
 
 void CreatePlaneGround(Block *blocks, int *blockCount) {
 
@@ -55,11 +57,20 @@ void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
 };
 void DrawBlocks(Block *blocks, int block_count, float block_size) {
 
+  static bool disable_faces = false;
+  if (IsKeyReleased(KEY_E)) {
+    disable_faces = !disable_faces;
+  }
+
   for (int i = 0; i < block_count; i++) {
     if (blocks[i].active) {
-      DrawCube(blocks[i].position, block_size, block_size, block_size, GRAY);
-      DrawCubeWires(blocks[i].position, block_size, block_size, block_size,
-                    MAROON);
+      // Toggle faces and wire
+      if (disable_faces) {
+        DrawCube(blocks[i].position, block_size, block_size, block_size, GRAY);
+      } else {
+        DrawCubeWires(blocks[i].position, block_size, block_size, block_size,
+                      MAROON);
+      }
     }
   }
 }

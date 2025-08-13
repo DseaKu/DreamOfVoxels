@@ -47,6 +47,8 @@ int Scene3DGame(void) {
 
     EndMode3D();
 
+    DrawCircle(screenWidth / 2, screenHeight / 2, 2, BLACK);
+
     DrawFPS(screenWidth - 100, 10);
 
     EndDrawing();
