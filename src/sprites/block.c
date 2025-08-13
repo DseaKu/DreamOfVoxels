@@ -1,5 +1,4 @@
 #include "sprites/block.h"
-#include "scenes/scene_3d_game.h"
 #include <raylib.h>
 #include <stdbool.h>
 
@@ -19,8 +18,8 @@ void UpdateAllBlockFaces(
         }
 
         // Start with all faces visible
-        blocks[z][x][y].state =
-            FACE_TOP | FACE_BOTTOM | FACE_FRONT | FACE_BACK | FACE_LEFT | FACE_RIGHT;
+        blocks[z][x][y].state = FACE_TOP | FACE_BOTTOM | FACE_FRONT |
+                                FACE_BACK | FACE_LEFT | FACE_RIGHT;
 
         // Check top face
         if (y < PLAYGROUND_Y_MAX - 1 && blocks[z][x][y + 1].state != 0) {

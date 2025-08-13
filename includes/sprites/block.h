@@ -18,10 +18,13 @@
 
 typedef struct Block {
   uint8_t state;
-  Vector3 position;
 } Block;
 
-void RemoveBlock(Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
+void InitBlocks(
+    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
+
+void RemoveBlock(
+    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
 
 void UpdateAllBlockFaces(
     Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
