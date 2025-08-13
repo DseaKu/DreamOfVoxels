@@ -36,4 +36,6 @@ void DrawBlocks(int z_max, int x_max, int y_max,
 void UpdateAllBlockFaces(int z_max, int x_max, int y_max,
                          Block blocks[z_max][x_max][y_max]);
 
+void DrawCubeFace(CubeFace face, Vector3 position, float size, Color color);
+
 #endif // BLOCK_H

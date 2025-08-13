@@ -2,6 +2,46 @@
 #include <raylib.h>
 #include <stdbool.h>
 
+void DrawCubeFace(CubeFace face, Vector3 position, float size, Color color) {
+    float h = size / 2.0f;
+
+    Vector3 v0 = {position.x - h, position.y - h, position.z + h};
+    Vector3 v1 = {position.x + h, position.y - h, position.z + h};
+    Vector3 v2 = {position.x + h, position.y + h, position.z + h};
+    Vector3 v3 = {position.x - h, position.y + h, position.z + h};
+    Vector3 v4 = {position.x - h, position.y - h, position.z - h};
+    Vector3 v5 = {position.x + h, position.y - h, position.z - h};
+    Vector3 v6 = {position.x + h, position.y + h, position.z - h};
+    Vector3 v7 = {position.x - h, position.y + h, position.z - h};
+
+    switch (face) {
+    case FRONT:
+        DrawTriangle3D(v0, v1, v2, color);
+        DrawTriangle3D(v0, v2, v3, color);
+        break;
+    case BACK:
+        DrawTriangle3D(v5, v4, v7, color);
+        DrawTriangle3D(v5, v7, v6, color);
+        break;
+    case TOP:
+        DrawTriangle3D(v3, v2, v6, color);
+        DrawTriangle3D(v3, v6, v7, color);
+        break;
+    case BOTTOM:
+        DrawTriangle3D(v4, v5, v1, color);
+        DrawTriangle3D(v4, v1, v0, color);
+        break;
+    case RIGHT:
+        DrawTriangle3D(v1, v5, v6, color);
+        DrawTriangle3D(v1, v6, v2, color);
+        break;
+    case LEFT:
+        DrawTriangle3D(v4, v0, v3, color);
+        DrawTriangle3D(v4, v3, v7, color);
+        break;
+    }
+}
+
 void InitBlocks(int z_max, int x_max, int y_max,
                 Block blocks[z_max][x_max][y_max], float block_size) {
   for (int z = 0; z < z_max; z++) {
@@ -66,23 +106,17 @@ void DrawBlocks(int z_max, int x_max, int y_max,
       for (int y = 0; y < y_max; y++) {
         if (blocks[z][x][y].active) {
           if (blocks[z][x][y].faces.TOP)
-            DrawCube(blocks[z][x][y].position, block_size, block_size,
-                     block_size, RED);
+            DrawCubeFace(TOP, blocks[z][x][y].position, block_size, RED);
           if (blocks[z][x][y].faces.BOTTOM)
-            DrawCube(blocks[z][x][y].position, block_size, block_size,
-                     block_size, GREEN);
+            DrawCubeFace(BOTTOM, blocks[z][x][y].position, block_size, GREEN);
           if (blocks[z][x][y].faces.FRONT)
-            DrawCube(blocks[z][x][y].position, block_size, block_size,
-                     block_size, BLUE);
+            DrawCubeFace(FRONT, blocks[z][x][y].position, block_size, BLUE);
           if (blocks[z][x][y].faces.BACK)
-            DrawCube(blocks[z][x][y].position, block_size, block_size,
-                     block_size, YELLOW);
+            DrawCubeFace(BACK, blocks[z][x][y].position, block_size, YELLOW);
           if (blocks[z][x][y].faces.LEFT)
-            DrawCube(blocks[z][x][y].position, block_size, block_size,
-                     block_size, PURPLE);
+            DrawCubeFace(LEFT, blocks[z][x][y].position, block_size, PURPLE);
           if (blocks[z][x][y].faces.RIGHT)
-            DrawCube(blocks[z][x][y].position, block_size, block_size,
-                     block_size, ORANGE);
+            DrawCubeFace(RIGHT, blocks[z][x][y].position, block_size, ORANGE);
 
           DrawCubeWires(blocks[z][x][y].position, block_size, block_size,
                         block_size, MAROON);
