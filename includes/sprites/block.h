@@ -23,13 +23,12 @@ typedef struct Block {
   BlockFaces faces;
 } Block;
 
-void CreatePlaneGround(Block *blocks, int *blockCount, int y_max, int x_max);
-void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
-                   int *blockCount, float block_size, int y_max, int x_max,
-                   int z_max);
+void RemovePlacment(float max_placment_distance, Player *player, Block *blocks,
+                    float block_size, int y_max, int x_max, int z_max);
 
-void DrawBlocks(Block *blocks, int block_count, float block_size);
+void DrawBlocks(Block *blocks, float block_size, int y_max, int x_max,
+                int z_max);
 
-void UpdateAllBlockFaces(Block *blocks, int blockCount);
+void UpdateAllBlockFaces(Block *blocks, int y_max, int x_max, int z_max);
 
 #endif // BLOCK_H
