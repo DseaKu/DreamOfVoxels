@@ -9,11 +9,9 @@
 
 typedef enum { TOP, BOTTOM, FRONT, BACK, LEFT, RIGHT } CubeFace;
 
-// Bitmask for block state. Uses a single uint8_t.
-// Bit 6: Active state (1 for active, 0 for inactive).
-// Bits 0-5: Visible faces.
-#define BLOCK_ACTIVE (1 << 6) // 0b01000000
-
+// Bitmask for block faces using a single uint8_t.
+// If state is 0, the block is inactive.
+// If state > 0, the block is active, and the bits represent the visible faces.
 #define FACE_TOP    (1 << 0) // 0b000001
 #define FACE_BOTTOM (1 << 1) // 0b000010
 #define FACE_FRONT  (1 << 2) // 0b000100
