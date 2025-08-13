@@ -17,7 +17,7 @@ int Scene3DGame(void) {
   Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX] = {0};
 
   // Set all visible faces to true
-  UpdateAllBlockFaces();
+  UpdateAllBlockFaces(blocks);
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
@@ -28,8 +28,8 @@ int Scene3DGame(void) {
     // Block placement
     StartPerformanceTracker("BlockPlacment");
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-      RemoveBlock();
-      UpdateAllBlockFaces();
+      RemoveBlock(blocks);
+      UpdateAllBlockFaces(blocks);
     }
     EndPerformanceTracker("BlockPlacment");
 
@@ -42,7 +42,7 @@ int Scene3DGame(void) {
 
     // Draw blocks
     StartPerformanceTracker("DrawingBlocks");
-    DrawCubeFace();
+    DrawCubeFace(blocks);
     EndPerformanceTracker("DrawingBlocks");
 
     // End draw

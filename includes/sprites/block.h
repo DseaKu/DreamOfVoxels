@@ -1,6 +1,7 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
+#include "scenes/scene_3d_game.h"
 #include "sprites/player.h"
 #include "std_includes.h"
 #include <stdint.h>
@@ -20,10 +21,12 @@ typedef struct Block {
   Vector3 position;
 } Block;
 
-void RemoveBlock();
+void RemoveBlock(Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
 
-void UpdateAllBlockFaces();
+void UpdateAllBlockFaces(
+    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
 
-void DrawCubeFace();
+void DrawCubeFace(
+    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
 
 #endif // BLOCK_H
