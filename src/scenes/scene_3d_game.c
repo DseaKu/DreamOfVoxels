@@ -17,8 +17,11 @@ int Scene3DGame(void) {
   Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX] = {0};
   InitBlocks(blocks);
 
-  // Set all visible faces to true
-  UpdateAllBlockFaces(blocks);
+  // Use a standard cube mesh
+  Texture2D texture = LoadTexture("assets/log.png");
+  Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  Model model = LoadModelFromMesh(mesh);
+  model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
@@ -30,7 +33,6 @@ int Scene3DGame(void) {
     StartPerformanceTracker("BlockPlacment");
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
       RemoveBlock(blocks);
-      UpdateAllBlockFaces(blocks);
     }
     EndPerformanceTracker("BlockPlacment");
 
@@ -43,7 +45,7 @@ int Scene3DGame(void) {
 
     // Draw blocks
     StartPerformanceTracker("DrawingBlocks");
-    DrawCubeFace(blocks);
+    DrawCubeFace(blocks, model);
     EndPerformanceTracker("DrawingBlocks");
 
     // End draw
