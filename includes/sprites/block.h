@@ -7,9 +7,29 @@
 #define MAX_BLOCKS 10000
 #define MAX_LENGTH 10
 
+typedef enum {
+  TOP,
+  BOTTOM,
+  FRONT,
+  BACK,
+  LEFT,
+  RIGHT
+} CubeFace;
+
+
+typedef struct BlockFaces {
+  bool TOP;
+  bool BOTTOM;
+  bool FRONT;
+  bool BACK;
+  bool LEFT;
+  bool RIGHT;
+} BlockFaces;
+
 typedef struct Block {
   Vector3 position;
   bool active;
+  BlockFaces faces;
 } Block;
 
 void CreatePlaneGround(Block *blocks, int *blockCount);

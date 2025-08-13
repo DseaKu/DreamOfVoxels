@@ -5,10 +5,10 @@
 
 int Scene3DGame(void) {
 
-  const int screenWidth = MAX_SCREEN_WIDTH;
-  const int screenHeight = MAX_SCREEN_HEIGHT;
+  const int screen_width = MAX_SCREEN_WIDTH;
+  const int screen_height = MAX_SCREEN_HEIGHT;
 
-  InitWindow(screenWidth, screenHeight, "Raylib ");
+  InitWindow(screen_width, screen_height, "Raylib ");
   DisableCursor();
   SetTargetFPS(TARGET_FPS);
 
@@ -47,9 +47,9 @@ int Scene3DGame(void) {
 
     EndMode3D();
 
-    DrawCircle(screenWidth / 2, screenHeight / 2, 2, BLACK);
+    DrawCircle(screen_width / 2, screen_height / 2, 2, BLACK);
 
-    DrawFPS(screenWidth - 100, 10);
+    DrawFPS(screen_width - 100, 10);
 
     EndDrawing();
 
