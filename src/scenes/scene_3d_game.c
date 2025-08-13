@@ -18,6 +18,8 @@ int Scene3DGame(void) {
 
   CreatePlaneGround(blocks, &blockCount);
 
+  UpdateAllBlockFaces(blocks, blockCount);
+
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
@@ -30,6 +32,7 @@ int Scene3DGame(void) {
         IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
       BlockPlacment(MAX_PLACMENT_DISTANCE, &player, blocks, &blockCount,
                     BLOCK_SIZE);
+      UpdateAllBlockFaces(blocks, blockCount);
     }
     EndPerformanceTracker("BlockPlacment");
 

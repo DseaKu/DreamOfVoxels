@@ -38,4 +38,6 @@ void BlockPlacment(float max_placment_distance, Player *player, Block *blocks,
 
 void DrawBlocks(Block *blocks, int block_count, float block_size);
 
+void UpdateAllBlockFaces(Block *blocks, int blockCount);
+
 #endif // BLOCK_H
