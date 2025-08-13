@@ -4,7 +4,7 @@
 #include "sprites/player.h"
 #include "std_includes.h"
 
-#define MAX_BLOCKS 10000
+// #define MAX_BLOCKS 10000
 
 typedef enum { TOP, BOTTOM, FRONT, BACK, LEFT, RIGHT } CubeFace;
 
@@ -23,17 +23,17 @@ typedef struct Block {
   BlockFaces faces;
 } Block;
 
-void InitBlocks(int y_max, int x_max, int z_max,
-                Block blocks[y_max][x_max][z_max], float block_size);
+void InitBlocks(int z_max, int x_max, int y_max,
+                Block blocks[z_max][x_max][y_max], float block_size);
 
-void RemovePlacement(float max_placement_distance, Player *player, int y_max,
-                     int x_max, int z_max,
-                     Block blocks[y_max][x_max][z_max], float block_size);
+void RemovePlacement(float max_placement_distance, Player *player, int z_max,
+                     int x_max, int y_max, Block blocks[z_max][x_max][y_max],
+                     float block_size);
 
-void DrawBlocks(int y_max, int x_max, int z_max,
-                Block blocks[y_max][x_max][z_max], float block_size);
+void DrawBlocks(int z_max, int x_max, int y_max,
+                Block blocks[z_max][x_max][y_max], float block_size);
 
-void UpdateAllBlockFaces(int y_max, int x_max, int z_max,
-                         Block blocks[y_max][x_max][z_max]);
+void UpdateAllBlockFaces(int z_max, int x_max, int y_max,
+                         Block blocks[z_max][x_max][y_max]);
 
 #endif // BLOCK_H
