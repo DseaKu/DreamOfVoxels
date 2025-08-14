@@ -11,8 +11,8 @@
 // z = (index/VOXEL_Z) % VOXEL_Z;
 // y = ((index/VOXEL_Y)/VOXEL_Y)%VOXEL_Y;
 #define VOXEL_X 8
-#define VOXEL_Y 8
-#define VOXEL_Z 8
+#define VOXEL_Y 4
+#define VOXEL_Z 6
 #define VOXEL_XYZ (1 + (VOXEL_Z) + (VOXEL_Y * VOXEL_Y))
 
 typedef enum {

@@ -9,8 +9,8 @@ find_package(raylib CONFIG REQUIRED)
 set(SOURCES
   src/scenes/scene_3d_game.c
   src/sprites/player.c
-  src/sprites/block.c
-  src/utils/performance.c
+  src/core/voxel.c
+  src/utils/rescource_tracker.c
 )
 
 add_executable(game main.c ${SOURCES})
