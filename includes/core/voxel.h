@@ -35,7 +35,7 @@ typedef struct Vertex {
   u16 id;
 } Vertex;
 
-void InitVoxels(Voxel *voxels);
+void InitVoxel(Voxel *voxels);
 
 void RemoveVoxel();
 

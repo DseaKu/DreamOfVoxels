@@ -15,7 +15,7 @@ int Scene3DGame(void) {
   SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
   Voxel voxels[VOXEL_XYZ] = {0};
-  InitVoxels(voxels);
+  InitVoxel(voxels);
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
