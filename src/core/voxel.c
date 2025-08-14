@@ -96,9 +96,9 @@ Mesh GenMeshCustom1(Vector3 offset) {
       sizeof(float)); // 3 vertices, 3 coordinates each (x, y, z)
 
   // Vertex at (0, 0, 0)
-  mesh.vertices[0] = 5 + offset.x;
+  mesh.vertices[0] = 0 + offset.x;
   mesh.vertices[1] = 0 + offset.y;
-  mesh.vertices[2] = 5 + offset.z;
+  mesh.vertices[2] = 0 + offset.z;
   mesh.normals[0] = 0;
   mesh.normals[1] = 1;
   mesh.normals[2] = 0;
