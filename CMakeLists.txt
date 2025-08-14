@@ -11,14 +11,8 @@ find_package(raylib CONFIG REQUIRED)
 set(SOURCES
   src/scenes/scene_3d_game.c
   src/sprites/player.c
-<<<<<<< HEAD
-  src/sprites/block.c
-  src/utils/performance.c
-  src/utils/mesher.c
-=======
   src/core/voxel.c
   src/utils/rescource_tracker.c
->>>>>>> main
 )
 
 add_executable(game main.c ${SOURCES})
