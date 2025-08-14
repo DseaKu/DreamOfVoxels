@@ -5,7 +5,7 @@
 #include <iso646.h>
 #include <stdint.h>
 
-// Flutter array
+// Flattening array
 // To get index back to 3D position
 // x = index % VOXEL_X;
 // z = (index/VOXEL_Z) % VOXEL_Z;
@@ -13,7 +13,6 @@
 #define VOXEL_X 3
 #define VOXEL_Y 3
 #define VOXEL_Z 3
-// #define VOXEL_XYZ (1 + (VOXEL_Z) + (VOXEL_Y * VOXEL_Y))
 #define VOXEL_XYZ VOXEL_X *VOXEL_Y *VOXEL_Z
 
 typedef enum {
