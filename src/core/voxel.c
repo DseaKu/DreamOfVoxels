@@ -1,7 +1,7 @@
 #include "core/voxel.h"
 #include <raylib.h>
 
-void InitVoxels() {}
+void InitVoxels(Voxel *voxels) {}
 
 void RemoveVoxel() {}
 

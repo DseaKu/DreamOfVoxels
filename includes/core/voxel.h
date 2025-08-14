@@ -5,6 +5,16 @@
 #include <iso646.h>
 #include <stdint.h>
 
+// Flutter array
+// To get index back to 3D position
+// x = index % VOXEL_X;
+// z = (index/VOXEL_Z) % VOXEL_Z;
+// y = ((index/VOXEL_Y)/VOXEL_Y)%VOXEL_Y;
+#define VOXEL_X 8
+#define VOXEL_Y 8
+#define VOXEL_Z 8
+#define VOXEL_XYZ (1 + (VOXEL_Z) + (VOXEL_Y * VOXEL_Y))
+
 typedef enum {
   air = 0,
   solid,
@@ -25,16 +35,7 @@ typedef struct Vertex {
   u16 id;
 } Vertex;
 
-typedef struct SearchScope {
-  const u8 x1;
-  const u8 x2;
-  const u8 y1;
-  const u8 y2;
-  const u8 z1;
-  const u8 z2;
-} SearchScope;
-
-void InitVoxels();
+void InitVoxels(Voxel *voxels);
 
 void RemoveVoxel();
 
