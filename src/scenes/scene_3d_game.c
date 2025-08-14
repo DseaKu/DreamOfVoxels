@@ -1,6 +1,7 @@
 #include "scenes/scene_3d_game.h"
 #include "sprites/block.h"
 #include "sprites/player.h"
+#include "utils/mesher.h"
 #include "utils/performance.h"
 
 int Scene3DGame(void) {
@@ -16,29 +17,36 @@ int Scene3DGame(void) {
 
   Block blocks[PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX][PLAYGROUND_Z_MAX] = {0};
   InitBlocks(blocks);
-  SearchScope scope = {0, PLAYGROUND_X_MAX, 0, PLAYGROUND_Y_MAX,
-                       0, PLAYGROUND_Z_MAX};
-  UpdateAllBlockFaces(blocks, scope);
 
-  // Use a standard cube mesh
   Texture2D texture = LoadTexture("assets/log.png");
-  Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-  Model model = LoadModelFromMesh(mesh);
-  model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+  Model model = {0};
+  bool mesh_is_dirty = true;
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
+    if (mesh_is_dirty) {
+      UnloadModel(model);
+      Mesh mesh = GenerateGreedyMesh(blocks);
+      model = LoadModelFromMesh(mesh);
+      model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+      mesh_is_dirty = false;
+    }
+
     // Update objects
     StartPerformanceTracker("UpdateLoop");
-    UpdateAllBlockFaces(blocks, scope);
     UpdatePlayer(&player);
     EndPerformanceTracker("UpdateLoop");
 
     // Block placement
     StartPerformanceTracker("BlockPlacment");
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-      RemoveBlock(blocks);
+      RemoveBlock(blocks, &player);
+      mesh_is_dirty = true;
+    }
+    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+      AddBlock(blocks, &player);
+      mesh_is_dirty = true;
     }
     EndPerformanceTracker("BlockPlacment");
 
@@ -48,7 +56,7 @@ int Scene3DGame(void) {
     BeginMode3D(player.camera);
 
     StartPerformanceTracker("DrawingBlocks");
-    DrawCubeFace(blocks, model);
+    DrawModel(model, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, WHITE);
     EndPerformanceTracker("DrawingBlocks");
     EndMode3D();
 
@@ -59,6 +67,7 @@ int Scene3DGame(void) {
     EndPerformanceTracker("CompleteLoop");
   }
 
+  UnloadModel(model);
   CloseWindow();
 
   PrintPerformanceTrackers();

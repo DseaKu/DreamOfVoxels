@@ -11,6 +11,7 @@ set(SOURCES
   src/sprites/player.c
   src/sprites/block.c
   src/utils/performance.c
+  src/utils/mesher.c
 )
 
 add_executable(game main.c ${SOURCES})
