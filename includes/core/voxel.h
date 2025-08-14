@@ -38,6 +38,8 @@ void InitVoxels();
 
 void RemoveVoxel();
 
+void DrawVoxel(Voxel *voxels);
+
 void UpdateAllVoxel();
 
 #endif // VOXEL_H

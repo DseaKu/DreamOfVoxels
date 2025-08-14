@@ -6,3 +6,5 @@ void InitVoxels() {}
 void RemoveVoxel() {}
 
 void UpdateAllVoxel() {}
+
+void DrawVoxel(Voxel *voxels) {}

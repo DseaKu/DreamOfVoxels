@@ -29,6 +29,8 @@ int Scene3DGame(void) {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
 
+    DrawVoxel(voxels);
+
     DrawGrid(100, 1.0f);
     EndMode3D();
 
