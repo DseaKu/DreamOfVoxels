@@ -19,7 +19,7 @@ int Scene3DGame(void) {
   Model model = {0};
   Model modela = {0};
 
-  Vector3 a = {5.0f, 0.0f, 3.0f};
+  Vector3 a = {5.0f, -1.0f, 3.0f};
   model = LoadModelFromMesh(GenMeshCustom0());
   modela = LoadModelFromMesh(GenMeshCustom1(a));
   while (!WindowShouldClose()) {
