@@ -14,9 +14,11 @@ int Scene3DGame(void) {
 
   Player player = InitPlayer();
 
-  Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX] = {0};
+  Block blocks[PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX][PLAYGROUND_Z_MAX] = {0};
   InitBlocks(blocks);
-  UpdateAllBlockFaces(blocks);
+  SearchScope scope = {0, PLAYGROUND_X_MAX, 0, PLAYGROUND_Y_MAX,
+                       0, PLAYGROUND_Z_MAX};
+  UpdateAllBlockFaces(blocks, scope);
 
   // Use a standard cube mesh
   Texture2D texture = LoadTexture("assets/log.png");
@@ -28,7 +30,7 @@ int Scene3DGame(void) {
     StartPerformanceTracker("CompleteLoop");
 
     // Update objects
-    UpdateAllBlockFaces(blocks);
+    UpdateAllBlockFaces(blocks, scope);
     UpdatePlayer(&player);
 
     // Block placement

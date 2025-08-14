@@ -12,20 +12,26 @@ typedef struct Block {
 } Block;
 
 typedef struct SearchScope {
-
+  const u8 x1;
+  const u8 x2;
+  const u8 y1;
+  const u8 y2;
+  const u8 z1;
+  const u8 z2;
 } SearchScope;
 
 void InitBlocks(
-    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
+    Block blocks[PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX][PLAYGROUND_Z_MAX]);
 
 void RemoveBlock(
-    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
+    Block blocks[PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX][PLAYGROUND_Z_MAX]);
 
 void UpdateAllBlockFaces(
-    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
+    Block blocks[PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX][PLAYGROUND_Z_MAX],
+    SearchScope scope);
 
 void DrawCubeFace(
-    Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX],
+    Block blocks[PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX][PLAYGROUND_Z_MAX],
     Model model);
 
 #endif // BLOCK_H
