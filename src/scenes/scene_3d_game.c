@@ -42,18 +42,19 @@ int Scene3DGame(void) {
     }
     EndPerformanceTracker("BlockPlacment");
 
-    // Rendering
+    // Rendering 3D
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    DrawFPS(screen_width - 100, 10);
     BeginMode3D(player.camera);
 
     StartPerformanceTracker("DrawingBlocks");
     DrawCubeFace(blocks, model);
     EndPerformanceTracker("DrawingBlocks");
-    DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
-
     EndMode3D();
+
+    // Rendering 2D
+    DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
+    DrawFPS(screen_width - 100, 10);
     EndDrawing();
     EndPerformanceTracker("CompleteLoop");
   }
