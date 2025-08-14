@@ -43,7 +43,7 @@ void EndPerformanceTracker(const char *name) {
 }
 
 void PrintPerformanceTrackers(void) {
-  printf("--- Performance Report ---\n");
+  printf("\n\n--- Performance Report ---\n");
   for (int i = 0; i < tracker_count; i++) {
     if (trackers[i].runs > 0) {
       printf("%s: %f ms (avg over %d runs)\n", trackers[i].name,
