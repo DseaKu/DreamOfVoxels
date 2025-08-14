@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 // Flattening array
-// To get index back to 3D position
+// To read coordinates
 // x = index % VOXEL_X;
 // z = (index/VOXEL_Z) % VOXEL_Z;
 // y = ((index/VOXEL_Y)/VOXEL_Y)%VOXEL_Y;
