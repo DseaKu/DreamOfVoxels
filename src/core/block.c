@@ -1,4 +1,4 @@
-#include "sprites/block.h"
+#include "core/block.h"
 #include "scenes/scene_3d_game.h"
 #include <raylib.h>
 

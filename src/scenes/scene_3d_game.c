@@ -1,7 +1,8 @@
 #include "scenes/scene_3d_game.h"
-#include "sprites/block.h"
+#include "core/block.h"
 #include "sprites/player.h"
-#include "utils/performance.h"
+#include "utils/rescource_tracker.h"
+#include <raylib.h>
 
 int Scene3DGame(void) {
 
@@ -16,40 +17,36 @@ int Scene3DGame(void) {
 
   Block blocks[PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX][PLAYGROUND_Z_MAX] = {0};
   InitBlocks(blocks);
-  SearchScope scope = {0, PLAYGROUND_X_MAX, 0, PLAYGROUND_Y_MAX,
-                       0, PLAYGROUND_Z_MAX};
-  UpdateAllBlockFaces(blocks, scope);
 
   // Use a standard cube mesh
-  Texture2D texture = LoadTexture("assets/log.png");
-  Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-  Model model = LoadModelFromMesh(mesh);
-  model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+  // Texture2D texture = LoadTexture("assets/log.png");
+  // Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  // Model model = LoadModelFromMesh(mesh);
+  // model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
     // Update objects
     StartPerformanceTracker("UpdateLoop");
-    UpdateAllBlockFaces(blocks, scope);
     UpdatePlayer(&player);
     EndPerformanceTracker("UpdateLoop");
 
     // Block placement
-    StartPerformanceTracker("BlockPlacment");
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-      RemoveBlock(blocks);
-    }
-    EndPerformanceTracker("BlockPlacment");
+    // StartPerformanceTracker("BlockPlacment");
+    // if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    // RemoveBlock(blocks);
+    // }
+    // EndPerformanceTracker("BlockPlacment");
 
     // Rendering 3D
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
 
-    StartPerformanceTracker("DrawingBlocks");
-    DrawCubeFace(blocks, model);
-    EndPerformanceTracker("DrawingBlocks");
+    DrawGrid(100, 1.0f);
+    // StartPerformanceTracker("DrawingBlocks");
+    // EndPerformanceTracker("DrawingBlocks");
     EndMode3D();
 
     // Rendering 2D
