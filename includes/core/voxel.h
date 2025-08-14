@@ -2,6 +2,7 @@
 #define VOXEL_H
 
 #include "std_includes.h"
+#include <iso646.h>
 #include <stdint.h>
 
 typedef enum {
@@ -9,12 +10,20 @@ typedef enum {
   solid,
   dirt,
   water,
-} VoxelId;
+} VoxelID;
 
 typedef struct Voxel {
-  VoxelId voxel_id;
+  VoxelID voxel_id;
   Vector3 position;
 } Voxel;
+
+typedef struct Vertex {
+  float x;
+  float y;
+  float z;
+
+  u16 id;
+} Vertex;
 
 typedef struct SearchScope {
   const u8 x1;

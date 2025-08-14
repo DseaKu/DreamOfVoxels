@@ -9,11 +9,12 @@ int Scene3DGame(void) {
   const u64 screen_width = MAX_SCREEN_WIDTH;
   const u64 screen_height = MAX_SCREEN_HEIGHT;
 
+  // INIT
   InitWindow(screen_width, screen_height, "Raylib ");
   DisableCursor();
   SetTargetFPS(TARGET_FPS);
-
   Player player = InitPlayer();
+  Voxel voxels[VOXEL_XYZ] = {0};
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
