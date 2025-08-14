@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 typedef struct Block {
+  bool is_visible;
   bool is_active;
   Vector3 position;
 } Block;
