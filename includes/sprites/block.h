@@ -11,6 +11,10 @@ typedef struct Block {
   Vector3 position;
 } Block;
 
+typedef struct SearchScope {
+
+} SearchScope;
+
 void InitBlocks(
     Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX]);
 

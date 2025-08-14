@@ -5,8 +5,8 @@
 
 int Scene3DGame(void) {
 
-  const int screen_width = MAX_SCREEN_WIDTH;
-  const int screen_height = MAX_SCREEN_HEIGHT;
+  const u64 screen_width = MAX_SCREEN_WIDTH;
+  const u64 screen_height = MAX_SCREEN_HEIGHT;
 
   InitWindow(screen_width, screen_height, "Raylib ");
   DisableCursor();
@@ -16,6 +16,7 @@ int Scene3DGame(void) {
 
   Block blocks[PLAYGROUND_Z_MAX][PLAYGROUND_X_MAX][PLAYGROUND_Y_MAX] = {0};
   InitBlocks(blocks);
+  UpdateAllBlockFaces(blocks);
 
   // Use a standard cube mesh
   Texture2D texture = LoadTexture("assets/log.png");
@@ -26,7 +27,8 @@ int Scene3DGame(void) {
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
-    // Player movement
+    // Update objects
+    UpdateAllBlockFaces(blocks);
     UpdatePlayer(&player);
 
     // Block placement
@@ -39,7 +41,6 @@ int Scene3DGame(void) {
     // Begin draw
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
     DrawFPS(screen_width - 100, 10);
     BeginMode3D(player.camera);
 
@@ -47,6 +48,7 @@ int Scene3DGame(void) {
     StartPerformanceTracker("DrawingBlocks");
     DrawCubeFace(blocks, model);
     EndPerformanceTracker("DrawingBlocks");
+    DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
 
     // End draw
     EndMode3D();
