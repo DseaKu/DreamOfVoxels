@@ -5,7 +5,6 @@
 
 void InitVoxel(Voxel *voxels) {
   for (u8 x = 0; x < VOXEL_X; x++) {
-
     for (u8 z = 0; z < VOXEL_Z; z++) {
       for (u8 y = 0; y < VOXEL_Y; y++) {
         u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
@@ -24,7 +23,24 @@ void InitVoxel(Voxel *voxels) {
 
 void RemoveVoxel() {}
 
-void UpdateVoxel(Voxel *voxels) {}
+void UpdateVoxel(Voxel *voxels) {
+  /* Disable visibilty of all inbetween voxel */
+  for (u8 x = 0; x < VOXEL_X; x++) {
+    for (u8 z = 0; z < VOXEL_Z; z++) {
+      for (u8 y = 0; y < VOXEL_Y; y++) {
+        u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
+        Voxel *current_voxel = &voxels[index];
+
+        if (current_voxel->id == EMPTY) {
+          current_voxel->is_visible = false;
+          continue;
+        }
+
+        // Check right neighbor
+      }
+    }
+  }
+}
 
 void DrawVoxelSimple(Voxel *voxels) {
   for (u8 x = 0; x < VOXEL_X; x++) {
