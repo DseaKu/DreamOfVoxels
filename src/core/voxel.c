@@ -16,9 +16,9 @@ void InitVoxel(Voxel *voxels) {
 
 void RemoveVoxel() {}
 
-void UpdateAllVoxel() {}
+void UpdateVoxel(Voxel *voxels) {}
 
-void DrawCubesNaive(Voxel *voxels) {
+void DrawVoxelSimple(Voxel *voxels) {
   for (u8 x = 0; x < VOXEL_X; x++) {
 
     for (u8 z = 0; z < VOXEL_Z; z++) {

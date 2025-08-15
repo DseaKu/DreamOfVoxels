@@ -27,6 +27,8 @@ typedef enum {
 typedef struct Voxel {
   ID id;
   Vector3 position;
+  bool is_visible;
+  // Mesh mesh;
 } Voxel;
 
 void InitVoxel(Voxel *voxels);
@@ -35,13 +37,13 @@ void RemoveVoxel();
 
 void GenerateMesh(Voxel *voxels);
 
-void UpdateAllVoxel();
+void UpdateVoxel(Voxel *voxels);
 
 Mesh GenMeshCustom(Vector3 offset);
 
 Mesh BuildSingelVoxelMesh();
 Mesh BuildVoxelFaceMesh(Voxel *voxels);
 
-void DrawCubesNaive(Voxel *voxels);
+void DrawVoxelSimple(Voxel *voxels);
 
 #endif // VOXEL_H

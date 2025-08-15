@@ -17,9 +17,6 @@ int Scene3DGame(void) {
   Voxel voxels[VOXEL_XYZ] = {0};
   InitVoxel(voxels);
 
-  voxels[47].id = SOLID;
-  voxels[10].id = SOLID;
-
   // Use a standard cube mesh
   Texture2D texture = LoadTexture("assets/log.png");
   Model cube_model = LoadModelFromMesh(BuildVoxelFaceMesh(voxels));
@@ -30,7 +27,9 @@ int Scene3DGame(void) {
 
     // Update objects
     StartPerformanceTracker("UpdateLoop");
+    UpdateVoxel(voxels);
     UpdatePlayer(&player);
+
     EndPerformanceTracker("UpdateLoop");
 
     // Draw 3D
@@ -41,7 +40,7 @@ int Scene3DGame(void) {
 
     // Draw mesh
     // DrawModel(cube_model, (Vector3){1.0f, 0.0f, 1.0f}, 1.0f, WHITE);
-    DrawCubesNaive(voxels);
+    DrawVoxelSimple(voxels);
 
     DrawGrid(100, 1.0f);
     EndPerformanceTracker("Draw 3D");
