@@ -36,9 +36,11 @@ int Scene3DGame(void) {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
 
-    DrawModel(model0, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, RED);
-    DrawModel(model1, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, BLUE);
-    // Draw cube using triangles
+    // DrawModel(model0, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, RED);
+    // DrawModel(model1, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, BLUE);
+
+    // Draw cube
+    DrawCubesNaive(voxels);
     DrawGrid(100, 1.0f);
     EndMode3D();
 

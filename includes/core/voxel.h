@@ -44,4 +44,7 @@ void GenerateMesh(Voxel *voxels);
 void UpdateAllVoxel();
 
 Mesh GenMeshCustom(Vector3 offset);
+
+void DrawCubesNaive(Voxel *voxels);
+
 #endif // VOXEL_H
