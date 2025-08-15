@@ -18,24 +18,16 @@
 #define VOXEL_SIZE 0.5f
 
 typedef enum {
-  air = 0,
-  solid,
-  dirt,
-  water,
-} VoxelID;
+  EMPTY = 0,
+  SOLID,
+  DIRT,
+  WATER,
+} ID;
 
 typedef struct Voxel {
-  VoxelID voxel_id;
+  ID id;
   Vector3 position;
 } Voxel;
-
-typedef struct Vertex {
-  float x;
-  float y;
-  float z;
-
-  u16 id;
-} Vertex;
 
 void InitVoxel(Voxel *voxels);
 
@@ -47,8 +39,8 @@ void UpdateAllVoxel();
 
 Mesh GenMeshCustom(Vector3 offset);
 
-Mesh BuildSingleCubesMesh();
-Mesh BuildCubesFacesMesh(Voxel *voxels);
+Mesh BuildSingelVoxelMesh();
+Mesh BuildVoxelFaceMesh(Voxel *voxels);
 
 void DrawCubesNaive(Voxel *voxels);
 

@@ -24,6 +24,10 @@ void DrawCubesNaive(Voxel *voxels) {
     for (u8 z = 0; z < VOXEL_Z; z++) {
       for (u8 y = 0; y < VOXEL_Y; y++) {
         u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
+        if (voxels[index].id == EMPTY) {
+          continue;
+        }
+
         // Fly my little bird!
         // voxels[index].position.x += 0.1f;
         // voxels[index].position.y += 0.1f;
@@ -37,13 +41,21 @@ void DrawCubesNaive(Voxel *voxels) {
   }
 }
 
-Mesh BuildSingleCubesMesh() {
+Mesh BuildSingleVoxelMesh() {
   Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
   return mesh;
 }
 
-Mesh BuildCubesFacesMesh(Voxel *voxels) {
+Mesh BuildVoxelFaceMesh(Voxel *voxels) {
   Mesh mesh;
+  mesh = GenMeshPlane(VOXEL_SIZE, VOXEL_SIZE, 4, 3);
+  // for (u8 x = 0; x < VOXEL_X; x++) {
+  //   for (u8 z = 0; z < VOXEL_Z; z++) {
+  //     for (u8 y = 0; y < VOXEL_Y; y++) {
+  //       // u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
+  //     }
+  //   }
+  // }
   return mesh;
 };
 
