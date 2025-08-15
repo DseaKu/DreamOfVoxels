@@ -43,6 +43,5 @@ void GenerateMesh(Voxel *voxels);
 
 void UpdateAllVoxel();
 
-Mesh GenMeshCustom0(void);
-Mesh GenMeshCustom1(Vector3 offset);
+Mesh GenMeshCustom(Vector3 offset);
 #endif // VOXEL_H

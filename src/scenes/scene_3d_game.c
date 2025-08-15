@@ -16,12 +16,13 @@ int Scene3DGame(void) {
   Player player = InitPlayer();
   Voxel voxels[VOXEL_XYZ] = {0};
   InitVoxel(voxels);
-  Model model = {0};
-  Model modela = {0};
 
-  Vector3 a = {5.0f, -1.0f, 3.0f};
-  model = LoadModelFromMesh(GenMeshCustom0());
-  modela = LoadModelFromMesh(GenMeshCustom1(a));
+  Vector3 offset0 = {0.0f, 0.0f, 0.0f};
+  Model model0 = LoadModelFromMesh(GenMeshCustom(offset0));
+
+  Vector3 offset1 = {5.0f, 1.0f, 3.0f};
+  Model model1 = LoadModelFromMesh(GenMeshCustom(offset1));
+
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
@@ -35,8 +36,8 @@ int Scene3DGame(void) {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
 
-    DrawModel(model, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, RED);
-    DrawModel(modela, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, BLUE);
+    DrawModel(model0, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, RED);
+    DrawModel(model1, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, BLUE);
     // Draw cube using triangles
     DrawGrid(100, 1.0f);
     EndMode3D();
