@@ -32,6 +32,17 @@ typedef struct Voxel {
   Mesh mesh;
 } Voxel;
 
+/* Each coordinate will be represented by 6bits.
+ * That means the coordinates cant exeed 63,
+ * thats why I choose 62 to keep it even
+ * and get the max value */
+#define X_MAX 60
+#define Y_MAX 60
+#define Z_MAX 60
+#define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
+#define NUMBER_OF_FACES NUMBER_OF_VOXELS * 6
+#define NUMBER_OF_VERTICES NUMBER_OF_FACES * 2
+
 typedef u32 Vertex;
 /* MSB:
  * 0000 ttttttt fff zzzzzz yyyyyy xxxxxx
@@ -43,11 +54,9 @@ typedef u32 Vertex;
  * 4bits = reserved
  * */
 
-// Create a face mesh with just position and enum top, left etc for direction
-void InitVoxel(Voxel *voxels);
-
-// Return selected voxel by giving the data
+/* Voxel Section */
 Voxel GetVoxel(u32 xyz);
+void InitVoxel(Voxel *voxels);
 
 void RemoveVoxel();
 
@@ -61,5 +70,10 @@ Mesh BuildSingelVoxelMesh();
 Mesh BuildVoxelFaceMesh(Voxel *voxels);
 
 void DrawVoxelSimple(Voxel *voxels);
+
+/* Vertex Section */
+
+Mesh GenVertexMesh(Vertex vertices_data);
+void InitVertex(Vertex *vertices_data);
 
 #endif // VOXEL_H

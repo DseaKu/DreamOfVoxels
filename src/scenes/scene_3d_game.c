@@ -17,6 +17,9 @@ int Scene3DGame() {
   Voxel voxels[VOXEL_XYZ] = {0};
   InitVoxel(voxels);
 
+  Vertex vertices_data[CHUNK32] = {0};
+  InitVertex(vertices_data);
+
   // Use a standard cube mesh
   Vector3 model_location = {-0.5f, -0.5f, -0.5f};
   Texture2D texture = LoadTexture("assets/log.png");
