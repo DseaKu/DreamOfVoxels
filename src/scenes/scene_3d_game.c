@@ -31,7 +31,8 @@ int Scene3DGame(void) {
     UpdatePlayer(&player);
     EndPerformanceTracker("UpdateLoop");
 
-    // Rendering 3D
+    // Draw 3D
+    StartPerformanceTracker("Draw 3D");
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
@@ -41,13 +42,15 @@ int Scene3DGame(void) {
 
     // Draw cube
     DrawCubesNaive(voxels);
-
     DrawGrid(100, 1.0f);
+    EndPerformanceTracker("Draw 3D");
     EndMode3D();
 
     // Rendering 2D
+    StartPerformanceTracker("Draw 2D");
     DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
     DrawFPS(screen_width - 100, 10);
+    EndPerformanceTracker("Draw 2D");
     EndDrawing();
     EndPerformanceTracker("CompleteLoop");
   }
