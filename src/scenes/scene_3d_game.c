@@ -17,8 +17,8 @@ int Scene3DGame() {
   Voxel voxels[VOXEL_XYZ] = {0};
   InitVoxel(voxels);
 
-  Vertex vertices_data[CHUNK32] = {0};
-  InitVertex(vertices_data);
+  Vertex vertices_chunk[NUMBER_OF_VERTICES] = {0};
+  InitVertex(vertices_chunk);
 
   // Use a standard cube mesh
   Vector3 model_location = {-0.5f, -0.5f, -0.5f};
