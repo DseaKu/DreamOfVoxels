@@ -17,10 +17,11 @@ int Scene3DGame() {
   Voxel voxels[VOXEL_XYZ] = {0};
   InitVoxel(voxels);
 
-  // // Use a standard cube mesh
-  // Texture2D texture = LoadTexture("assets/log.png");
-  // Model cube_model = LoadModelFromMesh(BuildVoxelFaceMesh(voxels));
-  // cube_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+  // Use a standard cube mesh
+  Vector3 model_location = {-0.5f, -0.5f, -0.5f};
+  Texture2D texture = LoadTexture("assets/log.png");
+  Model voxel_model = LoadModelFromMesh(BuildVoxelFaceMesh(voxels));
+  voxel_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
@@ -36,8 +37,8 @@ int Scene3DGame() {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
     StartPerformanceTracker("Draw 3D");
-    // DrawModel(cube_model, (Vector3){1.0f, 0.0f, 1.0f}, 1.0f, WHITE);
-    DrawVoxelSimple(voxels);
+    // DrawModel(voxel_model, model_location, VOXEL_SIZE, WHITE);
+    DrawModelSimple(voxels, voxel_model);
     EndPerformanceTracker("Draw 3D");
     Draw3DDebugInformation(screen_width, screen_height);
     EndMode3D();

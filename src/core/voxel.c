@@ -52,7 +52,8 @@ void UpdateVoxel(Voxel *voxels) {
 
         bool has_front_neighbor =
             (z < VOXEL_Z - 1) && (voxels[index + VOXEL_Y].id != EMPTY);
-        bool has_back_neighbor = (z > 0) && (voxels[index - VOXEL_Y].id != EMPTY);
+        bool has_back_neighbor =
+            (z > 0) && (voxels[index - VOXEL_Y].id != EMPTY);
 
         // If the voxel is completely surrounded, it's not visible.
         if (has_right_neighbor && has_left_neighbor && has_top_neighbor &&
@@ -66,22 +67,15 @@ void UpdateVoxel(Voxel *voxels) {
 
 void DrawVoxelSimple(Voxel *voxels) {
   for (u8 x = 0; x < VOXEL_X; x++) {
-
     for (u8 z = 0; z < VOXEL_Z; z++) {
       for (u8 y = 0; y < VOXEL_Y; y++) {
         u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
 
-        DrawCubeWires(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE,
-                      VOXEL_SIZE, MAROON);
-
         if (voxels[index].id == EMPTY || voxels[index].is_visible == false) {
           continue;
         }
-
-        // Fly my little bird!
-        // voxels[index].position.x += 0.1f;
-        // voxels[index].position.y += 0.1f;
-        // voxels[index].position.z += 0.1f;
+        DrawCubeWires(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE,
+                      VOXEL_SIZE, MAROON);
         DrawCube(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE, VOXEL_SIZE,
                  GRAY);
       }
@@ -89,6 +83,20 @@ void DrawVoxelSimple(Voxel *voxels) {
   }
 }
 
+void DrawModelSimple(Voxel *voxels, Model voxel_model) {
+  for (u8 x = 0; x < VOXEL_X; x++) {
+    for (u8 z = 0; z < VOXEL_Z; z++) {
+      for (u8 y = 0; y < VOXEL_Y; y++) {
+        u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
+
+        if (voxels[index].id == EMPTY || voxels[index].is_visible == false) {
+          continue;
+        }
+        DrawModel(voxel_model, voxels[index].position, 1.0f, WHITE);
+      }
+    }
+  }
+}
 Mesh BuildSingleVoxelMesh() {
   Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
   return mesh;
@@ -96,14 +104,8 @@ Mesh BuildSingleVoxelMesh() {
 
 Mesh BuildVoxelFaceMesh(Voxel *voxels) {
   Mesh mesh;
-  mesh = GenMeshPlane(VOXEL_SIZE, VOXEL_SIZE, 4, 3);
-  // for (u8 x = 0; x < VOXEL_X; x++) {
-  //   for (u8 z = 0; z < VOXEL_Z; z++) {
-  //     for (u8 y = 0; y < VOXEL_Y; y++) {
-  //       // u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
-  //     }
-  //   }
-  // }
+  // mesh = GenMeshPlane(VOXEL_SIZE, VOXEL_SIZE, 4, 3);
+  mesh = GenMeshCube(VOXEL_SIZE, VOXEL_SIZE, VOXEL_SIZE);
   return mesh;
 };
 

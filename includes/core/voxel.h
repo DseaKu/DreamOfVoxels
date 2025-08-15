@@ -10,11 +10,11 @@
 // x = index % VOXEL_X;
 // z = (index/VOXEL_Z) % VOXEL_Z;
 // y = ((index/VOXEL_Y)/VOXEL_Y)%VOXEL_Y;
-#define VOXEL_X 15
-#define VOXEL_Y 5
-#define VOXEL_Z 10
+#define VOXEL_X 20
+#define VOXEL_Y 20
+#define VOXEL_Z 20
 #define VOXEL_XYZ VOXEL_X *VOXEL_Y *VOXEL_Z
-#define VOXEL_SIZE 0.5f
+#define VOXEL_SIZE 1.0f
 
 typedef enum {
   EMPTY = 0,
@@ -44,5 +44,6 @@ Mesh BuildSingelVoxelMesh();
 Mesh BuildVoxelFaceMesh(Voxel *voxels);
 
 void DrawVoxelSimple(Voxel *voxels);
+void DrawModelSimple(Voxel *voxels, Model voxel_model);
 
 #endif // VOXEL_H
