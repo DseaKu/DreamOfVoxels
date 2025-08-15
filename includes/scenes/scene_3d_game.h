@@ -10,6 +10,7 @@
 #define HALF_BLOCK_SIZE (BLOCK_SIZE / 2.0f)
 #define MAX_PLACMENT_DISTANCE 1000.0
 
-int Scene3DGame(void);
+int Scene3DGame();
+void DrawDebugInformation(int screen_width, int screen_height);
 
 #endif // SCENE_3D_GAME_H

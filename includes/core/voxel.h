@@ -11,8 +11,8 @@
 // x = index % VOXEL_X;
 // z = (index/VOXEL_Z) % VOXEL_Z;
 // y = ((index/VOXEL_Y)/VOXEL_Y)%VOXEL_Y;
-#define VOXEL_X 10
-#define VOXEL_Y 10
+#define VOXEL_X 15
+#define VOXEL_Y 5
 #define VOXEL_Z 10
 #define VOXEL_XYZ VOXEL_X *VOXEL_Y *VOXEL_Z
 #define VOXEL_SIZE 0.5f
