@@ -3,6 +3,7 @@
 #include "sprites/player.h"
 #include "utils/rescource_tracker.h"
 #include <raylib.h>
+#include <stdlib.h>
 
 int Scene3DGame() {
 
@@ -14,11 +15,19 @@ int Scene3DGame() {
   DisableCursor();
   SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
-  Voxel voxels[VOXEL_XYZ] = {0};
+  Voxel *voxels = (Voxel *)calloc(VOXEL_XYZ, sizeof(Voxel));
+  if (voxels == NULL) {
+    printf("Error: Failed to allocate memory for voxels\nBye!");
+    return 1;
+  }
   InitVoxel(voxels);
 
-  Vertex vertices_chunk[NUMBER_OF_VERTICES] = {0};
-  InitVertex(vertices_chunk);
+  Vertex *vertice_chunk = (Vertex *)calloc(NUMBER_OF_VERTICES, sizeof(Vertex));
+  if (vertice_chunk == NULL) {
+    printf("Error: Failed to allocate memory for vertice\nBye!");
+    return 1;
+  }
+  InitVertex(vertice_chunk);
 
   // Use a standard cube mesh
   Vector3 model_location = {-0.5f, -0.5f, -0.5f};
@@ -62,6 +71,8 @@ int Scene3DGame() {
 
   CloseWindow();
   PrintPerformanceTrackers();
+  free(voxels);
+  free(vertice_chunk);
   return 0;
 }
 

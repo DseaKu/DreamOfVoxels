@@ -36,9 +36,9 @@ typedef struct Voxel {
  * That means the coordinates cant exeed 63,
  * thats why I choose 62 to keep it even
  * and get the max value */
-#define X_MAX 60
-#define Y_MAX 60
-#define Z_MAX 60
+#define X_MAX 3
+#define Y_MAX 3
+#define Z_MAX 3
 #define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
 #define NUMBER_OF_FACES NUMBER_OF_VOXELS * 6
 #define NUMBER_OF_VERTICES NUMBER_OF_FACES * 2
