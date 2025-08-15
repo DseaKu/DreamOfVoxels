@@ -1,6 +1,7 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
+#include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>
 #include <stdint.h>
@@ -28,11 +29,25 @@ typedef struct Voxel {
   ID id;
   Vector3 position;
   bool is_visible;
-  // Mesh mesh;
+  Mesh mesh;
 } Voxel;
-// Create a face mesh with just position and enum top, left etc for direction
 
+typedef u32 Vertex;
+/* MSB:
+ * 0000 ttttttt fff zzzzzz yyyyyy xxxxxx
+ * 6bits = posX
+ * 6bits = posy
+ * 6bits = posz
+ * 3bits = face
+ * 7bits = texture
+ * 4bits = reserved
+ * */
+
+// Create a face mesh with just position and enum top, left etc for direction
 void InitVoxel(Voxel *voxels);
+
+// Return selected voxel by giving the data
+Voxel GetVoxel(u32 xyz);
 
 void RemoveVoxel();
 
