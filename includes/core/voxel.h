@@ -44,6 +44,6 @@ Mesh BuildSingelVoxelMesh();
 Mesh BuildVoxelFaceMesh(Voxel *voxels);
 
 void DrawVoxelSimple(Voxel *voxels);
-void DrawModelSimple(Voxel *voxels, Model voxel_model);
+
 
 #endif // VOXEL_H

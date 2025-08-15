@@ -38,7 +38,7 @@ int Scene3DGame() {
     BeginMode3D(player.camera);
     StartPerformanceTracker("Draw 3D");
     // DrawModel(voxel_model, model_location, VOXEL_SIZE, WHITE);
-    DrawModelSimple(voxels, voxel_model);
+    DrawModel(voxel_model, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, WHITE);
     EndPerformanceTracker("Draw 3D");
     Draw3DDebugInformation(screen_width, screen_height);
     EndMode3D();

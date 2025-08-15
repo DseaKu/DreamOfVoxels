@@ -24,45 +24,7 @@ void InitVoxel(Voxel *voxels) {
 void RemoveVoxel() {}
 
 void UpdateVoxel(Voxel *voxels) {
-  /* Disable visibilty of all inbetween voxel */
-  for (u8 x = 0; x < VOXEL_X; x++) {
-    for (u8 z = 0; z < VOXEL_Z; z++) {
-      for (u8 y = 0; y < VOXEL_Y; y++) {
-        u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
-        Voxel *current_voxel = &voxels[index];
-
-        if (current_voxel->id == EMPTY) {
-          current_voxel->is_visible = false;
-          continue;
-        }
-
-        // A voxel is visible by default if it's not empty.
-        current_voxel->is_visible = true;
-
-        // Check for neighbors in all 6 directions.
-        bool has_right_neighbor =
-            (x < VOXEL_X - 1) &&
-            (voxels[index + VOXEL_Z * VOXEL_Y].id != EMPTY);
-        bool has_left_neighbor =
-            (x > 0) && (voxels[index - VOXEL_Z * VOXEL_Y].id != EMPTY);
-
-        bool has_top_neighbor =
-            (y < VOXEL_Y - 1) && (voxels[index + 1].id != EMPTY);
-        bool has_bottom_neighbor = (y > 0) && (voxels[index - 1].id != EMPTY);
-
-        bool has_front_neighbor =
-            (z < VOXEL_Z - 1) && (voxels[index + VOXEL_Y].id != EMPTY);
-        bool has_back_neighbor =
-            (z > 0) && (voxels[index - VOXEL_Y].id != EMPTY);
-
-        // If the voxel is completely surrounded, it's not visible.
-        if (has_right_neighbor && has_left_neighbor && has_top_neighbor &&
-            has_bottom_neighbor && has_front_neighbor && has_back_neighbor) {
-          current_voxel->is_visible = false;
-        }
-      }
-    }
-  }
+  // No-op for now. Voxel visibility is determined at mesh generation time.
 }
 
 void DrawVoxelSimple(Voxel *voxels) {
@@ -83,31 +45,112 @@ void DrawVoxelSimple(Voxel *voxels) {
   }
 }
 
-void DrawModelSimple(Voxel *voxels, Model voxel_model) {
-  for (u8 x = 0; x < VOXEL_X; x++) {
-    for (u8 z = 0; z < VOXEL_Z; z++) {
-      for (u8 y = 0; y < VOXEL_Y; y++) {
-        u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
+// DrawModelSimple is no longer needed as we now draw a single, combined mesh.
 
-        if (voxels[index].id == EMPTY || voxels[index].is_visible == false) {
-          continue;
-        }
-        DrawModel(voxel_model, voxels[index].position, 1.0f, WHITE);
-      }
-    }
-  }
-}
-Mesh BuildSingleVoxelMesh() {
+Mesh BuildSingelVoxelMesh() {
   Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
   return mesh;
 }
 
 Mesh BuildVoxelFaceMesh(Voxel *voxels) {
-  Mesh mesh;
-  // mesh = GenMeshPlane(VOXEL_SIZE, VOXEL_SIZE, 4, 3);
-  mesh = GenMeshCube(VOXEL_SIZE, VOXEL_SIZE, VOXEL_SIZE);
-  return mesh;
-};
+    int max_vertices = VOXEL_XYZ * 6 * 6; // Max possible vertices
+    float *vertices = (float *)MemAlloc(max_vertices * 3 * sizeof(float));
+    float *texcoords = (float *)MemAlloc(max_vertices * 2 * sizeof(float));
+    float *normals = (float *)MemAlloc(max_vertices * 3 * sizeof(float));
+    int vc = 0; // vertex count
+
+    float s2 = VOXEL_SIZE / 2.0f;
+
+    for (int x = 0; x < VOXEL_X; x++) {
+        for (int z = 0; z < VOXEL_Z; z++) {
+            for (int y = 0; y < VOXEL_Y; y++) {
+                u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
+                if (voxels[index].id == EMPTY) continue;
+
+                Vector3 p = voxels[index].position;
+
+                #define ADD_VERTEX(vx, vy, vz) vertices[vc*3+0] = (vx); vertices[vc*3+1] = (vy); vertices[vc*3+2] = (vz)
+                #define ADD_NORMAL(nx, ny, nz) normals[vc*3+0] = (nx); normals[vc*3+1] = (ny); normals[vc*3+2] = (nz)
+                #define ADD_TEXCOORDS(u, v) texcoords[vc*2+0] = (u); texcoords[vc*2+1] = (v)
+                #define NEXT_VERTEX() vc++
+
+                // Check Back Face (-Z)
+                if (z == 0 || voxels[index - VOXEL_Y].id == EMPTY) {
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z - s2); ADD_NORMAL(0, 0, -1); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z - s2); ADD_NORMAL(0, 0, -1); ADD_TEXCOORDS(0, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z - s2); ADD_NORMAL(0, 0, -1); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z - s2); ADD_NORMAL(0, 0, -1); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z - s2); ADD_NORMAL(0, 0, -1); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z - s2); ADD_NORMAL(0, 0, -1); ADD_TEXCOORDS(1, 0); NEXT_VERTEX();
+                }
+
+                // Check Front Face (+Z)
+                if (z == VOXEL_Z - 1 || voxels[index + VOXEL_Y].id == EMPTY) {
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z + s2); ADD_NORMAL(0, 0, 1); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z + s2); ADD_NORMAL(0, 0, 1); ADD_TEXCOORDS(0, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z + s2); ADD_NORMAL(0, 0, 1); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z + s2); ADD_NORMAL(0, 0, 1); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z + s2); ADD_NORMAL(0, 0, 1); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z + s2); ADD_NORMAL(0, 0, 1); ADD_TEXCOORDS(1, 0); NEXT_VERTEX();
+                }
+
+                // Check Bottom Face (-Y)
+                if (y == 0 || voxels[index - 1].id == EMPTY) {
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z + s2); ADD_NORMAL(0, -1, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z - s2); ADD_NORMAL(0, -1, 0); ADD_TEXCOORDS(0, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z - s2); ADD_NORMAL(0, -1, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z + s2); ADD_NORMAL(0, -1, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z - s2); ADD_NORMAL(0, -1, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z + s2); ADD_NORMAL(0, -1, 0); ADD_TEXCOORDS(1, 0); NEXT_VERTEX();
+                }
+
+                // Check Top Face (+Y)
+                if (y == VOXEL_Y - 1 || voxels[index + 1].id == EMPTY) {
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z - s2); ADD_NORMAL(0, 1, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z + s2); ADD_NORMAL(0, 1, 0); ADD_TEXCOORDS(0, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z + s2); ADD_NORMAL(0, 1, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z - s2); ADD_NORMAL(0, 1, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z + s2); ADD_NORMAL(0, 1, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z - s2); ADD_NORMAL(0, 1, 0); ADD_TEXCOORDS(1, 0); NEXT_VERTEX();
+                }
+
+                // Check Left Face (-X)
+                if (x == 0 || voxels[index - VOXEL_Z * VOXEL_Y].id == EMPTY) {
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z - s2); ADD_NORMAL(-1, 0, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z - s2); ADD_NORMAL(-1, 0, 0); ADD_TEXCOORDS(0, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z + s2); ADD_NORMAL(-1, 0, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z - s2); ADD_NORMAL(-1, 0, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y - s2, p.z + s2); ADD_NORMAL(-1, 0, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x - s2, p.y + s2, p.z + s2); ADD_NORMAL(-1, 0, 0); ADD_TEXCOORDS(1, 0); NEXT_VERTEX();
+                }
+
+                // Check Right Face (+X)
+                if (x == VOXEL_X - 1 || voxels[index + VOXEL_Z * VOXEL_Y].id == EMPTY) {
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z + s2); ADD_NORMAL(1, 0, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z + s2); ADD_NORMAL(1, 0, 0); ADD_TEXCOORDS(0, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z - s2); ADD_NORMAL(1, 0, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z + s2); ADD_NORMAL(1, 0, 0); ADD_TEXCOORDS(0, 0); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y - s2, p.z - s2); ADD_NORMAL(1, 0, 0); ADD_TEXCOORDS(1, 1); NEXT_VERTEX();
+                    ADD_VERTEX(p.x + s2, p.y + s2, p.z - s2); ADD_NORMAL(1, 0, 0); ADD_TEXCOORDS(1, 0); NEXT_VERTEX();
+                }
+                #undef ADD_VERTEX
+                #undef ADD_NORMAL
+                #undef ADD_TEXCOORDS
+                #undef NEXT_VERTEX
+            }
+        }
+    }
+
+    Mesh mesh = { 0 };
+    mesh.vertexCount = vc;
+    mesh.triangleCount = vc / 3;
+    mesh.vertices = (float *)MemRealloc(vertices, vc * 3 * sizeof(float));
+    mesh.texcoords = (float *)MemRealloc(texcoords, vc * 2 * sizeof(float));
+    mesh.normals = (float *)MemRealloc(normals, vc * 3 * sizeof(float));
+
+    UploadMesh(&mesh, false);
+    return mesh;
+}
 
 // Generate a simple triangle mesh from code
 Mesh GenMeshCustom(Vector3 offset) {
