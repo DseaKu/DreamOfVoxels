@@ -37,10 +37,15 @@ void DrawCubesNaive(Voxel *voxels) {
   }
 }
 
-Mesh BuildCubesMeshSimple(Voxel *voxels) {
+Mesh BuildSingleCubesMesh() {
   Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
   return mesh;
 }
+
+Mesh BuildCubesFacesMesh(Voxel *voxels) {
+  Mesh mesh;
+  return mesh;
+};
 
 // Generate a simple triangle mesh from code
 Mesh GenMeshCustom(Vector3 offset) {

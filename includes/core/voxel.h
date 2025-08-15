@@ -3,6 +3,7 @@
 
 #include "std_includes.h"
 #include <iso646.h>
+#include <raylib.h>
 #include <stdint.h>
 
 // Flattening array
@@ -46,7 +47,9 @@ void UpdateAllVoxel();
 
 Mesh GenMeshCustom(Vector3 offset);
 
-Mesh BuildCubesMeshSimple(Voxel *voxels);
+Mesh BuildSingleCubesMesh();
+Mesh BuildCubesFacesMesh(Voxel *voxels);
+
 void DrawCubesNaive(Voxel *voxels);
 
 #endif // VOXEL_H
