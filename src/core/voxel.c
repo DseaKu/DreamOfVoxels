@@ -342,19 +342,18 @@ Mesh GenMeshCustom(Vector3 offset) {
 
 void InitVertex(Vertex *vertices_data) {
   u32 index = 0;
+  // u32 a,yy,xx,zz = 0;
+
   for (u8 z = 0; z < Z_MAX; z++) {
     for (u8 y = 0; y < Y_MAX; y++) {
       for (u8 x = 0; x < X_MAX; x++) {
-        // Shift the values into their correct positions and then OR them
-        // together.
-        vertices_data[index] |=
-            (u32)x; // OR x into the lowest 6 bits (bits 0-5)
-        vertices_data[index] |=
-            ((u32)y << 6); // Shift y left by 6 bits, then OR it in (bits 6-11)
-        vertices_data[index] |=
-            ((u32)z
-             << 12); // Shift z left by 12 bits, then OR it in (bits 12-17)
 
+        // Shift the values into their correct positions and then OR them
+        vertices_data[index] = (u32)x | ((u32)y << 6) | ((u32)z << 12);
+        // a= (u32)x | ((u32)y << 6) | ((u32)z << 12);
+        // xx = a & 63;
+        // yy = (a >> 6)&63;
+        // zz = (a >> 12)&63;
         index++;
       }
     }
