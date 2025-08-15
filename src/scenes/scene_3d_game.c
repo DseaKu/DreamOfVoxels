@@ -23,6 +23,11 @@ int Scene3DGame(void) {
   Vector3 offset1 = {5.0f, 1.0f, 3.0f};
   Model model1 = LoadModelFromMesh(GenMeshCustom(offset1));
 
+  // Use a standard cube mesh
+  Texture2D texture = LoadTexture("assets/log.png");
+  Model cube_model = LoadModelFromMesh(BuildCubesMeshSimple(voxels));
+  cube_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
@@ -37,11 +42,12 @@ int Scene3DGame(void) {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
 
+    // Draw cube
+    DrawModel(cube_model, (Vector3){1.0f, 0.0f, 1.0f}, 1.0f, WHITE);
+    // DrawCubesNaive(voxels);
     // DrawModel(model0, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, RED);
     // DrawModel(model1, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, BLUE);
 
-    // Draw cube
-    DrawCubesNaive(voxels);
     DrawGrid(100, 1.0f);
     EndPerformanceTracker("Draw 3D");
     EndMode3D();

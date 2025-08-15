@@ -29,10 +29,17 @@ void DrawCubesNaive(Voxel *voxels) {
         // voxels[index].position.y += 0.1f;
         // voxels[index].position.z += 0.1f;
         DrawCube(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE, VOXEL_SIZE,
-                 RED);
+                 GRAY);
+        DrawCubeWires(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE,
+                      VOXEL_SIZE, MAROON);
       }
     }
   }
+}
+
+Mesh BuildCubesMeshSimple(Voxel *voxels) {
+  Mesh mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+  return mesh;
 }
 
 // Generate a simple triangle mesh from code

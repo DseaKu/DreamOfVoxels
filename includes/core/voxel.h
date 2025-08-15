@@ -14,7 +14,7 @@
 #define VOXEL_Y 10
 #define VOXEL_Z 10
 #define VOXEL_XYZ VOXEL_X *VOXEL_Y *VOXEL_Z
-#define VOXEL_SIZE 1.0f
+#define VOXEL_SIZE 0.5f
 
 typedef enum {
   air = 0,
@@ -46,6 +46,7 @@ void UpdateAllVoxel();
 
 Mesh GenMeshCustom(Vector3 offset);
 
+Mesh BuildCubesMeshSimple(Voxel *voxels);
 void DrawCubesNaive(Voxel *voxels);
 
 #endif // VOXEL_H
