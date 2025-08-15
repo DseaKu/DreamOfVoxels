@@ -36,7 +36,29 @@ void UpdateVoxel(Voxel *voxels) {
           continue;
         }
 
-        // Check right neighbor
+        // A voxel is visible by default if it's not empty.
+        current_voxel->is_visible = true;
+
+        // Check for neighbors in all 6 directions.
+        bool has_right_neighbor =
+            (x < VOXEL_X - 1) &&
+            (voxels[index + VOXEL_Z * VOXEL_Y].id != EMPTY);
+        bool has_left_neighbor =
+            (x > 0) && (voxels[index - VOXEL_Z * VOXEL_Y].id != EMPTY);
+
+        bool has_top_neighbor =
+            (y < VOXEL_Y - 1) && (voxels[index + 1].id != EMPTY);
+        bool has_bottom_neighbor = (y > 0) && (voxels[index - 1].id != EMPTY);
+
+        bool has_front_neighbor =
+            (z < VOXEL_Z - 1) && (voxels[index + VOXEL_Y].id != EMPTY);
+        bool has_back_neighbor = (z > 0) && (voxels[index - VOXEL_Y].id != EMPTY);
+
+        // If the voxel is completely surrounded, it's not visible.
+        if (has_right_neighbor && has_left_neighbor && has_top_neighbor &&
+            has_bottom_neighbor && has_front_neighbor && has_back_neighbor) {
+          current_voxel->is_visible = false;
+        }
       }
     }
   }
