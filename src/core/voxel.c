@@ -24,8 +24,11 @@ void DrawCubesNaive(Voxel *voxels) {
     for (u8 z = 0; z < VOXEL_Z; z++) {
       for (u8 y = 0; y < VOXEL_Y; y++) {
         u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
-        // voxels[index].position = (Vector3){x, y, z};
+        voxels[index].position.x += 0.1f;
+        voxels[index].position.y += 0.1f;
+        voxels[index].position.z += 0.1f;
         DrawCube(voxels[index].position, 0.1f, 0.1f, 0.1f, RED);
+        // DrawCube(voxels[index].position, 0.1f, 0.1f, 0.1f, RED);
       }
     }
   }

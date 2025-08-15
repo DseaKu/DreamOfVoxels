@@ -41,6 +41,7 @@ int Scene3DGame(void) {
 
     // Draw cube
     DrawCubesNaive(voxels);
+
     DrawGrid(100, 1.0f);
     EndMode3D();
 
