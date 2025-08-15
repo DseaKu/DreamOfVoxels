@@ -1,7 +1,6 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
-#include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>
 #include <stdint.h>

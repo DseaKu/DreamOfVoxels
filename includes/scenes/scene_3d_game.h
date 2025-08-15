@@ -11,6 +11,7 @@
 #define MAX_PLACMENT_DISTANCE 1000.0
 
 int Scene3DGame();
-void DrawDebugInformation(int screen_width, int screen_height);
+void Draw3DDebugInformation(int screen_width, int screen_height);
+void Draw2DDebugInformation(int screen_width, int screen_height);
 
 #endif // SCENE_3D_GAME_H

@@ -29,43 +29,51 @@ int Scene3DGame() {
     StartPerformanceTracker("UpdateLoop");
     UpdateVoxel(voxels);
     UpdatePlayer(&player);
-
     EndPerformanceTracker("UpdateLoop");
 
     // Draw 3D
-    StartPerformanceTracker("Draw 3D");
     BeginDrawing();
-    DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
+    StartPerformanceTracker("Draw 3D");
     // DrawModel(cube_model, (Vector3){1.0f, 0.0f, 1.0f}, 1.0f, WHITE);
     DrawVoxelSimple(voxels);
     EndPerformanceTracker("Draw 3D");
+    Draw3DDebugInformation(screen_width, screen_height);
+    EndMode3D();
 
-    // Draw debug information
-    StartPerformanceTracker("Draw debug information");
-    DrawDebugInformation(screen_width, screen_height);
-    EndPerformanceTracker("Draw debug information");
+    // Draw 2D
+    DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
+    Draw2DDebugInformation(screen_width, screen_height);
 
     // End drawing
-    EndMode3D();
     EndDrawing();
     EndPerformanceTracker("CompleteLoop");
   }
 
   CloseWindow();
-
   PrintPerformanceTrackers();
-
   return 0;
 }
 
-void DrawDebugInformation(int screen_width, int screen_height) {
+void Draw2DDebugInformation(int screen_width, int screen_height) {
+  StartPerformanceTracker("Draw 2D debug information");
+  DrawText("X-Axsis", 30, 10, 10, RED);
+  DrawText("Y-Axsis", 30, 20, 10, GREEN);
+  DrawText("Z-Axsis", 30, 30, 10, BLUE);
+  DrawFPS(screen_width - 100, 10);
+  EndPerformanceTracker("Draw 2D debug information");
+}
+void Draw3DDebugInformation(int screen_width, int screen_height) {
+
+  StartPerformanceTracker("Draw 3D debug information");
   DrawGrid(100, 1.0f);
   // Draw coordinate system
-  DrawLine3D((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){50.0f, 0.0f, 0.0f}, RED);
-  DrawLine3D((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 50.0f, 0.0f}, GREEN);
-  DrawLine3D((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 0.0f, 50.0f}, BLUE);
-
-  DrawFPS(screen_width - 100, 10);
+  DrawCylinderEx((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){50.0f, 0.0f, 0.0f},
+                 0.01f, 0.01f, 24, RED);
+  DrawCylinderEx((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 50.0f, 0.0f},
+                 0.01f, 0.01f, 24, GREEN);
+  DrawCylinderEx((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 0.0f, 50.0f},
+                 0.01f, 0.01f, 24, BLUE);
+  EndPerformanceTracker("Draw 3D debug information");
 }
