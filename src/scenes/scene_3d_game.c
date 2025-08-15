@@ -17,10 +17,10 @@ int Scene3DGame(void) {
   Voxel voxels[VOXEL_XYZ] = {0};
   InitVoxel(voxels);
 
-  // Use a standard cube mesh
-  Texture2D texture = LoadTexture("assets/log.png");
-  Model cube_model = LoadModelFromMesh(BuildVoxelFaceMesh(voxels));
-  cube_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+  // // Use a standard cube mesh
+  // Texture2D texture = LoadTexture("assets/log.png");
+  // Model cube_model = LoadModelFromMesh(BuildVoxelFaceMesh(voxels));
+  // cube_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");

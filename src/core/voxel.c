@@ -1,6 +1,7 @@
 #include "core/voxel.h"
 #include "std_includes.h"
 #include <raylib.h>
+#include <stdbool.h>
 
 void InitVoxel(Voxel *voxels) {
   for (u8 x = 0; x < VOXEL_X; x++) {
@@ -9,6 +10,8 @@ void InitVoxel(Voxel *voxels) {
       for (u8 y = 0; y < VOXEL_Y; y++) {
         u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
         voxels[index].position = (Vector3){x, y, z};
+        voxels[index].is_visible = true;
+        voxels[index].id = SOLID;
       }
     }
   }
@@ -24,7 +27,7 @@ void DrawVoxelSimple(Voxel *voxels) {
     for (u8 z = 0; z < VOXEL_Z; z++) {
       for (u8 y = 0; y < VOXEL_Y; y++) {
         u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
-        if (voxels[index].id == EMPTY) {
+        if (voxels[index].id == EMPTY || voxels[index].is_visible == false) {
           continue;
         }
 
