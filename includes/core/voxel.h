@@ -10,9 +10,9 @@
 // x = index % VOXEL_X;
 // z = (index/VOXEL_Z) % VOXEL_Z;
 // y = ((index/VOXEL_Y)/VOXEL_Y)%VOXEL_Y;
-#define VOXEL_X 20
-#define VOXEL_Y 20
-#define VOXEL_Z 20
+#define VOXEL_X 1
+#define VOXEL_Y 1
+#define VOXEL_Z 1
 #define VOXEL_XYZ VOXEL_X *VOXEL_Y *VOXEL_Z
 #define VOXEL_SIZE 1.0f
 
@@ -44,6 +44,5 @@ Mesh BuildSingelVoxelMesh();
 Mesh BuildVoxelFaceMesh(Voxel *voxels);
 
 void DrawVoxelSimple(Voxel *voxels);
-
 
 #endif // VOXEL_H

@@ -49,6 +49,8 @@ int Scene3DGame() {
 
     // End drawing
     EndDrawing();
+
+    // voxels[1437].id = EMPTY;
     EndPerformanceTracker("CompleteLoop");
   }
 
