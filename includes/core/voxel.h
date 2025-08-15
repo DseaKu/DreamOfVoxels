@@ -10,9 +10,10 @@
 // x = index % VOXEL_X;
 // z = (index/VOXEL_Z) % VOXEL_Z;
 // y = ((index/VOXEL_Y)/VOXEL_Y)%VOXEL_Y;
-#define VOXEL_X 1
-#define VOXEL_Y 1
-#define VOXEL_Z 1
+//
+#define VOXEL_X 64
+#define VOXEL_Y 64
+#define VOXEL_Z 64
 #define VOXEL_XYZ VOXEL_X *VOXEL_Y *VOXEL_Z
 #define VOXEL_SIZE 1.0f
 
@@ -29,6 +30,7 @@ typedef struct Voxel {
   bool is_visible;
   // Mesh mesh;
 } Voxel;
+// Create a face mesh with just position and enum top, left etc for direction
 
 void InitVoxel(Voxel *voxels);
 

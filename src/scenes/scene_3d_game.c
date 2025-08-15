@@ -20,8 +20,11 @@ int Scene3DGame() {
   // Use a standard cube mesh
   Vector3 model_location = {-0.5f, -0.5f, -0.5f};
   Texture2D texture = LoadTexture("assets/log.png");
+
+  StartPerformanceTracker("Meshing");
   Model voxel_model = LoadModelFromMesh(BuildVoxelFaceMesh(voxels));
   voxel_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+  EndPerformanceTracker("Meshing");
 
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
