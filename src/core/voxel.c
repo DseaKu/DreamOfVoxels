@@ -12,6 +12,11 @@ void InitVoxel(Voxel *voxels) {
         voxels[index].position = (Vector3){x, y, z};
         voxels[index].is_visible = true;
         voxels[index].id = SOLID;
+
+        // Disable visibilty of all z direction
+        // if (z != 0) {
+        //   voxels[index].is_visible = false;
+        // }
       }
     }
   }
@@ -27,6 +32,10 @@ void DrawVoxelSimple(Voxel *voxels) {
     for (u8 z = 0; z < VOXEL_Z; z++) {
       for (u8 y = 0; y < VOXEL_Y; y++) {
         u64 index = x * VOXEL_Z * VOXEL_Y + z * VOXEL_Y + y;
+
+        DrawCubeWires(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE,
+                      VOXEL_SIZE, MAROON);
+
         if (voxels[index].id == EMPTY || voxels[index].is_visible == false) {
           continue;
         }
@@ -37,8 +46,6 @@ void DrawVoxelSimple(Voxel *voxels) {
         // voxels[index].position.z += 0.1f;
         DrawCube(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE, VOXEL_SIZE,
                  GRAY);
-        DrawCubeWires(voxels[index].position, VOXEL_SIZE, VOXEL_SIZE,
-                      VOXEL_SIZE, MAROON);
       }
     }
   }

@@ -56,14 +56,6 @@ int Scene3DGame() {
   return 0;
 }
 
-void Draw2DDebugInformation(int screen_width, int screen_height) {
-  StartPerformanceTracker("Draw 2D debug information");
-  DrawText("X-Axsis", 30, 10, 10, RED);
-  DrawText("Y-Axsis", 30, 20, 10, GREEN);
-  DrawText("Z-Axsis", 30, 30, 10, BLUE);
-  DrawFPS(screen_width - 100, 10);
-  EndPerformanceTracker("Draw 2D debug information");
-}
 void Draw3DDebugInformation(int screen_width, int screen_height) {
 
   StartPerformanceTracker("Draw 3D debug information");
@@ -76,4 +68,12 @@ void Draw3DDebugInformation(int screen_width, int screen_height) {
   DrawCylinderEx((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 0.0f, 50.0f},
                  0.01f, 0.01f, 24, BLUE);
   EndPerformanceTracker("Draw 3D debug information");
+}
+void Draw2DDebugInformation(int screen_width, int screen_height) {
+  StartPerformanceTracker("Draw 2D debug information");
+  DrawText("X-Axsis", 30, 10, 10, RED);
+  DrawText("Y-Axsis", 30, 20, 10, GREEN);
+  DrawText("Z-Axsis", 30, 30, 10, BLUE);
+  DrawFPS(screen_width - 100, 10);
+  EndPerformanceTracker("Draw 2D debug information");
 }
