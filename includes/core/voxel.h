@@ -17,16 +17,15 @@
 #define Z_MAX 60
 #define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
 
-typedef u32 Voxel;
-typedef u32 Vertex;
+typedef u64 Voxel;
 /* MSB:
- * 0000 tttt ffffff zzzzzz yyyyyy xxxxxx
- * 6bits = posX
- * 6bits = posy
- * 6bits = posz
- * 3bits = face direction
- * 4bits = texture
- * 4bits = reserved
+ * tttttttt ffffff a zzzzzz yyyyyy xxxxxx
+ * 6bit = posX
+ * 6bit = posy
+ * 6bit = posz
+ * 1bit = availible flag
+ * 3bit = face direction
+ * 8bit = texture
  *
  * X = Depth
  * Z = Width
@@ -46,7 +45,7 @@ typedef u32 Vertex;
 
 Mesh GenMeshCustom(Vector3 offset);
 
-Mesh GenVertexMesh(Vertex vertices_data);
+// Mesh GenVertexMesh(Vertex vertices_data);
 
 /* Voxel faces */
 // void InitVoxel(Voxel *voxel_data);
