@@ -10,7 +10,7 @@ Mesh BuildSingelVoxelMesh() {
 }
 
 void InitVertex(Voxel *voxel_data) {
-  u32 index = 0;
+  u64 index = 0;
   // u32 a,yy,xx,zz = 0;
 
   for (u8 z = 0; z < Z_MAX; z++) {
@@ -18,7 +18,7 @@ void InitVertex(Voxel *voxel_data) {
       for (u8 x = 0; x < X_MAX; x++) {
 
         // Shift the values into their correct positions and then OR them
-        voxel_data[index] |= (u32)x | ((u32)y << 6) | ((u32)z << 12);
+        voxel_data[index] |= (u64)x | ((u64)y << 6) | ((u64)z << 12);
         // xx = a & 63;
         // yy = (a >> 6)&63;
         // zz = (a >> 12)&63;
