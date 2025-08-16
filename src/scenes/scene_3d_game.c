@@ -15,27 +15,16 @@ int Scene3DGame() {
   DisableCursor();
   SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
-  Voxel *voxels = (Voxel *)calloc(VOXEL_XYZ, sizeof(Voxel));
-  if (voxels == NULL) {
-    printf("Error: Failed to allocate memory for voxels\nBye!");
-    return 1;
-  }
-  InitVoxel(voxels);
 
-  Vertex *vertice_chunk = (Vertex *)calloc(NUMBER_OF_VERTICES, sizeof(Vertex));
-  if (vertice_chunk == NULL) {
-    printf("Error: Failed to allocate memory for vertice\nBye!");
-    return 1;
-  }
-  InitVertex(vertice_chunk);
+  StartPerformanceTracker("Init voxel faces");
+  Voxel p_voxel_data;
+  EndPerformanceTracker("Init voxel faces");
 
   // Use a standard cube mesh
   Vector3 model_location = {-0.5f, -0.5f, -0.5f};
   Texture2D texture = LoadTexture("assets/log.png");
 
   StartPerformanceTracker("Meshing");
-  Model voxel_model = LoadModelFromMesh(BuildVoxelFaceMesh(voxels));
-  voxel_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
   EndPerformanceTracker("Meshing");
 
   while (!WindowShouldClose()) {
@@ -43,7 +32,6 @@ int Scene3DGame() {
 
     // Update objects
     StartPerformanceTracker("UpdateLoop");
-    UpdateVoxel(voxels);
     UpdatePlayer(&player);
     EndPerformanceTracker("UpdateLoop");
 
@@ -53,7 +41,6 @@ int Scene3DGame() {
     BeginMode3D(player.camera);
     StartPerformanceTracker("Draw 3D");
     // DrawModel(voxel_model, model_location, VOXEL_SIZE, WHITE);
-    DrawModel(voxel_model, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, WHITE);
     EndPerformanceTracker("Draw 3D");
     Draw3DDebugInformation(screen_width, screen_height);
     EndMode3D();
@@ -71,8 +58,6 @@ int Scene3DGame() {
 
   CloseWindow();
   PrintPerformanceTrackers();
-  free(voxels);
-  free(vertice_chunk);
   return 0;
 }
 
