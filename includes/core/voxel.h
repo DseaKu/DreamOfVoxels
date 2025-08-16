@@ -7,23 +7,24 @@
 #include <stdint.h>
 
 #define VOXEL_SIZE 1.0f
+#define X_MAX 62
+#define Y_MAX 62
+#define Z_MAX 62
 
 /* Each coordinate will be represented by 6bits.
  * That means the coordinates cant exeed 63,
- * thats why I choose 60 to keep it even,
- * get the max value and have some room for special states*/
-#define X_MAX 60
-#define Y_MAX 60
-#define Z_MAX 60
+ * thats why I choose 62 to keep it even,
+ * get the max storage value
+ * */
 #define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
 
 typedef u64 Voxel;
+
 /* MSB:
- * tttttttt ffffff a zzzzzz yyyyyy xxxxxx
+ * tttttttt ffffff zzzzzz yyyyyy xxxxxx
  * 6bit = posX
  * 6bit = posy
  * 6bit = posz
- * 1bit = availible flag
  * 3bit = face direction
  * 8bit = texture
  *
@@ -40,13 +41,18 @@ typedef u64 Voxel;
  * -Y = 0b100000
  *
  * Special states
- * 0x3FFFF voxel disabled
  * */
-
+typedef enum {
+  FACE_DIR_POS_X = 0b000001,
+  FACE_DIR_NEG_X = 0b000010,
+  FACE_DIR_NEG_Z = 0b001000, // 8
+  FACE_DIR_POS_Y = 0b010000, // 16
+  FACE_DIR_NEG_Y = 0b100000, // 32
+} VoxelFaceDirection;
 Mesh GenMeshCustom(Vector3 offset);
 
 // Mesh GenVertexMesh(Vertex vertices_data);
 
 /* Voxel faces */
-// void InitVoxel(Voxel *voxel_data);
+void InitVoxel(Voxel *voxel_data);
 #endif // VOXEL_H

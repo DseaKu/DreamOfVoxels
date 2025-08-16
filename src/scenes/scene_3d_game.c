@@ -16,17 +16,7 @@ int Scene3DGame() {
   SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
 
-  StartPerformanceTracker("Init voxel faces");
-  Voxel p_voxel_data;
-  EndPerformanceTracker("Init voxel faces");
-
-  // Use a standard cube mesh
-  Vector3 model_location = {-0.5f, -0.5f, -0.5f};
-  Texture2D texture = LoadTexture("assets/log.png");
-
-  StartPerformanceTracker("Meshing");
-  EndPerformanceTracker("Meshing");
-
+  Voxel *p_voxel_data;
   while (!WindowShouldClose()) {
     StartPerformanceTracker("CompleteLoop");
 
