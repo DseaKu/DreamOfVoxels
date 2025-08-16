@@ -1,5 +1,6 @@
 #include "core/voxel.h"
 #include "std_includes.h"
+#include "utils/rescource_tracker.h"
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -9,29 +10,43 @@ Mesh BuildSingelVoxelMesh() {
   return mesh;
 }
 
-void InitVertex(Voxel *voxel_data) {
+void InitVoxel(Voxel *voxel_data) {
+  StartPerformanceTracker("Init Voxels");
   u64 index = 0;
 
-  for (u8 z = 0; z < Z_MAX; z++) {
-    for (u8 y = 0; y < Y_MAX; y++) {
+  for (u8 y = 0; y < Y_MAX; y++) {
+    for (u8 z = 0; z < Z_MAX; z++) {
       for (u8 x = 0; x < X_MAX; x++) {
 
-        // Start with a clean slate for each voxel
-        voxel_data[index] = 0;
-
         // Pack the data using the named shift constants
-        voxel_data[index] |= ((u64)x << VOXEL_SHIFT_POS_X); // << 0
-        printf("%llu", voxel_data[index]);
-        voxel_data[index] |= ((u64)y << VOXEL_SHIFT_POS_Y); // << 6
-        voxel_data[index] |= ((u64)z << VOXEL_SHIFT_POS_Z); // << 12
+        voxel_data[index] |= ((Voxel)x << VOXEL_SHIFT_POS_X);
+        voxel_data[index] |= ((Voxel)y << VOXEL_SHIFT_POS_Y);
+        voxel_data[index] |= ((Voxel)z << VOXEL_SHIFT_POS_Z);
 
-        printf("%llu", voxel_data[index]);
+        u8 xx = Voxel_GetPosX(voxel_data[index]);
+        u8 yy = Voxel_GetPosY(voxel_data[index]);
+
         index++;
       }
     }
   }
+  EndPerformanceTracker("Init Voxels");
 }
 
+// Gets the X position from a voxel
+u8 Voxel_GetPosX(Voxel v) {
+  return (u8)((v >> VOXEL_SHIFT_POS_X) & VOXEL_MASK_POS);
+}
+
+// Gets the Y position from a voxel
+u8 Voxel_GetPosY(Voxel v) {
+  return (u8)((v >> VOXEL_SHIFT_POS_Y) & VOXEL_MASK_POS);
+}
+
+// Gets the Z position from a voxel
+u8 Voxel_GetPosZ(Voxel v) {
+  return (u8)((v >> VOXEL_SHIFT_POS_Z) & VOXEL_MASK_POS);
+}
 // Generate a simple triangle mesh from code
 Mesh GenMeshCustom(Vector3 offset) {
   // Initialize a mesh object

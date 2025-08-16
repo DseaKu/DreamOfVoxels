@@ -42,12 +42,6 @@
 
 typedef u64 Voxel;
 
-/*
- * X = Depth
- * Z = Width
- * Y = Height
- *
- * */
 typedef enum {
   FACE_DIR_POS_X = 0b000001, // Rear
   FACE_DIR_NEG_X = 0b000010, // Front
@@ -64,18 +58,12 @@ Mesh GenMeshCustom(Vector3 offset);
 void InitVoxel(Voxel *voxel_data);
 
 // Gets the X position from a voxel
-u8 Voxel_GetPosX(Voxel v) {
-  return (u8)((v >> VOXEL_SHIFT_POS_X) & VOXEL_MASK_POS);
-}
+u8 Voxel_GetPosX(Voxel v);
 
 // Gets the Y position from a voxel
-u8 Voxel_GetPosY(Voxel v) {
-  return (u8)((v >> VOXEL_SHIFT_POS_Y) & VOXEL_MASK_POS);
-}
+u8 Voxel_GetPosY(Voxel v);
 
 // Gets the Z position from a voxel
-u8 Voxel_GetPosZ(Voxel v) {
-  return (u8)((v >> VOXEL_SHIFT_POS_Z) & VOXEL_MASK_POS);
-}
+u8 Voxel_GetPosZ(Voxel v);
 
 #endif // VOXEL_H
