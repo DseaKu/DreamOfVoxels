@@ -11,17 +11,21 @@ Mesh BuildSingelVoxelMesh() {
 
 void InitVertex(Voxel *voxel_data) {
   u64 index = 0;
-  // u32 a,yy,xx,zz = 0;
 
   for (u8 z = 0; z < Z_MAX; z++) {
     for (u8 y = 0; y < Y_MAX; y++) {
       for (u8 x = 0; x < X_MAX; x++) {
 
-        // Shift the values into their correct positions and then OR them
-        voxel_data[index] |= (u64)x | ((u64)y << 6) | ((u64)z << 12);
-        // xx = a & 63;
-        // yy = (a >> 6)&63;
-        // zz = (a >> 12)&63;
+        // Start with a clean slate for each voxel
+        voxel_data[index] = 0;
+
+        // Pack the data using the named shift constants
+        voxel_data[index] |= ((u64)x << VOXEL_SHIFT_POS_X); // << 0
+        printf("%llu", voxel_data[index]);
+        voxel_data[index] |= ((u64)y << VOXEL_SHIFT_POS_Y); // << 6
+        voxel_data[index] |= ((u64)z << VOXEL_SHIFT_POS_Z); // << 12
+
+        printf("%llu", voxel_data[index]);
         index++;
       }
     }

@@ -16,8 +16,10 @@ int Scene3DGame() {
   SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
 
-  Voxel *p_voxel_data;
-  while (!WindowShouldClose()) {
+  Voxel *p_voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
+  InitVoxel(p_voxel_data);
+
+  do {
     StartPerformanceTracker("CompleteLoop");
 
     // Update objects
@@ -44,8 +46,10 @@ int Scene3DGame() {
 
     // voxels[1437].id = EMPTY;
     EndPerformanceTracker("CompleteLoop");
-  }
+    // } while (!WindowShouldClose());
+  } while (WindowShouldClose());
 
+  free(p_voxel_data);
   CloseWindow();
   PrintPerformanceTrackers();
   return 0;
