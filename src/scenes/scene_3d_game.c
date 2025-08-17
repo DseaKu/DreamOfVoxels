@@ -100,45 +100,45 @@ void RenderVoxelFaces(Voxel *voxel_data) {
     // Check and draw each visible face (counter-clockwise order)
     if (visible_faces & FACE_DIR_POS_X) { // Right face
       rlNormal3f(1.0f, 0.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
       rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
     }
     if (visible_faces & FACE_DIR_NEG_X) { // Left face
       rlNormal3f(-1.0f, 0.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
       rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
     }
     if (visible_faces & FACE_DIR_POS_Y) { // Top face
       rlNormal3f(0.0f, 1.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
       rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
     }
     if (visible_faces & FACE_DIR_NEG_Y) { // Bottom face
       rlNormal3f(0.0f, -1.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
       rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
     }
     if (visible_faces & FACE_DIR_POS_Z) { // Front face
       rlNormal3f(0.0f, 0.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
       rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
     }
     if (visible_faces & FACE_DIR_NEG_Z) { // Back face
       rlNormal3f(0.0f, 0.0f, -1.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
       rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
     }
   }
   rlEnd();

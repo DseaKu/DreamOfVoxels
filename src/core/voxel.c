@@ -97,7 +97,7 @@ void UpdateVisibility(Voxel *voxel_data) {
                VOXEL_MASK_ID) == EMPTY)
             visible_faces |= FACE_DIR_NEG_Y;
         } else {
-          //
+
           //  Boundary Voxel Check
           if (x == X_MAX - 1 ||
               ((voxel_data[index + X_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &

@@ -79,5 +79,4 @@ u8 Voxel_GetPosY(Voxel v);
 
 u8 Voxel_GetPosZ(Voxel v);
 
-bool IsDirPosXNeighbour(Voxel v);
 #endif // VOXEL_H
