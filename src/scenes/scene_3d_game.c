@@ -48,8 +48,8 @@ int Scene3DGame() {
 
     // voxels[1437].id = EMPTY;
     EndPerformanceTracker("CompleteLoop");
-    // } while (!WindowShouldClose());
-  } while (WindowShouldClose());
+  } while (!WindowShouldClose());
+  // } while (WindowShouldClose());
 
   free(p_voxel_data);
   CloseWindow();
