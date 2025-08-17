@@ -8,12 +8,17 @@
 
 #define VOXEL_SIZE 1.0f
 
-static const u8 X_MAX = 0b111111;
-static const u8 Z_MAX = 0b111111;
-static const u8 Y_MAX = 0b111111;
-// #define X_MAX 62
-// #define Y_MAX 62
-// #define Z_MAX 62
+// static const u8 X_MAX = 0b111111;
+// static const u8 Z_MAX = 0b111111;
+// static const u8 Y_MAX = 0b111111;
+#define X_MAX 63
+#define Z_MAX 63
+#define Y_MAX 63
+
+#define X_NEIGHBOUR_OFFSET 1
+#define Z_NEIGHBOUR_OFFSET Z_MAX
+#define Y_NEIGHBOUR_OFFSET Y_MAX *Z_MAX
+
 #define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
 
 /* Each coordinate will be represented by 6bits.
@@ -66,16 +71,6 @@ Mesh GenMeshCustom(Vector3 offset);
 // Allocate xzy-coordinates to voxels
 void InitVoxel(Voxel *voxel_data);
 
-// Gets the X position from a voxel
-// u8 Voxel_GetPosX(Voxel v);
-
-// Gets the Y position from a voxel
-// u8 Voxel_GetPosY(Voxel v);
-
-// Gets the Z position from a voxel
-// u8 Voxel_GetPosZ(Voxel v);
-
-void UpdateVisibiltyVoxelFaces(Voxel *voxel_data);
 void UpdateVisibilty(Voxel *voxel_data);
 
 bool IsDirPosXNeighbour(Voxel v);

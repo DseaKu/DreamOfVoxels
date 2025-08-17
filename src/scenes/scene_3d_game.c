@@ -16,10 +16,12 @@ int Scene3DGame() {
   SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
 
-  Voxel *p_voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
-  InitVoxel(p_voxel_data);
+  Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
+  InitVoxel(voxel_data);
 
-  UpdateVisibilty(p_voxel_data);
+  UpdateVisibilty(voxel_data);
+
+  bool is_visibilty_updatable = false;
 
   do {
     StartPerformanceTracker("CompleteLoop");
@@ -27,6 +29,9 @@ int Scene3DGame() {
     // Update objects
     StartPerformanceTracker("UpdateLoop");
     UpdatePlayer(&player);
+    if (is_visibilty_updatable) {
+      UpdateVisibilty(voxel_data);
+    }
     EndPerformanceTracker("UpdateLoop");
 
     // Draw 3D
@@ -51,7 +56,7 @@ int Scene3DGame() {
   } while (!WindowShouldClose());
   // } while (WindowShouldClose());
 
-  free(p_voxel_data);
+  free(voxel_data);
   CloseWindow();
   PrintPerformanceTrackers();
   return 0;

@@ -59,34 +59,59 @@ void UpdateVisibilty(Voxel *voxel_data) {
   for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
 
     Voxel v = voxel_data[index];
-    u8 xx = (int)Voxel_GetPosX(v);
-    u8 zz = (int)Voxel_GetPosZ(v);
-    u8 yy = (int)Voxel_GetPosY(v);
+    // Just debug purpose
+    // u8 xx = (int)Voxel_GetPosX(v);
+    // u8 zz = (int)Voxel_GetPosZ(v);
+    // u8 yy = (int)Voxel_GetPosY(v);
 
     u8 visible_faces = 0;
 
+    // Skip EMPTY voxel
+    if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
+      continue;
+    }
+
     // Check if positive x(back) neighbour is EMPTY + boundary check
-    if (((voxel_data[index + 1] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+    if (((voxel_data[index + X_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID) == 0 ||
         Voxel_GetPosX(v) == X_MAX - 1) {
       visible_faces |= FACE_DIR_POS_X;
     }
     // Check if negative x(front) neighbour is EMPTY + boundary check
-    if (((voxel_data[index - 1] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+    if (((voxel_data[index - X_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID) == 0 ||
         Voxel_GetPosX(v) == 0) {
       visible_faces |= FACE_DIR_NEG_X;
     }
 
     // Check if positive z(right) neighbour is EMPTY + boundary check
-    if (((voxel_data[index + Z_MAX] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+    if (((voxel_data[index + Z_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID) == 0 ||
         Voxel_GetPosZ(v) == Z_MAX - 1) {
       visible_faces |= FACE_DIR_POS_Z;
     }
 
     // Check if negative z(front) neighbour is EMPTY + boundary check
-    if (((voxel_data[index - Z_MAX] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+    if (((voxel_data[index - Z_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID) == 0 ||
         Voxel_GetPosZ(v) == 0) {
       visible_faces |= FACE_DIR_NEG_Z;
     }
+
+    // Check if positive y(top) neighbour is EMPTY + boundary check
+    if (((voxel_data[index + Y_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID) == 0 ||
+        Voxel_GetPosY(v) == Y_MAX - 1) {
+      visible_faces |= FACE_DIR_POS_Y;
+    }
+
+    // Check if negative y(bottom) neighbour is EMPTY + boundary check
+    if (((voxel_data[index - Y_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID) == 0 ||
+        Voxel_GetPosY(v) == 0) {
+      visible_faces |= FACE_DIR_NEG_Y;
+    }
+
     voxel_data[index] |= visible_faces << VOXEL_SHIFT_FACE;
   }
 
