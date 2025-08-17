@@ -29,6 +29,7 @@ int Scene3DGame() {
 
   do {
     StartPerformanceTracker("CompleteLoop");
+
     // Process events
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 
@@ -43,7 +44,7 @@ int Scene3DGame() {
       is_visibility_updatable = true;
     }
 
-    // Update objects
+    // Update voxels
     UpdatePlayer(&player);
     if (is_visibility_updatable) {
       UpdateVisibility(voxel_data);
@@ -66,7 +67,6 @@ int Scene3DGame() {
     // End drawing
     EndDrawing();
 
-    // voxels[1437].id = EMPTY;
     EndPerformanceTracker("CompleteLoop");
   } while (!WindowShouldClose());
   // } while (WindowShouldClose());
