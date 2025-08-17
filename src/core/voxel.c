@@ -32,7 +32,9 @@ void InitVoxel(Voxel *voxel_data, bool is_random) {
         if (!is_random) {
           v |= ((Voxel)DIRT << VOXEL_SHIFT_ID);
         } else {
-          // Set random voxel ids
+          VoxelID random_id =
+              (rand() % sizeof(VoxelID)) + 1; // DIRT, GRASS, STONE, SAND
+          v |= ((Voxel)random_id << VOXEL_SHIFT_ID);
         }
 
         voxel_data[index] = v;
