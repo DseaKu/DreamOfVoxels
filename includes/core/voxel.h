@@ -8,9 +8,9 @@
 
 #define VOXEL_SIZE 1.0f
 
-// static const u8 X_MAX = 0b111111;
-// static const u8 Z_MAX = 0b111111;
-// static const u8 Y_MAX = 0b111111;
+// #define X_MAX 32
+// #define Z_MAX 32
+// #define Y_MAX 32
 #define X_MAX 63
 #define Z_MAX 63
 #define Y_MAX 63

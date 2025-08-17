@@ -54,6 +54,7 @@ u8 Voxel_GetPosZ(Voxel v) {
 }
 
 void UpdateVisibility(Voxel *voxel_data) {
+  // 1.282267 ms (avg over 5952 runs):Update visibilty
   StartPerformanceTracker("Update visibilty");
 
   for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {

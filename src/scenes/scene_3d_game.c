@@ -3,6 +3,7 @@
 #include "sprites/player.h"
 #include "utils/resource_tracker.h"
 #include <raylib.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 int Scene3DGame() {
@@ -15,7 +16,6 @@ int Scene3DGame() {
   DisableCursor();
   SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
-
   Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
   InitVoxel(voxel_data);
 
@@ -27,20 +27,16 @@ int Scene3DGame() {
     StartPerformanceTracker("CompleteLoop");
 
     // Update objects
-    StartPerformanceTracker("UpdateLoop");
     UpdatePlayer(&player);
     if (is_visibility_updatable) {
       UpdateVisibility(voxel_data);
     }
-    EndPerformanceTracker("UpdateLoop");
 
     // Draw 3D
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
-    StartPerformanceTracker("Draw 3D");
-    // DrawModel(voxel_model, model_location, VOXEL_SIZE, WHITE);
-    EndPerformanceTracker("Draw 3D");
+
     Draw3DDebugInformation(screen_width, screen_height);
     EndMode3D();
 
