@@ -117,7 +117,7 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
       dims[1] = Y_MAX;
     }
 
-    VoxelID *mask = (VoxelID *)calloc(dims[0] * dims[1], sizeof(VoxelID));
+    int *mask = (int *)calloc(dims[0] * dims[1], sizeof(int));
 
     // Iterate over each slice of the chunk
     for (x[axis] = -1;
@@ -133,9 +133,13 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
                                x[2] + q[2])
                   : EMPTY;
 
-          mask[n++] = (id1 != EMPTY && id2 == EMPTY)   ? id1
-                      : (id1 == EMPTY && id2 != EMPTY) ? id2
-                                                       : 0;
+          if (id1 != EMPTY && id2 == EMPTY) {
+            mask[n++] = id1;
+          } else if (id1 == EMPTY && id2 != EMPTY) {
+            mask[n++] = -id2;
+          } else {
+            mask[n++] = 0;
+          }
         }
       }
 
@@ -144,15 +148,16 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
 
       for (int j = 0; j < dims[0]; ++j) {
         for (int i = 0; i < dims[1];) {
-          if (mask[n]) {
+          if (mask[n] != 0) {
+            int current_mask = mask[n];
             int w, h;
-            for (w = 1; i + w < dims[1] && mask[n + w] == mask[n]; ++w) {
+            for (w = 1; i + w < dims[1] && mask[n + w] == current_mask; ++w) {
             }
 
             bool done = false;
             for (h = 1; j + h < dims[0]; ++h) {
               for (int k = 0; k < w; ++k) {
-                if (mask[n + k + h * dims[1]] != mask[n]) {
+                if (mask[n + k + h * dims[1]] != current_mask) {
                   done = true;
                   break;
                 }
@@ -161,6 +166,7 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
                 break;
             }
 
+            bool positive_face = current_mask > 0;
             x[u] = i;
             x[v] = j;
 
@@ -178,24 +184,40 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
             texcoords =
                 (Vector2 *)realloc(texcoords, face_count * 4 * sizeof(Vector2));
 
-            Vector3 v1 = {x[0], x[1], x[2]};
-            Vector3 v2 = {x[0] + du[0], x[1] + du[1], x[2] + du[2]};
-            Vector3 v3 = {x[0] + du[0] + dv[0], x[1] + du[1] + dv[1],
-                          x[2] + du[2] + dv[2]};
-            Vector3 v4 = {x[0] + dv[0], x[1] + dv[1], x[2] + dv[2]};
+            Vector3 v1 = {(float)x[0], (float)x[1], (float)x[2]};
+            Vector3 v2 = {(float)(x[0] + du[0]), (float)(x[1] + du[1]),
+                          (float)(x[2] + du[2])};
+            Vector3 v3 = {(float)(x[0] + du[0] + dv[0]),
+                          (float)(x[1] + du[1] + dv[1]),
+                          (float)(x[2] + du[2] + dv[2])};
+            Vector3 v4 = {(float)(x[0] + dv[0]), (float)(x[1] + dv[1]),
+                          (float)(x[2] + dv[2])};
 
             int vert_idx = (face_count - 1) * 4;
-            vertices[vert_idx + 0] = v1;
-            vertices[vert_idx + 1] = v2;
-            vertices[vert_idx + 2] = v3;
-            vertices[vert_idx + 3] = v4;
+
+            if (positive_face) {
+              vertices[vert_idx + 0] = v1;
+              vertices[vert_idx + 1] = v2;
+              vertices[vert_idx + 2] = v3;
+              vertices[vert_idx + 3] = v4;
+            } else {
+              vertices[vert_idx + 0] = v4;
+              vertices[vert_idx + 1] = v3;
+              vertices[vert_idx + 2] = v2;
+              vertices[vert_idx + 3] = v1;
+            }
 
             texcoords[vert_idx + 0] = (Vector2){0, 0};
             texcoords[vert_idx + 1] = (Vector2){(float)w, 0};
             texcoords[vert_idx + 2] = (Vector2){(float)w, (float)h};
             texcoords[vert_idx + 3] = (Vector2){0, (float)h};
 
-            Vector3 norm = {q[0], q[1], q[2]};
+            Vector3 norm = {(float)q[0], (float)q[1], (float)q[2]};
+            if (!positive_face) {
+              norm.x *= -1;
+              norm.y *= -1;
+              norm.z *= -1;
+            }
             normals[vert_idx + 0] = norm;
             normals[vert_idx + 1] = norm;
             normals[vert_idx + 2] = norm;
