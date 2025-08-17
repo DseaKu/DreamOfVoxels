@@ -211,6 +211,14 @@ u64 GetVoxelIndex(int x, int y, int z) {
   return (y * Y_NEIGHBOUR_OFFSET) + (z * Z_NEIGHBOUR_OFFSET) + x;
 }
 
+VoxelID GetVoxelID(Voxel *voxel_data, int x, int y, int z) {
+  u64 index = GetVoxelIndex(x, y, z);
+  if (index == -1) {
+    return EMPTY; // Out of bounds is considered empty
+  }
+  return (VoxelID)((voxel_data[index] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID);
+}
+
 void PlaceVoxel(Voxel *voxel_data, int x, int y, int z, VoxelID id) {
   u64 index = GetVoxelIndex(x, y, z);
   if (index == -1) {
@@ -307,116 +315,21 @@ void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
     int new_y = hit_voxel_y + (int)roundf(closest_hit.normal.y);
     int new_z = hit_voxel_z + (int)roundf(closest_hit.normal.z);
 
-    PlaceVoxel(voxel_data, new_x, new_y, new_z, DIRT);
+    // --- Player Collision Check ---
+    int player_head_x = (int)roundf(player->camera.position.x);
+    int player_head_y = (int)roundf(player->camera.position.y);
+    int player_head_z = (int)roundf(player->camera.position.z);
+    int player_feet_y = player_head_y - 1;
+
+    if ((new_x == player_head_x && new_y == player_head_y && new_z == player_head_z) ||
+        (new_x == player_head_x && new_y == player_feet_y && new_z == player_head_z)) {
+      return; // Don't place block inside player
+    }
+
+    // Only place a block if the target space is empty
+    if (GetVoxelID(voxel_data, new_x, new_y, new_z) == EMPTY) {
+      PlaceVoxel(voxel_data, new_x, new_y, new_z, DIRT);
+    }
   }
   EndPerformanceTracker("TryPlaceVoxel");
-}
-
-void RenderVoxelFaces(Voxel *voxel_data, Texture2D texture) {
-  StartPerformanceTracker("RenderVoxelFaces");
-  rlSetTexture(texture.id);
-
-  rlBegin(RL_QUADS);
-
-  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
-    Voxel v = voxel_data[index];
-
-    // Skip EMPTY voxels
-    if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
-      continue;
-    }
-
-    u8 visible_faces = (v >> VOXEL_SHIFT_FACE) & VOXEL_MASK_FACE;
-
-    // If no faces are visible, skip.
-    if (visible_faces == 0) {
-      continue;
-    }
-
-    // Get voxel position
-    float x = (float)Voxel_GetPosX(v);
-    float y = (float)Voxel_GetPosY(v);
-    float z = (float)Voxel_GetPosZ(v);
-
-    // Determine color based on VoxelID
-    VoxelID id = (VoxelID)((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID);
-    if (id == DIRT) {
-      // Use white to not tint the texture
-      rlColor4ub(255, 255, 255, 255);
-    } else if (id == WATER) {
-      // Use blue for water
-      rlColor4ub(0, 0, 255, 128);
-    }
-
-    // Check and draw each visible face (counter-clockwise order)
-    if (visible_faces & FACE_DIR_POS_X) { // Right face
-      rlNormal3f(1.0f, 0.0f, 0.0f);
-      rlTexCoord2f(1.0f, 1.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
-      rlTexCoord2f(1.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
-      rlTexCoord2f(0.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
-      rlTexCoord2f(0.0f, 1.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
-    }
-    if (visible_faces & FACE_DIR_NEG_X) { // Left face
-      rlNormal3f(-1.0f, 0.0f, 0.0f);
-      rlTexCoord2f(0.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
-      rlTexCoord2f(0.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
-      rlTexCoord2f(1.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
-      rlTexCoord2f(1.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
-    }
-    if (visible_faces & FACE_DIR_POS_Y) { // Top face
-      rlNormal3f(0.0f, 1.0f, 0.0f);
-      rlTexCoord2f(0.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
-      rlTexCoord2f(1.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
-      rlTexCoord2f(1.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
-      rlTexCoord2f(0.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
-    }
-    if (visible_faces & FACE_DIR_NEG_Y) { // Bottom face
-      rlNormal3f(0.0f, -1.0f, 0.0f);
-      rlTexCoord2f(1.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
-      rlTexCoord2f(0.0f, 1.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
-      rlTexCoord2f(0.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
-      rlTexCoord2f(1.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
-    }
-    if (visible_faces & FACE_DIR_POS_Z) { // Front face
-      rlNormal3f(0.0f, 0.0f, 1.0f);
-      rlTexCoord2f(1.0f, 1.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
-      rlTexCoord2f(1.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
-      rlTexCoord2f(0.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
-      rlTexCoord2f(0.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
-    }
-    if (visible_faces & FACE_DIR_NEG_Z) { // Back face
-      rlNormal3f(0.0f, 0.0f, -1.0f);
-      rlTexCoord2f(0.0f, 1.0f);
-      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
-      rlTexCoord2f(0.0f, 0.0f);
-      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
-      rlTexCoord2f(1.0f, 0.0f);
-      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
-      rlTexCoord2f(1.0f, 1.0f);
-      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
-    }
-  }
-  rlEnd();
-  rlSetTexture(0);
-  EndPerformanceTracker("RenderVoxelFaces");
 }

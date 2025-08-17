@@ -90,5 +90,5 @@ void RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
 void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
                    u64 screen_height, float player_range);
 
-void RenderVoxelFaces(Voxel *voxel_data, Texture2D texture);
+VoxelID GetVoxelID(Voxel *voxel_data, int x, int y, int z);
 #endif // VOXEL_H
