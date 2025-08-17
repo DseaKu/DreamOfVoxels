@@ -60,16 +60,16 @@ void UpdateVisibilty(Voxel *voxel_data) {
     Voxel v = voxel_data[index];
 
     u8 visible_faces = 0;
-    u32 index_offset = index + (X_MAX << VOXEL_SHIFT_POS_X);
-    u32 neigh_pos_x = voxel_data[index + (X_MAX << VOXEL_SHIFT_POS_X)];
+    u32 index_offset = index + (1 << VOXEL_SHIFT_POS_X);
+    u32 neigh_pos_x = voxel_data[index + (1 << VOXEL_SHIFT_POS_X)];
     u32 ID_neigh_pos_x =
-        (voxel_data[index + (X_MAX << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID);
+        (voxel_data[index + (1 << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID);
     u8 ID_value =
-        ((voxel_data[index + (X_MAX << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID) &
+        ((voxel_data[index + (1 << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID) &
          VOXEL_MASK_ID);
 
     // Check if positive x neighbour (back) is EMPTY
-    if (((voxel_data[index + (X_MAX << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID) &
+    if (((voxel_data[index + (1 << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID) &
          VOXEL_MASK_ID) == 0) {
       visible_faces |= FACE_DIR_POS_X;
     }
