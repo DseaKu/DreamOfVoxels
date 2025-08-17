@@ -27,7 +27,7 @@ int Scene3DGame() {
 
   UpdateVisibility(voxel_data);
 
-  Texture2D dirt_texture = LoadTexture("assets/log.png");
+  Texture2D dirt_texture = LoadTexture("assets/dirt.png");
   Material material = LoadMaterialDefault();
   material.maps[MATERIAL_MAP_DIFFUSE].texture = dirt_texture;
 
