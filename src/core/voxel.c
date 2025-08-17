@@ -12,6 +12,7 @@ Mesh BuildSingelVoxelMesh() {
 
 // Init xzy-coordinates to voxels
 void InitVoxel(Voxel *voxel_data) {
+  // 0.527000 ms (avg over 1 runs):Init Voxels
   StartPerformanceTracker("Init Voxels");
   u64 index = 0;
 
@@ -19,10 +20,16 @@ void InitVoxel(Voxel *voxel_data) {
     for (u8 z = 0; z < Z_MAX; z++) {
       for (u8 x = 0; x < X_MAX; x++) {
 
+        Voxel v = 0;
+
         // Pack the data using the named shift constants
-        voxel_data[index] |= ((Voxel)x << VOXEL_SHIFT_POS_X);
-        voxel_data[index] |= ((Voxel)y << VOXEL_SHIFT_POS_Y);
-        voxel_data[index] |= ((Voxel)z << VOXEL_SHIFT_POS_Z);
+        v |= ((Voxel)x << VOXEL_SHIFT_POS_X);
+        v |= ((Voxel)y << VOXEL_SHIFT_POS_Y);
+        v |= ((Voxel)z << VOXEL_SHIFT_POS_Z);
+
+        v |= ((Voxel)DIRT << VOXEL_SHIFT_ID);
+
+        voxel_data[index] = v;
 
         index++;
       }
@@ -46,29 +53,31 @@ u8 Voxel_GetPosZ(Voxel v) {
   return (u8)((v >> VOXEL_SHIFT_POS_Z) & VOXEL_MASK_POS);
 }
 
-void UpdateVoxel(Voxel *voxel_data) {
-  StartPerformanceTracker("Update Voxels");
-  u64 index = 0;
+void UpdateVisibilty(Voxel *voxel_data) {
+  StartPerformanceTracker("Update visibilty");
 
-  for (u8 y = 0; y < Y_MAX; y++) {
-    for (u8 z = 0; z < Z_MAX; z++) {
-      for (u8 x = 0; x < X_MAX; x++) {
+  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
+    Voxel v = voxel_data[index];
 
-        if (IsDirPosXNeighbour(voxel_data[index])) {
-          voxel_data[index] |= ((Voxel)FACE_DIR_POS_X << VOXEL_SHIFT_TEXTURE);
-        }
+    bool a = false;
+    u32 index_offset = index | X_MAX << VOXEL_SHIFT_POS_X;
+    u32 neigh_pos_x = voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)];
+    u32 ID_neigh_pos_x =
+        (voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)] << VOXEL_SHIFT_ID);
+    u32 ID_value =
+        ((voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)] << VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID);
 
-        index++;
-      }
+    // Check right
+    // First loop check voxel[index + 64] id = 0
+    if (((voxel_data[index + (X_MAX << VOXEL_SHIFT_POS_X)] << VOXEL_SHIFT_ID) &
+         VOXEL_MASK_ID) == 0) {
+      a = true;
+      continue;
     }
   }
 
-  EndPerformanceTracker("Update Voxels");
-}
-bool IsDirPosXNeighbour(Voxel v) {
-  bool is_neighbour = false;
-
-  return is_neighbour;
+  EndPerformanceTracker("Update visibilty");
 }
 
 // Generate a simple triangle mesh from code

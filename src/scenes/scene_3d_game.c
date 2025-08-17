@@ -19,6 +19,8 @@ int Scene3DGame() {
   Voxel *p_voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
   InitVoxel(p_voxel_data);
 
+  UpdateVisibilty(p_voxel_data);
+
   do {
     StartPerformanceTracker("CompleteLoop");
 

@@ -1,7 +1,6 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
-#include "sprites/player.h"
 #include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>
@@ -21,7 +20,7 @@
  * */
 
 /* MSB:
- * tttttttt ffffff zzzzzz yyyyyy xxxxxx
+ * iiiiiiii ffffff zzzzzz yyyyyy xxxxxx
  * 6bit = posX
  * 6bit = posy
  * 6bit = posz
@@ -34,19 +33,20 @@
 #define VOXEL_SHIFT_POS_Y 6
 #define VOXEL_SHIFT_POS_Z 12
 #define VOXEL_SHIFT_FACE 18
-#define VOXEL_SHIFT_TEXTURE 24
+#define VOXEL_SHIFT_ID 24
 
 // --- MASKS ---
 #define VOXEL_MASK_POS 0x3F
 #define VOXEL_MASK_FACE 0x3F
-#define VOXEL_MASK_TEXTURE 0xFF
+#define VOXEL_MASK_ID 0xFF
 
-typedef u64 Voxel;
+typedef u32 Voxel;
 
 typedef enum {
-  FACE_DIR_POS_X = 0b000001, // Rear
-  FACE_DIR_NEG_X = 0b000010, // Front
-  FACE_DIR_NEG_Z = 0b001000, // Left
+  FACE_DIR_POS_X = 0b000001, // Right
+  FACE_DIR_NEG_X = 0b000010, // Left
+  FACE_DIR_POS_Z = 0b000100, // Front
+  FACE_DIR_NEG_Z = 0b001000, // Back
   FACE_DIR_POS_Y = 0b010000, // Top
   FACE_DIR_NEG_Y = 0b100000, // Bottom
 } VoxelFaceDirection;
@@ -56,7 +56,7 @@ typedef enum {
   DIRT = 0x1,
   WATER = 0x2,
 
-} TextureID;
+} VoxelID;
 
 Mesh GenMeshCustom(Vector3 offset);
 
@@ -66,13 +66,16 @@ Mesh GenMeshCustom(Vector3 offset);
 void InitVoxel(Voxel *voxel_data);
 
 // Gets the X position from a voxel
-u8 Voxel_GetPosX(Voxel v);
+// u8 Voxel_GetPosX(Voxel v);
 
 // Gets the Y position from a voxel
-u8 Voxel_GetPosY(Voxel v);
+// u8 Voxel_GetPosY(Voxel v);
 
 // Gets the Z position from a voxel
-u8 Voxel_GetPosZ(Voxel v);
+// u8 Voxel_GetPosZ(Voxel v);
+
+void UpdateVisibiltyVoxelFaces(Voxel *voxel_data);
+void UpdateVisibilty(Voxel *voxel_data);
 
 bool IsDirPosXNeighbour(Voxel v);
 #endif // VOXEL_H
