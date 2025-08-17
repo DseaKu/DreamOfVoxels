@@ -7,7 +7,7 @@ Player InitPlayer(void) {
   player.camera.up = (Vector3){0.0f, 1.0f, 0.0f};
   player.camera.fovy = 60.0f;
   player.camera.projection = CAMERA_PERSPECTIVE;
-  player.speed = 0.1f;
+  player.speed = 0.2f;
   return player;
 }
 
