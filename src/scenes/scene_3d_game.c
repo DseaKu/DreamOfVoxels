@@ -37,6 +37,12 @@ int Scene3DGame() {
       is_visibility_updatable = true;
     }
 
+    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+      TryPlaceVoxel(voxel_data, &player, screen_width, screen_height,
+                    MAX_PLAYER_RANGE);
+      is_visibility_updatable = true;
+    }
+
     // Update objects
     UpdatePlayer(&player);
     if (is_visibility_updatable) {
@@ -76,11 +82,11 @@ void Draw3DDebugInformation(int screen_width, int screen_height) {
   StartPerformanceTracker("Draw 3D debug information");
   DrawGrid(100, 1.0f);
   // Draw coordinate system
-  DrawCylinderEx((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){50.0f, 0.0f, 0.0f},
+  DrawCylinderEx((Vector3){-1.0f, 0.0f, -1.0f}, (Vector3){50.0f, 0.0f, 0.0f},
                  0.01f, 0.01f, 24, RED);
-  DrawCylinderEx((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 50.0f, 0.0f},
+  DrawCylinderEx((Vector3){-1.0f, 0.0f, -1.0f}, (Vector3){0.0f, 50.0f, 0.0f},
                  0.01f, 0.01f, 24, GREEN);
-  DrawCylinderEx((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 0.0f, 50.0f},
+  DrawCylinderEx((Vector3){-1.0f, 0.0f, -1.0f}, (Vector3){0.0f, 0.0f, 50.0f},
                  0.01f, 0.01f, 24, BLUE);
   EndPerformanceTracker("Draw 3D debug information");
 }

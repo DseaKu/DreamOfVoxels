@@ -2,6 +2,7 @@
 #include "rlgl.h"
 #include "std_includes.h"
 #include "utils/resource_tracker.h"
+#include <math.h> // For roundf
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -263,6 +264,52 @@ void RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
     PlaceVoxel(voxel_data, hit_voxel_x, hit_voxel_y, hit_voxel_z, EMPTY);
   }
   EndPerformanceTracker("Remove Voxel");
+}
+
+void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
+                   u64 screen_height, float player_range) {
+  StartPerformanceTracker("TryPlaceVoxel");
+  // Raycasting to find target voxel
+  Ray ray = GetMouseRay((Vector2){screen_width / 2.0f, screen_height / 2.0f},
+                        player->camera);
+  RayCollision closest_hit = {0};
+  closest_hit.distance = player_range;
+  closest_hit.hit = false;
+
+  int hit_voxel_x = -1, hit_voxel_y = -1, hit_voxel_z = -1;
+
+  // Iterate over a reasonable distance from the player
+  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
+    Voxel v = voxel_data[index];
+    if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
+      continue;
+    }
+
+    int x = Voxel_GetPosX(v);
+    int y = Voxel_GetPosY(v);
+    int z = Voxel_GetPosZ(v);
+
+    BoundingBox box = {.min = (Vector3){x - 0.5f, y - 0.5f, z - 0.5f},
+                       .max = (Vector3){x + 0.5f, y + 0.5f, z + 0.5f}};
+
+    RayCollision hit = GetRayCollisionBox(ray, box);
+
+    if (hit.hit && hit.distance < closest_hit.distance) {
+      closest_hit = hit;
+      hit_voxel_x = x;
+      hit_voxel_y = y;
+      hit_voxel_z = z;
+    }
+  }
+
+  if (closest_hit.hit) {
+    int new_x = hit_voxel_x + (int)roundf(closest_hit.normal.x);
+    int new_y = hit_voxel_y + (int)roundf(closest_hit.normal.y);
+    int new_z = hit_voxel_z + (int)roundf(closest_hit.normal.z);
+
+    PlaceVoxel(voxel_data, new_x, new_y, new_z, DIRT);
+  }
+  EndPerformanceTracker("TryPlaceVoxel");
 }
 
 void RenderVoxelFaces(Voxel *voxel_data, Texture2D texture) {
