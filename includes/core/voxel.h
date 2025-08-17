@@ -8,15 +8,16 @@
 
 #define VOXEL_SIZE 1.0f
 
-#define X_MAX 62
-#define Y_MAX 62
-#define Z_MAX 62
+static const u8 X_MAX = 0b111111;
+static const u8 Z_MAX = 0b111111;
+static const u8 Y_MAX = 0b111111;
+// #define X_MAX 62
+// #define Y_MAX 62
+// #define Z_MAX 62
 #define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
 
 /* Each coordinate will be represented by 6bits.
  * That means the coordinates cant exeed 63,
- * thats why I choose 62 to keep it even,
- * get the max storage value
  * */
 
 /* MSB:

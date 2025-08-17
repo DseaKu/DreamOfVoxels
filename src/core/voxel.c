@@ -58,14 +58,21 @@ void UpdateVisibilty(Voxel *voxel_data) {
 
   for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
 
+    Voxel v = voxel_data[index];
+    u8 xx = (int)Voxel_GetPosX(v);
+    u8 zz = (int)Voxel_GetPosZ(v);
+    u8 yy = (int)Voxel_GetPosY(v);
+
     u8 visible_faces = 0;
-    // Boundary check
-    if (index % X_MAX) {
-      bool a = 0;
-    }
 
     // Check if positive x(back) neighbour is EMPTY + boundary check
-    if (((voxel_data[index + 1] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0) {
+    if (((voxel_data[index + 1] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+        Voxel_GetPosX(v) == X_MAX-1) {
+      visible_faces |= FACE_DIR_POS_X;
+    }
+    // Check if negative x(front) neighbour is EMPTY + boundary check
+    if (((voxel_data[index - 1] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+        Voxel_GetPosX(v) == 0) {
       visible_faces |= FACE_DIR_POS_X;
     }
 
