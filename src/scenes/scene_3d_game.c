@@ -47,6 +47,7 @@ int Scene3DGame() {
     UpdatePlayer(&player);
     if (is_visibility_updatable) {
       UpdateVisibility(voxel_data);
+      is_visibility_updatable = false;
     }
 
     // Draw 3D
