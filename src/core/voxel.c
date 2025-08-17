@@ -1,4 +1,5 @@
 #include "core/voxel.h"
+#include "rlgl.h"
 #include "std_includes.h"
 #include "utils/resource_tracker.h"
 #include <raylib.h>
@@ -200,4 +201,175 @@ Mesh GenMeshCustom(Vector3 offset) {
 
   // Return the generated mesh
   return mesh;
+}
+
+u64 GetVoxelIndex(int x, int y, int z) {
+  if (x < 0 || x >= X_MAX || y < 0 || y >= Y_MAX || z < 0 || z >= Z_MAX) {
+    return -1; // Invalid index
+  }
+  return (y * Y_NEIGHBOUR_OFFSET) + (z * Z_NEIGHBOUR_OFFSET) + x;
+}
+
+void PlaceVoxel(Voxel *voxel_data, int x, int y, int z, VoxelID id) {
+  u64 index = GetVoxelIndex(x, y, z);
+  if (index == -1) {
+    return;
+  }
+
+  // Clear the old ID and set the new one
+  voxel_data[index] &= ~((Voxel)VOXEL_MASK_ID << VOXEL_SHIFT_ID);
+  voxel_data[index] |= ((Voxel)id << VOXEL_SHIFT_ID);
+}
+
+void RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
+                 u64 screen_height, float player_range) {
+
+  StartPerformanceTracker("Remove Voxel");
+  // Raycasting to find target voxel
+  Ray ray = GetMouseRay((Vector2){screen_width / 2.0f, screen_height / 2.0f},
+                        player->camera);
+  RayCollision closest_hit = {0};
+  closest_hit.distance = player_range;
+  closest_hit.hit = false;
+
+  int hit_voxel_x = -1, hit_voxel_y = -1, hit_voxel_z = -1;
+
+  // Iterate over a reasonable distance from the player
+  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
+    Voxel v = voxel_data[index];
+    if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
+      continue;
+    }
+
+    int x = Voxel_GetPosX(v);
+    int y = Voxel_GetPosY(v);
+    int z = Voxel_GetPosZ(v);
+
+    BoundingBox box = {.min = (Vector3){x - 0.5f, y - 0.5f, z - 0.5f},
+                       .max = (Vector3){x + 0.5f, y + 0.5f, z + 0.5f}};
+
+    RayCollision hit = GetRayCollisionBox(ray, box);
+
+    if (hit.hit && hit.distance < closest_hit.distance) {
+      closest_hit = hit;
+      hit_voxel_x = x;
+      hit_voxel_y = y;
+      hit_voxel_z = z;
+    }
+  }
+
+  if (closest_hit.hit) {
+
+    PlaceVoxel(voxel_data, hit_voxel_x, hit_voxel_y, hit_voxel_z, EMPTY);
+  }
+  EndPerformanceTracker("Remove Voxel");
+}
+
+void RenderVoxelFaces(Voxel *voxel_data, Texture2D texture) {
+  StartPerformanceTracker("RenderVoxelFaces");
+  rlSetTexture(texture.id);
+
+  rlBegin(RL_QUADS);
+
+  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
+    Voxel v = voxel_data[index];
+
+    // Skip EMPTY voxels
+    if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
+      continue;
+    }
+
+    u8 visible_faces = (v >> VOXEL_SHIFT_FACE) & VOXEL_MASK_FACE;
+
+    // If no faces are visible, skip.
+    if (visible_faces == 0) {
+      continue;
+    }
+
+    // Get voxel position
+    float x = (float)Voxel_GetPosX(v);
+    float y = (float)Voxel_GetPosY(v);
+    float z = (float)Voxel_GetPosZ(v);
+
+    // Determine color based on VoxelID
+    VoxelID id = (VoxelID)((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID);
+    if (id == DIRT) {
+      // Use white to not tint the texture
+      rlColor4ub(255, 255, 255, 255);
+    } else if (id == WATER) {
+      // Use blue for water
+      rlColor4ub(0, 0, 255, 128);
+    }
+
+    // Check and draw each visible face (counter-clockwise order)
+    if (visible_faces & FACE_DIR_POS_X) { // Right face
+      rlNormal3f(1.0f, 0.0f, 0.0f);
+      rlTexCoord2f(1.0f, 1.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_NEG_X) { // Left face
+      rlNormal3f(-1.0f, 0.0f, 0.0f);
+      rlTexCoord2f(0.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+    }
+    if (visible_faces & FACE_DIR_POS_Y) { // Top face
+      rlNormal3f(0.0f, 1.0f, 0.0f);
+      rlTexCoord2f(0.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_NEG_Y) { // Bottom face
+      rlNormal3f(0.0f, -1.0f, 0.0f);
+      rlTexCoord2f(1.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_POS_Z) { // Front face
+      rlNormal3f(0.0f, 0.0f, 1.0f);
+      rlTexCoord2f(1.0f, 1.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_NEG_Z) { // Back face
+      rlNormal3f(0.0f, 0.0f, -1.0f);
+      rlTexCoord2f(0.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 1.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+    }
+  }
+  rlEnd();
+  rlSetTexture(0);
+  EndPerformanceTracker("RenderVoxelFaces");
 }

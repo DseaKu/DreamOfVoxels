@@ -1,6 +1,7 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
+#include "sprites/player.h"
 #include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>
@@ -16,8 +17,8 @@
 #define Y_MAX 63
 
 #define X_NEIGHBOUR_OFFSET 1
-#define Z_NEIGHBOUR_OFFSET Z_MAX
-#define Y_NEIGHBOUR_OFFSET Y_MAX *Z_MAX
+#define Z_NEIGHBOUR_OFFSET X_MAX
+#define Y_NEIGHBOUR_OFFSET X_MAX *Z_MAX
 
 #define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
 
@@ -79,4 +80,12 @@ u8 Voxel_GetPosY(Voxel v);
 
 u8 Voxel_GetPosZ(Voxel v);
 
+u64 GetVoxelIndex(int x, int y, int z);
+
+void PlaceVoxel(Voxel *voxel_data, int x, int y, int z, VoxelID id);
+
+void RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
+                 u64 screen_height, float player_range);
+
+void RenderVoxelFaces(Voxel *voxel_data, Texture2D texture);
 #endif // VOXEL_H
