@@ -14,7 +14,7 @@ set(SOURCES
   src/scenes/scene_3d_game.c
   src/sprites/player.c
   src/core/voxel.c
-  src/utils/rescource_tracker.c
+  src/utils/resource_tracker.c
 )
 
 add_executable(game main.c ${SOURCES})

@@ -1,7 +1,7 @@
 #include "scenes/scene_3d_game.h"
 #include "core/voxel.h"
 #include "sprites/player.h"
-#include "utils/rescource_tracker.h"
+#include "utils/resource_tracker.h"
 #include <raylib.h>
 #include <stdlib.h>
 
@@ -19,9 +19,9 @@ int Scene3DGame() {
   Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
   InitVoxel(voxel_data);
 
-  UpdateVisibilty(voxel_data);
+  UpdateVisibility(voxel_data);
 
-  bool is_visibilty_updatable = false;
+  bool is_visibility_updatable = false;
 
   do {
     StartPerformanceTracker("CompleteLoop");
@@ -29,8 +29,8 @@ int Scene3DGame() {
     // Update objects
     StartPerformanceTracker("UpdateLoop");
     UpdatePlayer(&player);
-    if (is_visibilty_updatable) {
-      UpdateVisibilty(voxel_data);
+    if (is_visibility_updatable) {
+      UpdateVisibility(voxel_data);
     }
     EndPerformanceTracker("UpdateLoop");
 
@@ -77,9 +77,9 @@ void Draw3DDebugInformation(int screen_width, int screen_height) {
 }
 void Draw2DDebugInformation(int screen_width, int screen_height) {
   StartPerformanceTracker("Draw 2D debug information");
-  DrawText("X-Axsis", 30, 10, 10, RED);
-  DrawText("Y-Axsis", 30, 20, 10, GREEN);
-  DrawText("Z-Axsis", 30, 30, 10, BLUE);
+  DrawText("X-Axis", 30, 10, 10, RED);
+  DrawText("Y-Axis", 30, 20, 10, GREEN);
+  DrawText("Z-Axis", 30, 30, 10, BLUE);
   DrawFPS(screen_width - 100, 10);
   EndPerformanceTracker("Draw 2D debug information");
 }

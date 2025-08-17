@@ -1,6 +1,6 @@
 #include "core/voxel.h"
 #include "std_includes.h"
-#include "utils/rescource_tracker.h"
+#include "utils/resource_tracker.h"
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -53,7 +53,7 @@ u8 Voxel_GetPosZ(Voxel v) {
   return (u8)((v >> VOXEL_SHIFT_POS_Z) & VOXEL_MASK_POS);
 }
 
-void UpdateVisibilty(Voxel *voxel_data) {
+void UpdateVisibility(Voxel *voxel_data) {
   StartPerformanceTracker("Update visibilty");
 
   for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {

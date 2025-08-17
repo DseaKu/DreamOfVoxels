@@ -1,4 +1,4 @@
-#include "utils/rescource_tracker.h"
+#include "utils/resource_tracker.h"
 #include <stdio.h>
 #include <string.h>
 

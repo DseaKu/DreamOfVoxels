@@ -71,7 +71,7 @@ Mesh GenMeshCustom(Vector3 offset);
 // Allocate xzy-coordinates to voxels
 void InitVoxel(Voxel *voxel_data);
 
-void UpdateVisibilty(Voxel *voxel_data);
+void UpdateVisibility(Voxel *voxel_data);
 
 bool IsDirPosXNeighbour(Voxel v);
 #endif // VOXEL_H
