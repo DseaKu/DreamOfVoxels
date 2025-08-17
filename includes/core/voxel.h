@@ -1,6 +1,7 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
+#include "sprites/player.h"
 #include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>
@@ -24,7 +25,7 @@
  * 6bit = posX
  * 6bit = posy
  * 6bit = posz
- * 3bit = face direction
+ * 6bit = face direction
  * 8bit = texture
  */
 
@@ -50,6 +51,13 @@ typedef enum {
   FACE_DIR_NEG_Y = 0b100000, // Bottom
 } VoxelFaceDirection;
 
+typedef enum {
+  EMPTY = 0x0,
+  DIRT = 0x1,
+  WATER = 0x2,
+
+} TextureID;
+
 Mesh GenMeshCustom(Vector3 offset);
 
 // Mesh GenVertexMesh(Vertex vertices_data);
@@ -66,4 +74,5 @@ u8 Voxel_GetPosY(Voxel v);
 // Gets the Z position from a voxel
 u8 Voxel_GetPosZ(Voxel v);
 
+bool IsDirPosXNeighbour(Voxel v);
 #endif // VOXEL_H

@@ -10,6 +10,7 @@ Mesh BuildSingelVoxelMesh() {
   return mesh;
 }
 
+// Init xzy-coordinates to voxels
 void InitVoxel(Voxel *voxel_data) {
   StartPerformanceTracker("Init Voxels");
   u64 index = 0;
@@ -22,9 +23,6 @@ void InitVoxel(Voxel *voxel_data) {
         voxel_data[index] |= ((Voxel)x << VOXEL_SHIFT_POS_X);
         voxel_data[index] |= ((Voxel)y << VOXEL_SHIFT_POS_Y);
         voxel_data[index] |= ((Voxel)z << VOXEL_SHIFT_POS_Z);
-
-        u8 xx = Voxel_GetPosX(voxel_data[index]);
-        u8 yy = Voxel_GetPosY(voxel_data[index]);
 
         index++;
       }
@@ -47,6 +45,32 @@ u8 Voxel_GetPosY(Voxel v) {
 u8 Voxel_GetPosZ(Voxel v) {
   return (u8)((v >> VOXEL_SHIFT_POS_Z) & VOXEL_MASK_POS);
 }
+
+void UpdateVoxel(Voxel *voxel_data) {
+  StartPerformanceTracker("Update Voxels");
+  u64 index = 0;
+
+  for (u8 y = 0; y < Y_MAX; y++) {
+    for (u8 z = 0; z < Z_MAX; z++) {
+      for (u8 x = 0; x < X_MAX; x++) {
+
+        if (IsDirPosXNeighbour(voxel_data[index])) {
+          voxel_data[index] |= ((Voxel)FACE_DIR_POS_X << VOXEL_SHIFT_TEXTURE);
+        }
+
+        index++;
+      }
+    }
+  }
+
+  EndPerformanceTracker("Update Voxels");
+}
+bool IsDirPosXNeighbour(Voxel v) {
+  bool is_neighbour = false;
+
+  return is_neighbour;
+}
+
 // Generate a simple triangle mesh from code
 Mesh GenMeshCustom(Vector3 offset) {
   // Initialize a mesh object
