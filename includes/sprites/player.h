@@ -6,7 +6,6 @@
 typedef struct Player {
   Camera camera;
   Vector3 position;
-  float speed;
 } Player;
 
 Player InitPlayer(void);
