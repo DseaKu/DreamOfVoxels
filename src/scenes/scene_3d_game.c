@@ -3,8 +3,7 @@
 #include "rlgl.h"
 #include "sprites/player.h"
 #include "utils/resource_tracker.h"
-#include <float.h> 
-#include <math.h>
+#include <float.h>
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -55,7 +54,7 @@ int Scene3DGame() {
     UpdatePlayer(&player);
     if (is_visibility_updatable) {
       UpdateVisibility(voxel_data);
-      UnloadMesh(chunk_mesh); // Unload old mesh
+      UnloadMesh(chunk_mesh);                      // Unload old mesh
       chunk_mesh = GenerateGreedyMesh(voxel_data); // Regenerate mesh
       is_visibility_updatable = false;
     }
@@ -121,16 +120,22 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
     VoxelID *mask = (VoxelID *)calloc(dims[0] * dims[1], sizeof(VoxelID));
 
     // Iterate over each slice of the chunk
-    for (x[axis] = -1; x[axis] < (axis == 0 ? X_MAX : (axis == 1 ? Y_MAX : Z_MAX));) {
+    for (x[axis] = -1;
+         x[axis] < (axis == 0 ? X_MAX : (axis == 1 ? Y_MAX : Z_MAX));) {
       int n = 0;
       for (x[v] = 0; x[v] < dims[0]; ++x[v]) {
         for (x[u] = 0; x[u] < dims[1]; ++x[u]) {
-          VoxelID id1 = (x[axis] >= 0) ? GetVoxelID(voxel_data, x[0], x[1], x[2]) : EMPTY;
-          VoxelID id2 = (x[axis] < (axis == 0 ? X_MAX : (axis == 1 ? Y_MAX : Z_MAX)) - 1)
-                            ? GetVoxelID(voxel_data, x[0] + q[0], x[1] + q[1], x[2] + q[2])
-                            : EMPTY;
+          VoxelID id1 =
+              (x[axis] >= 0) ? GetVoxelID(voxel_data, x[0], x[1], x[2]) : EMPTY;
+          VoxelID id2 =
+              (x[axis] < (axis == 0 ? X_MAX : (axis == 1 ? Y_MAX : Z_MAX)) - 1)
+                  ? GetVoxelID(voxel_data, x[0] + q[0], x[1] + q[1],
+                               x[2] + q[2])
+                  : EMPTY;
 
-          mask[n++] = (id1 != EMPTY && id2 == EMPTY) ? id1 : (id1 == EMPTY && id2 != EMPTY) ? id2 : 0;
+          mask[n++] = (id1 != EMPTY && id2 == EMPTY)   ? id1
+                      : (id1 == EMPTY && id2 != EMPTY) ? id2
+                                                       : 0;
         }
       }
 
@@ -141,7 +146,8 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
         for (int i = 0; i < dims[1];) {
           if (mask[n]) {
             int w, h;
-            for (w = 1; i + w < dims[1] && mask[n + w] == mask[n]; ++w) {}
+            for (w = 1; i + w < dims[1] && mask[n + w] == mask[n]; ++w) {
+            }
 
             bool done = false;
             for (h = 1; j + h < dims[0]; ++h) {
@@ -151,7 +157,8 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
                   break;
                 }
               }
-              if (done) break;
+              if (done)
+                break;
             }
 
             x[u] = i;
@@ -164,15 +171,19 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
             dv[v] = h;
 
             face_count++;
-            vertices = (Vector3 *)realloc(vertices, face_count * 4 * sizeof(Vector3));
-            normals = (Vector3 *)realloc(normals, face_count * 4 * sizeof(Vector3));
-            texcoords = (Vector2 *)realloc(texcoords, face_count * 4 * sizeof(Vector2));
+            vertices =
+                (Vector3 *)realloc(vertices, face_count * 4 * sizeof(Vector3));
+            normals =
+                (Vector3 *)realloc(normals, face_count * 4 * sizeof(Vector3));
+            texcoords =
+                (Vector2 *)realloc(texcoords, face_count * 4 * sizeof(Vector2));
 
             Vector3 v1 = {x[0], x[1], x[2]};
             Vector3 v2 = {x[0] + du[0], x[1] + du[1], x[2] + du[2]};
-            Vector3 v3 = {x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2]};
+            Vector3 v3 = {x[0] + du[0] + dv[0], x[1] + du[1] + dv[1],
+                          x[2] + du[2] + dv[2]};
             Vector3 v4 = {x[0] + dv[0], x[1] + dv[1], x[2] + dv[2]};
-            
+
             int vert_idx = (face_count - 1) * 4;
             vertices[vert_idx + 0] = v1;
             vertices[vert_idx + 1] = v2;
@@ -213,7 +224,8 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
   mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
   mesh.normals = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
   mesh.texcoords = (float *)malloc(mesh.vertexCount * 2 * sizeof(float));
-  mesh.indices = (unsigned short *)malloc(mesh.triangleCount * 3 * sizeof(unsigned short));
+  mesh.indices =
+      (unsigned short *)malloc(mesh.triangleCount * 3 * sizeof(unsigned short));
 
   int vert_idx = 0;
   int ind_idx = 0;
@@ -247,7 +259,6 @@ Mesh GenerateGreedyMesh(Voxel *voxel_data) {
   EndPerformanceTracker("GenerateGreedyMesh");
   return mesh;
 }
-
 
 void Draw3DDebugInformation(int screen_width, int screen_height) {
 
