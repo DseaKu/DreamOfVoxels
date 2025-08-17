@@ -67,20 +67,27 @@ void UpdateVisibilty(Voxel *voxel_data) {
 
     // Check if positive x(back) neighbour is EMPTY + boundary check
     if (((voxel_data[index + 1] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
-        Voxel_GetPosX(v) == X_MAX-1) {
+        Voxel_GetPosX(v) == X_MAX - 1) {
       visible_faces |= FACE_DIR_POS_X;
     }
     // Check if negative x(front) neighbour is EMPTY + boundary check
     if (((voxel_data[index - 1] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
         Voxel_GetPosX(v) == 0) {
-      visible_faces |= FACE_DIR_POS_X;
+      visible_faces |= FACE_DIR_NEG_X;
     }
 
-    Voxel zposneigh = voxel_data[index + Z_MAX];
-    ; // Check if positive z(right) neighbour  is EMPTY
-    if (((voxel_data[index + Z_MAX] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0) {
+    // Check if positive z(right) neighbour is EMPTY + boundary check
+    if (((voxel_data[index + Z_MAX] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+        Voxel_GetPosZ(v) == Z_MAX - 1) {
       visible_faces |= FACE_DIR_POS_Z;
     }
+
+    // Check if negative z(front) neighbour is EMPTY + boundary check
+    if (((voxel_data[index - Z_MAX] >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == 0 ||
+        Voxel_GetPosZ(v) == 0) {
+      visible_faces |= FACE_DIR_NEG_Z;
+    }
+    voxel_data[index] |= visible_faces << VOXEL_SHIFT_FACE;
   }
 
   EndPerformanceTracker("Update visibilty");
