@@ -73,5 +73,11 @@ void InitVoxel(Voxel *voxel_data);
 
 void UpdateVisibility(Voxel *voxel_data);
 
+u8 Voxel_GetPosX(Voxel v);
+
+u8 Voxel_GetPosY(Voxel v);
+
+u8 Voxel_GetPosZ(Voxel v);
+
 bool IsDirPosXNeighbour(Voxel v);
 #endif // VOXEL_H

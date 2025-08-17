@@ -1,10 +1,13 @@
 #include "scenes/scene_3d_game.h"
 #include "core/voxel.h"
+#include "rlgl.h"
 #include "sprites/player.h"
 #include "utils/resource_tracker.h"
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
+void RenderVoxelFaces(Voxel *voxel_data);
 
 int Scene3DGame() {
 
@@ -37,6 +40,7 @@ int Scene3DGame() {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
 
+    RenderVoxelFaces(voxel_data);
     Draw3DDebugInformation(screen_width, screen_height);
     EndMode3D();
 
@@ -56,6 +60,89 @@ int Scene3DGame() {
   CloseWindow();
   PrintPerformanceTrackers();
   return 0;
+}
+
+void RenderVoxelFaces(Voxel *voxel_data) {
+  StartPerformanceTracker("RenderVoxelFaces");
+  rlBegin(RL_QUADS);
+
+  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
+    Voxel v = voxel_data[index];
+
+    // Skip EMPTY voxels
+    if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
+      continue;
+    }
+
+    u8 visible_faces = (v >> VOXEL_SHIFT_FACE) & VOXEL_MASK_FACE;
+
+    // If no faces are visible, skip.
+    if (visible_faces == 0) {
+      continue;
+    }
+
+    // Get voxel position
+    float x = (float)Voxel_GetPosX(v);
+    float y = (float)Voxel_GetPosY(v);
+    float z = (float)Voxel_GetPosZ(v);
+
+    // Determine color based on VoxelID
+    Color color = WHITE;
+    VoxelID id = (VoxelID)((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID);
+    if (id == DIRT) {
+      color = (Color){139, 69, 19, 255}; // Brown
+    } else if (id == WATER) {
+      color = (Color){0, 0, 255, 128}; // Semi-transparent blue
+    }
+
+    rlColor4ub(color.r, color.g, color.b, color.a);
+
+    // Check and draw each visible face (counter-clockwise order)
+    if (visible_faces & FACE_DIR_POS_X) { // Right face
+      rlNormal3f(1.0f, 0.0f, 0.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+    }
+    if (visible_faces & FACE_DIR_NEG_X) { // Left face
+      rlNormal3f(-1.0f, 0.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_POS_Y) { // Top face
+      rlNormal3f(0.0f, 1.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_NEG_Y) { // Bottom face
+      rlNormal3f(0.0f, -1.0f, 0.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_POS_Z) { // Front face
+      rlNormal3f(0.0f, 0.0f, 1.0f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+    }
+    if (visible_faces & FACE_DIR_NEG_Z) { // Back face
+      rlNormal3f(0.0f, 0.0f, -1.0f);
+      rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+    }
+  }
+  rlEnd();
+  EndPerformanceTracker("RenderVoxelFaces");
 }
 
 void Draw3DDebugInformation(int screen_width, int screen_height) {
