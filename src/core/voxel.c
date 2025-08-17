@@ -63,9 +63,9 @@ void UpdateVisibilty(Voxel *voxel_data) {
     u32 index_offset = index | X_MAX << VOXEL_SHIFT_POS_X;
     u32 neigh_pos_x = voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)];
     u32 ID_neigh_pos_x =
-        (voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)] << VOXEL_SHIFT_ID);
-    u32 ID_value =
-        ((voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)] << VOXEL_SHIFT_ID) &
+        (voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID);
+    u8 ID_value =
+        ((voxel_data[index | (X_MAX << VOXEL_SHIFT_POS_X)] >> VOXEL_SHIFT_ID) &
          VOXEL_MASK_ID);
 
     // Check right
