@@ -61,7 +61,9 @@ typedef enum {
 typedef enum {
   EMPTY = 0x0,
   DIRT = 0x1,
-  WATER = 0x2,
+  GRASS = 0x2,
+  STONE = 0x3,
+  SAND = 0x4,
 
 } VoxelID;
 
@@ -70,7 +72,7 @@ Mesh GenMeshCustom(Vector3 offset);
 // Mesh GenVertexMesh(Vertex vertices_data);
 
 // Allocate xzy-coordinates to voxels
-void InitVoxel(Voxel *voxel_data);
+void InitVoxel(Voxel *voxel_data, bool is_random);
 
 void UpdateVisibility(Voxel *voxel_data);
 
@@ -84,11 +86,13 @@ u64 GetVoxelIndex(int x, int y, int z);
 
 void PlaceVoxel(Voxel *voxel_data, int x, int y, int z, VoxelID id);
 
-void RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
+bool RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
                  u64 screen_height, float player_range);
 
 void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
                    u64 screen_height, float player_range);
 
 VoxelID GetVoxelID(Voxel *voxel_data, int x, int y, int z);
+
+Mesh GenerateGreedyMesh(Voxel *voxel_data);
 #endif // VOXEL_H
