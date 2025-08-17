@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-void RenderVoxelFaces(Voxel *voxel_data);
+void RenderVoxelFaces(Voxel *voxel_data, Texture2D texture);
 
 int Scene3DGame() {
 
@@ -23,6 +23,8 @@ int Scene3DGame() {
   InitVoxel(voxel_data);
 
   UpdateVisibility(voxel_data);
+
+  Texture2D dirt_texture = LoadTexture("assets/log.png");
 
   bool is_visibility_updatable = false;
 
@@ -40,7 +42,7 @@ int Scene3DGame() {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
 
-    RenderVoxelFaces(voxel_data);
+    RenderVoxelFaces(voxel_data, dirt_texture);
     Draw3DDebugInformation(screen_width, screen_height);
     EndMode3D();
 
@@ -56,14 +58,17 @@ int Scene3DGame() {
   } while (!WindowShouldClose());
   // } while (WindowShouldClose());
 
+  UnloadTexture(dirt_texture);
   free(voxel_data);
   CloseWindow();
   PrintPerformanceTrackers();
   return 0;
 }
 
-void RenderVoxelFaces(Voxel *voxel_data) {
+void RenderVoxelFaces(Voxel *voxel_data, Texture2D texture) {
   StartPerformanceTracker("RenderVoxelFaces");
+  rlSetTexture(texture.id);
+
   rlBegin(RL_QUADS);
 
   for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
@@ -87,61 +92,85 @@ void RenderVoxelFaces(Voxel *voxel_data) {
     float z = (float)Voxel_GetPosZ(v);
 
     // Determine color based on VoxelID
-    Color color = WHITE;
     VoxelID id = (VoxelID)((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID);
     if (id == DIRT) {
-      color = (Color){139, 69, 19, 255}; // Brown
+      // Use white to not tint the texture
+      rlColor4ub(255, 255, 255, 255);
     } else if (id == WATER) {
-      color = (Color){0, 0, 255, 128}; // Semi-transparent blue
+      // Use blue for water
+      rlColor4ub(0, 0, 255, 128);
     }
-
-    rlColor4ub(color.r, color.g, color.b, color.a);
 
     // Check and draw each visible face (counter-clockwise order)
     if (visible_faces & FACE_DIR_POS_X) { // Right face
       rlNormal3f(1.0f, 0.0f, 0.0f);
+      rlTexCoord2f(1.0f, 1.0f);
       rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
       rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
       rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
       rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
     }
     if (visible_faces & FACE_DIR_NEG_X) { // Left face
       rlNormal3f(-1.0f, 0.0f, 0.0f);
+      rlTexCoord2f(0.0f, 1.0f);
       rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
       rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
       rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 1.0f);
       rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
     }
     if (visible_faces & FACE_DIR_POS_Y) { // Top face
       rlNormal3f(0.0f, 1.0f, 0.0f);
+      rlTexCoord2f(0.0f, 0.0f);
       rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
       rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 1.0f);
       rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
       rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
     }
     if (visible_faces & FACE_DIR_NEG_Y) { // Bottom face
       rlNormal3f(0.0f, -1.0f, 0.0f);
+      rlTexCoord2f(1.0f, 1.0f);
       rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
       rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
       rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
       rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
     }
     if (visible_faces & FACE_DIR_POS_Z) { // Front face
       rlNormal3f(0.0f, 0.0f, 1.0f);
+      rlTexCoord2f(1.0f, 1.0f);
       rlVertex3f(x + 0.5f, y - 0.5f, z + 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
       rlVertex3f(x + 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
       rlVertex3f(x - 0.5f, y + 0.5f, z + 0.5f);
+      rlTexCoord2f(0.0f, 1.0f);
       rlVertex3f(x - 0.5f, y - 0.5f, z + 0.5f);
     }
     if (visible_faces & FACE_DIR_NEG_Z) { // Back face
       rlNormal3f(0.0f, 0.0f, -1.0f);
+      rlTexCoord2f(0.0f, 1.0f);
       rlVertex3f(x - 0.5f, y - 0.5f, z - 0.5f);
+      rlTexCoord2f(0.0f, 0.0f);
       rlVertex3f(x - 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 0.0f);
       rlVertex3f(x + 0.5f, y + 0.5f, z - 0.5f);
+      rlTexCoord2f(1.0f, 1.0f);
       rlVertex3f(x + 0.5f, y - 0.5f, z - 0.5f);
     }
   }
   rlEnd();
+  rlSetTexture(0);
   EndPerformanceTracker("RenderVoxelFaces");
 }
 
