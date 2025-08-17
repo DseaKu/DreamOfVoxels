@@ -69,7 +69,7 @@ void UpdateVisibilty(Voxel *voxel_data) {
          VOXEL_MASK_ID);
 
     // Check right
-    // First loop check voxel[index + 64] id = 0
+    // First loop check voxel[index + 64] id =
     if (((voxel_data[index + (X_MAX << VOXEL_SHIFT_POS_X)] << VOXEL_SHIFT_ID) &
          VOXEL_MASK_ID) == 0) {
       a = true;

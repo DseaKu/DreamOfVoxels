@@ -20,7 +20,7 @@
  * */
 
 /* MSB:
- * iiiiiiii ffffff zzzzzz yyyyyy xxxxxx
+ * iiiiiiii ffffff yyyyyy zzzzzz xxxxxx
  * 6bit = posX
  * 6bit = posy
  * 6bit = posz
@@ -30,8 +30,8 @@
 
 // --- SHIFTS ---
 #define VOXEL_SHIFT_POS_X 0
-#define VOXEL_SHIFT_POS_Y 6
-#define VOXEL_SHIFT_POS_Z 12
+#define VOXEL_SHIFT_POS_Z 6
+#define VOXEL_SHIFT_POS_Y 12
 #define VOXEL_SHIFT_FACE 18
 #define VOXEL_SHIFT_ID 24
 
