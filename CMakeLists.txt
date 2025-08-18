@@ -21,4 +21,4 @@ add_executable(game main.c ${SOURCES})
 
 target_include_directories(game PRIVATE includes)
 
-target_link_libraries(game PRIVATE raylib)
+target_link_libraries(game PRIVATE raylib m)
