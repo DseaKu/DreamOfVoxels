@@ -29,9 +29,9 @@ int Scene3DGame() {
   Mesh chunk_mesh = GenerateGreedyMesh(voxel_data);
   Material material = LoadMaterialDefault();
   Image texture_atlas_img = LoadImage("assets/texture_atlas.png");
-  material.maps[MATERIAL_MAP_DIFFUSE].texture = LoadTextureFromImage(texture_atlas_img);
+  material.maps[MATERIAL_MAP_DIFFUSE].texture =
+      LoadTextureFromImage(texture_atlas_img);
   UnloadImage(texture_atlas_img);
-
 
   bool is_visibility_updatable = false;
   do {
@@ -113,179 +113,238 @@ void Draw2DDebugInformation(int screen_width, int screen_height) {
 }
 
 Mesh GenerateGreedyMesh(Voxel *voxel_data) {
-    // This is a "naive" or "culled" meshing algorithm, not a true "greedy" one.
-    // It generates a quad for each visible face of a voxel.
+  StartPerformanceTracker("GenerateGreedyMesh");
+  // This is a "naive" or "culled" meshing algorithm, not a true "greedy" one.
+  // It generates a quad for each visible face of a voxel.
 
-    int max_vertices = NUMBER_OF_VOXELS * 6 * 4; // 6 faces, 4 vertices per face
-    int max_indices = NUMBER_OF_VOXELS * 6 * 6; // 6 faces, 6 indices per face
+  int max_vertices = NUMBER_OF_VOXELS * 6 * 4; // 6 faces, 4 vertices per face
+  int max_indices = NUMBER_OF_VOXELS * 6 * 6;  // 6 faces, 6 indices per face
 
-    float *vertices = (float *)malloc(max_vertices * 3 * sizeof(float));
-    float *texcoords = (float *)malloc(max_vertices * 2 * sizeof(float));
-    unsigned short *indices = (unsigned short *)malloc(max_indices * sizeof(unsigned short));
+  float *vertices = (float *)malloc(max_vertices * 3 * sizeof(float));
+  float *texcoords = (float *)malloc(max_vertices * 2 * sizeof(float));
+  unsigned short *indices =
+      (unsigned short *)malloc(max_indices * sizeof(unsigned short));
 
-    int vertex_count = 0;
-    int index_count = 0;
+  int vertex_count = 0;
+  int index_count = 0;
 
-    for (u64 i = 0; i < NUMBER_OF_VOXELS; i++) {
-        Voxel v = voxel_data[i];
-        VoxelID id = (VoxelID)((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID);
-        u8 visible_faces = (v >> VOXEL_SHIFT_FACE) & VOXEL_MASK_FACE;
+  for (u64 i = 0; i < NUMBER_OF_VOXELS; i++) {
+    Voxel v = voxel_data[i];
+    VoxelID id = (VoxelID)((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID);
+    u8 visible_faces = (v >> VOXEL_SHIFT_FACE) & VOXEL_MASK_FACE;
 
-        if (id == EMPTY || visible_faces == 0) {
-            continue;
-        }
-
-        float x = (float)Voxel_GetPosX(v);
-        float y = (float)Voxel_GetPosY(v);
-        float z = (float)Voxel_GetPosZ(v);
-
-        // Texture atlas settings
-        const int atlas_width_in_textures = 4; // dirt, grass, stone, sand
-        float texture_width = 1.0f / atlas_width_in_textures;
-        float u_offset = 0.0f;
-
-        switch (id) {
-            case GRASS: u_offset = 0.0f * texture_width; break;
-            case STONE: u_offset = 1.0f * texture_width; break;
-            case DIRT:  u_offset = 2.0f * texture_width; break;
-            case SAND:  u_offset = 3.0f * texture_width; break;
-            default: break;
-        }
-
-        // Define vertices for a cube centered at origin
-        float v_data[] = {
-            // Front face
-            -0.5f, -0.5f, 0.5f,  0.5f, -0.5f, 0.5f,   0.5f, 0.5f, 0.5f,   -0.5f, 0.5f, 0.5f,
-            // Back face
-            0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  -0.5f, 0.5f, -0.5f,  0.5f, 0.5f, -0.5f,
-            // Top face
-            -0.5f, 0.5f, 0.5f,   0.5f, 0.5f, 0.5f,    0.5f, 0.5f, -0.5f,  -0.5f, 0.5f, -0.5f,
-            // Bottom face
-            -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f,  0.5f, -0.5f, 0.5f,  -0.5f, -0.5f, 0.5f,
-            // Right face
-            0.5f, -0.5f, 0.5f,   0.5f, -0.5f, -0.5f,  0.5f, 0.5f, -0.5f,   0.5f, 0.5f, 0.5f,
-            // Left face
-            -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f,  -0.5f, 0.5f, 0.5f,  -0.5f, 0.5f, -0.5f
-        };
-
-        // Define texture coordinates for each face
-        float t_data[] = {
-            u_offset, 1.0f,             u_offset + texture_width, 1.0f,             u_offset + texture_width, 0.0f,             u_offset, 0.0f,
-            u_offset, 1.0f,             u_offset + texture_width, 1.0f,             u_offset + texture_width, 0.0f,             u_offset, 0.0f,
-            u_offset, 1.0f,             u_offset + texture_width, 1.0f,             u_offset + texture_width, 0.0f,             u_offset, 0.0f,
-            u_offset, 1.0f,             u_offset + texture_width, 1.0f,             u_offset + texture_width, 0.0f,             u_offset, 0.0f,
-            u_offset, 1.0f,             u_offset + texture_width, 1.0f,             u_offset + texture_width, 0.0f,             u_offset, 0.0f,
-            u_offset, 1.0f,             u_offset + texture_width, 1.0f,             u_offset + texture_width, 0.0f,             u_offset, 0.0f,
-        };
-
-
-        // Check each face
-        if (visible_faces & FACE_DIR_POS_Z) { // Front
-            for (int j = 0; j < 4; j++) {
-                vertices[(vertex_count + j) * 3 + 0] = v_data[j * 3 + 0] + x;
-                vertices[(vertex_count + j) * 3 + 1] = v_data[j * 3 + 1] + y;
-                vertices[(vertex_count + j) * 3 + 2] = v_data[j * 3 + 2] + z;
-                texcoords[(vertex_count + j) * 2 + 0] = t_data[j * 2 + 0];
-                texcoords[(vertex_count + j) * 2 + 1] = t_data[j * 2 + 1];
-            }
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 1;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count + 3;
-            vertex_count += 4;
-        }
-        if (visible_faces & FACE_DIR_NEG_Z) { // Back
-            for (int j = 0; j < 4; j++) {
-                vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 4) * 3 + 0] + x;
-                vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 4) * 3 + 1] + y;
-                vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 4) * 3 + 2] + z;
-                texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 4) * 2 + 0];
-                texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 4) * 2 + 1];
-            }
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 1;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count + 3;
-            vertex_count += 4;
-        }
-        if (visible_faces & FACE_DIR_POS_Y) { // Top
-            for (int j = 0; j < 4; j++) {
-                vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 8) * 3 + 0] + x;
-                vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 8) * 3 + 1] + y;
-                vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 8) * 3 + 2] + z;
-                texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 8) * 2 + 0];
-                texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 8) * 2 + 1];
-            }
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 1;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count + 3;
-            vertex_count += 4;
-        }
-        if (visible_faces & FACE_DIR_NEG_Y) { // Bottom
-            for (int j = 0; j < 4; j++) {
-                vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 12) * 3 + 0] + x;
-                vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 12) * 3 + 1] + y;
-                vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 12) * 3 + 2] + z;
-                texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 12) * 2 + 0];
-                texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 12) * 2 + 1];
-            }
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 1;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count + 3;
-            vertex_count += 4;
-        }
-        if (visible_faces & FACE_DIR_POS_X) { // Right
-            for (int j = 0; j < 4; j++) {
-                vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 16) * 3 + 0] + x;
-                vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 16) * 3 + 1] + y;
-                vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 16) * 3 + 2] + z;
-                texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 16) * 2 + 0];
-                texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 16) * 2 + 1];
-            }
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 1;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count + 3;
-            vertex_count += 4;
-        }
-        if (visible_faces & FACE_DIR_NEG_X) { // Left
-            for (int j = 0; j < 4; j++) {
-                vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 20) * 3 + 0] + x;
-                vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 20) * 3 + 1] + y;
-                vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 20) * 3 + 2] + z;
-                texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 20) * 2 + 0];
-                texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 20) * 2 + 1];
-            }
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 1;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count;
-            indices[index_count++] = vertex_count + 2;
-            indices[index_count++] = vertex_count + 3;
-            vertex_count += 4;
-        }
+    if (id == EMPTY || visible_faces == 0) {
+      continue;
     }
 
-    Mesh mesh = {0};
-    mesh.vertexCount = vertex_count;
-    mesh.triangleCount = index_count / 3;
-    mesh.vertices = (float *)realloc(vertices, vertex_count * 3 * sizeof(float));
-    mesh.texcoords = (float *)realloc(texcoords, vertex_count * 2 * sizeof(float));
-    mesh.indices = (unsigned short *)realloc(indices, index_count * sizeof(unsigned short));
+    float x = (float)Voxel_GetPosX(v);
+    float y = (float)Voxel_GetPosY(v);
+    float z = (float)Voxel_GetPosZ(v);
 
-    UploadMesh(&mesh, false);
+    // Texture atlas settings
+    const int atlas_width_in_textures = 4; // dirt, grass, stone, sand
+    float texture_width = 1.0f / atlas_width_in_textures;
+    float u_offset = 0.0f;
 
-    return mesh;
+    switch (id) {
+    case GRASS:
+      u_offset = 0.0f * texture_width;
+      break;
+    case STONE:
+      u_offset = 1.0f * texture_width;
+      break;
+    case DIRT:
+      u_offset = 2.0f * texture_width;
+      break;
+    case SAND:
+      u_offset = 3.0f * texture_width;
+      break;
+    default:
+      break;
+    }
+
+    // Define vertices for a cube centered at origin
+    float v_data[] = {// Front face
+                      -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+                      -0.5f, 0.5f, 0.5f,
+                      // Back face
+                      0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f,
+                      -0.5f, 0.5f, 0.5f, -0.5f,
+                      // Top face
+                      -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f,
+                      -0.5f, 0.5f, -0.5f,
+                      // Bottom face
+                      -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f,
+                      0.5f, -0.5f, -0.5f, 0.5f,
+                      // Right face
+                      0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f,
+                      0.5f, 0.5f, 0.5f,
+                      // Left face
+                      -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f,
+                      0.5f, -0.5f, 0.5f, -0.5f};
+
+    // Define texture coordinates for each face
+    float t_data[] = {
+        u_offset,
+        1.0f,
+        u_offset + texture_width,
+        1.0f,
+        u_offset + texture_width,
+        0.0f,
+        u_offset,
+        0.0f,
+        u_offset,
+        1.0f,
+        u_offset + texture_width,
+        1.0f,
+        u_offset + texture_width,
+        0.0f,
+        u_offset,
+        0.0f,
+        u_offset,
+        1.0f,
+        u_offset + texture_width,
+        1.0f,
+        u_offset + texture_width,
+        0.0f,
+        u_offset,
+        0.0f,
+        u_offset,
+        1.0f,
+        u_offset + texture_width,
+        1.0f,
+        u_offset + texture_width,
+        0.0f,
+        u_offset,
+        0.0f,
+        u_offset,
+        1.0f,
+        u_offset + texture_width,
+        1.0f,
+        u_offset + texture_width,
+        0.0f,
+        u_offset,
+        0.0f,
+        u_offset,
+        1.0f,
+        u_offset + texture_width,
+        1.0f,
+        u_offset + texture_width,
+        0.0f,
+        u_offset,
+        0.0f,
+    };
+
+    // Check each face
+    if (visible_faces & FACE_DIR_POS_Z) { // Front
+      for (int j = 0; j < 4; j++) {
+        vertices[(vertex_count + j) * 3 + 0] = v_data[j * 3 + 0] + x;
+        vertices[(vertex_count + j) * 3 + 1] = v_data[j * 3 + 1] + y;
+        vertices[(vertex_count + j) * 3 + 2] = v_data[j * 3 + 2] + z;
+        texcoords[(vertex_count + j) * 2 + 0] = t_data[j * 2 + 0];
+        texcoords[(vertex_count + j) * 2 + 1] = t_data[j * 2 + 1];
+      }
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 1;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count + 3;
+      vertex_count += 4;
+    }
+    if (visible_faces & FACE_DIR_NEG_Z) { // Back
+      for (int j = 0; j < 4; j++) {
+        vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 4) * 3 + 0] + x;
+        vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 4) * 3 + 1] + y;
+        vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 4) * 3 + 2] + z;
+        texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 4) * 2 + 0];
+        texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 4) * 2 + 1];
+      }
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 1;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count + 3;
+      vertex_count += 4;
+    }
+    if (visible_faces & FACE_DIR_POS_Y) { // Top
+      for (int j = 0; j < 4; j++) {
+        vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 8) * 3 + 0] + x;
+        vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 8) * 3 + 1] + y;
+        vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 8) * 3 + 2] + z;
+        texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 8) * 2 + 0];
+        texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 8) * 2 + 1];
+      }
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 1;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count + 3;
+      vertex_count += 4;
+    }
+    if (visible_faces & FACE_DIR_NEG_Y) { // Bottom
+      for (int j = 0; j < 4; j++) {
+        vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 12) * 3 + 0] + x;
+        vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 12) * 3 + 1] + y;
+        vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 12) * 3 + 2] + z;
+        texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 12) * 2 + 0];
+        texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 12) * 2 + 1];
+      }
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 1;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count + 3;
+      vertex_count += 4;
+    }
+    if (visible_faces & FACE_DIR_POS_X) { // Right
+      for (int j = 0; j < 4; j++) {
+        vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 16) * 3 + 0] + x;
+        vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 16) * 3 + 1] + y;
+        vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 16) * 3 + 2] + z;
+        texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 16) * 2 + 0];
+        texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 16) * 2 + 1];
+      }
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 1;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count + 3;
+      vertex_count += 4;
+    }
+    if (visible_faces & FACE_DIR_NEG_X) { // Left
+      for (int j = 0; j < 4; j++) {
+        vertices[(vertex_count + j) * 3 + 0] = v_data[(j + 20) * 3 + 0] + x;
+        vertices[(vertex_count + j) * 3 + 1] = v_data[(j + 20) * 3 + 1] + y;
+        vertices[(vertex_count + j) * 3 + 2] = v_data[(j + 20) * 3 + 2] + z;
+        texcoords[(vertex_count + j) * 2 + 0] = t_data[(j + 20) * 2 + 0];
+        texcoords[(vertex_count + j) * 2 + 1] = t_data[(j + 20) * 2 + 1];
+      }
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 1;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count;
+      indices[index_count++] = vertex_count + 2;
+      indices[index_count++] = vertex_count + 3;
+      vertex_count += 4;
+    }
+  }
+
+  Mesh mesh = {0};
+  mesh.vertexCount = vertex_count;
+  mesh.triangleCount = index_count / 3;
+  mesh.vertices = (float *)realloc(vertices, vertex_count * 3 * sizeof(float));
+  mesh.texcoords =
+      (float *)realloc(texcoords, vertex_count * 2 * sizeof(float));
+  mesh.indices =
+      (unsigned short *)realloc(indices, index_count * sizeof(unsigned short));
+
+  UploadMesh(&mesh, false);
+
+  EndPerformanceTracker("GenerateGreedyMesh");
+  return mesh;
 }
