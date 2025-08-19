@@ -94,5 +94,5 @@ void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
 
 VoxelID GetVoxelID(Voxel *voxel_data, int x, int y, int z);
 
-Mesh GenerateGreedyMesh(Voxel *voxel_data);
+Mesh GenOwnTriangle();
 #endif // VOXEL_H
