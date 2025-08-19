@@ -23,7 +23,7 @@ int Scene3DGame() {
   // SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
   Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
-  InitVoxel(voxel_data, false);
+  InitVoxel(voxel_data, true);
 
   UpdateVisibility(voxel_data);
   Mesh chunk_mesh = CulledMeshing(voxel_data);

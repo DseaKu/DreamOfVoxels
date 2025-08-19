@@ -25,7 +25,7 @@ void InitVoxel(Voxel *voxel_data, bool is_random) {
         v |= ((Voxel)z << VOXEL_SHIFT_POS_Z);
 
         if (!is_random) {
-          v |= ((Voxel)GRASS << VOXEL_SHIFT_ID);
+          v |= ((Voxel)WOOD << VOXEL_SHIFT_ID);
         } else {
           VoxelID random_id =
               (rand() % sizeof(VoxelID)) + 1; // DIRT, GRASS, STONE, SAND
@@ -333,21 +333,30 @@ Mesh CulledMeshing(Voxel *voxel_data) {
 
     // Determine the base U and V coordinates in the atlas based on the voxel's
     // ID.
+    // EMPTY = 0x0,
+    // DIRT = 0x1,
+    // GRASS = 0x2,
+    // STONE = 0x3,
+    // SAND = 0x4,
     switch (id) {
     case GRASS:
-      u_base = 3.0f;
-      v_base = 0.0f;
+      u_base = 3.0f * tex_width;
+      v_base = 0.0f * tex_height;
       break; // Top-left
+    case WOOD:
+      u_base = 5.0f * tex_width;
+      v_base = 0.0f * tex_height;
+      break; // Top-right
     case STONE:
-      u_base = 1.0f * tex_width;
-      v_base = 0.0f;
+      u_base = 0.0f * tex_width;
+      v_base = 1.0f * tex_height;
       break; // Top-right
     case DIRT:
-      u_base = 0.0f;
-      v_base = 1.0f * tex_height;
+      u_base = 2.0f * tex_width;
+      v_base = 0.0f * tex_height;
       break; // Bottom-left
     case SAND:
-      u_base = 1.0f * tex_width;
+      u_base = 2.0f * tex_width;
       v_base = 1.0f * tex_height;
       break; // Bottom-right
     default:

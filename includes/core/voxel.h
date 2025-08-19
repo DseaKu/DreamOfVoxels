@@ -64,6 +64,7 @@ typedef enum {
   GRASS = 0x2,
   STONE = 0x3,
   SAND = 0x4,
+  WOOD = 0x5,
 
 } VoxelID;
 
