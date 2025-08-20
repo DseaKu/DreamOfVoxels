@@ -31,11 +31,9 @@ void UpdateBody(Body *body, float rot, char side, char forward,
                 bool jumpPressed, bool crouchHold) {
   Vector2 input = (Vector2){(float)side, (float)-forward};
 
-#if defined(NORMALIZE_INPUT)
   // Slow down diagonal movement
   if ((side != 0) && (forward != 0))
     input = Vector2Normalize(input);
-#endif
 
   float delta = GetFrameTime();
 
