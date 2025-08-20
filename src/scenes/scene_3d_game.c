@@ -9,9 +9,6 @@
 #include <stdlib.h>
 #include <string.h> // For memset
 
-// Forward declaration
-Mesh GenerateGreedyMesh(Voxel *voxel_data);
-
 int Scene3DGame() {
 
   const u64 screen_width = MAX_SCREEN_WIDTH;
@@ -34,6 +31,7 @@ int Scene3DGame() {
   UnloadImage(texture_atlas_img);
 
   bool is_visibility_updatable = false;
+  UpdateCameraAngle(&player); // Update camera parameters
   do {
     StartPerformanceTracker("CompleteLoop");
     // Process events
