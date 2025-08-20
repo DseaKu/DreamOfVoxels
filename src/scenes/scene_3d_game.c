@@ -87,6 +87,7 @@ int Scene3DGame() {
   free(voxel_data);
   CloseWindow();
   PrintPerformanceTrackers();
+  WritePerformanceTrackersToFile("Performance_Report.txt");
   return 0;
 }
 

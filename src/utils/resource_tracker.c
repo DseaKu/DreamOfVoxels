@@ -46,10 +46,64 @@ void PrintPerformanceTrackers(void) {
   printf("\n\n--- Performance Report ---\n");
   for (int i = 0; i < tracker_count; i++) {
     if (trackers[i].runs > 0) {
-      printf(" %f ms (avg over %d runs):%s\n",
+      printf(" %.3f ms (avg over %d runs):%s\n",
              (trackers[i].total_elapsed_time * 1000) / trackers[i].runs,
              trackers[i].runs, trackers[i].name);
     }
   }
+
+  // Search for "CompleteLoop" and print average fps
+  printf("\n--- Average FPS after INIT ---\n");
+  int found = 0;
+  for (int i = 0; i < tracker_count; i++) {
+    // Use strcmp to compare the current tracker's name with "CompleteLoop"
+    if (strcmp(trackers[i].name, "CompleteLoop") == 0) {
+      printf(" %.3f Average fps\n",
+             (1 / (float)(trackers[i].total_elapsed_time / trackers[i].runs)));
+      found = 1;
+      break;
+    }
+  }
+
+  if (!found) {
+    printf(" Tracker 'CompleteLoop' not found.\n");
+  }
   printf("--------------------------\n");
+}
+
+void WritePerformanceTrackersToFile(const char* filename) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Error opening file for performance report");
+        return;
+    }
+
+    fprintf(file, "\n\n--- Performance Report ---\n");
+    for (int i = 0; i < tracker_count; i++) {
+        if (trackers[i].runs > 0) {
+            fprintf(file, " %.3f ms (avg over %d runs):%s\n",
+                    (trackers[i].total_elapsed_time * 1000) / trackers[i].runs,
+                    trackers[i].runs, trackers[i].name);
+        }
+    }
+
+    // Search for "CompleteLoop" and print average fps
+    fprintf(file, "\n--- Average FPS after INIT ---\n");
+    int found = 0;
+    for (int i = 0; i < tracker_count; i++) {
+        // Use strcmp to compare the current tracker's name with "CompleteLoop"
+        if (strcmp(trackers[i].name, "CompleteLoop") == 0) {
+            fprintf(file, " %.3f Average fps\n",
+                    (1 / (float)(trackers[i].total_elapsed_time / trackers[i].runs)));
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        fprintf(file, " Tracker 'CompleteLoop' not found.\n");
+    }
+    fprintf(file, "--------------------------\n");
+
+    fclose(file);
 }

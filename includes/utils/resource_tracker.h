@@ -18,5 +18,6 @@ typedef struct {
 void StartPerformanceTracker(const char* name);
 void EndPerformanceTracker(const char* name);
 void PrintPerformanceTrackers(void);
+void WritePerformanceTrackersToFile(const char* filename);
 
 #endif // PERFORMANCE_H
