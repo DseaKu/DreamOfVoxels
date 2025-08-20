@@ -1,15 +1,15 @@
 
 
 --- Performance Report ---
- 1.306 ms (avg over 1 runs):Init Voxels
- 0.776 ms (avg over 6 runs):Update visibilty
- 1.464 ms (avg over 6 runs):GenerateGreedyMesh
- 0.328 ms (avg over 1498 runs):CompleteLoop
- 0.008 ms (avg over 1498 runs):Render mesh
- 0.012 ms (avg over 1498 runs):Draw 3D debug information
- 0.003 ms (avg over 1498 runs):Draw 2D debug information
- 2.760 ms (avg over 5 runs):Remove Voxel
+ 1.308 ms (avg over 1 runs):Init Voxels
+ 0.779 ms (avg over 6 runs):Update visibilty
+ 1.638 ms (avg over 6 runs):GenerateGreedyMesh
+ 0.331 ms (avg over 1601 runs):CompleteLoop
+ 0.009 ms (avg over 1601 runs):Render mesh
+ 0.012 ms (avg over 1601 runs):Draw 3D debug information
+ 0.003 ms (avg over 1601 runs):Draw 2D debug information
+ 2.650 ms (avg over 5 runs):Remove Voxel
 
 --- Average FPS after INIT ---
- 3047.590 Average fps
+ 3023.413 Average fps
 --------------------------

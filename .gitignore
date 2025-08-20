@@ -3,6 +3,7 @@ build/
 game
 compile_commands.json
 
+Performance_Report.txt
 # OS-specific files
 .DS_Store
 
