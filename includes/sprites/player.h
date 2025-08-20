@@ -54,8 +54,8 @@ static Vector2 lean = {0};
 // Module functions declaration
 //----------------------------------------------------------------------------------
 void UpdateCameraAngle(Player *player);
-static void UpdateBody(Body *body, float rot, char side, char forward,
-                       bool jumpPressed, bool crouchHold);
+void UpdateBody(Body *body, float rot, char side, char forward,
+                bool jumpPressed, bool crouchHold);
 
 Player InitPlayer(void);
 void UpdatePlayer(Player *player);
