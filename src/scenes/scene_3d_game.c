@@ -32,6 +32,7 @@ int Scene3DGame() {
 
   bool is_visibility_updatable = false;
   UpdateCameraAngle(&player); // Update camera parameters
+
   do {
     StartPerformanceTracker("CompleteLoop");
     // Process events
@@ -56,6 +57,41 @@ int Scene3DGame() {
       chunk_mesh = CulledMeshing(voxel_data);
       is_visibility_updatable = false;
     }
+
+    // Update
+    //----------------------------------------------------------------------------------
+    Vector2 mouse_delta = GetMouseDelta();
+    lookRotation.x -= mouse_delta.x * sensitivity.x;
+    lookRotation.y += mouse_delta.y * sensitivity.y;
+
+    char sideway = (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
+    char forward = (IsKeyDown(KEY_W) - IsKeyDown(KEY_S));
+    bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
+    UpdateBody(&player, lookRotation.x, sideway, forward,
+               IsKeyPressed(KEY_SPACE), crouching);
+
+    float delta = GetFrameTime();
+    headLerp = Lerp(headLerp, (crouching ? CROUCH_HEIGHT : STAND_HEIGHT),
+                    20.0f * delta);
+    player.camera.position = (Vector3){
+        player.position.x,
+        player.position.y + (BOTTOM_HEIGHT + headLerp),
+        player.position.z,
+    };
+
+    if (player.isGrounded && ((forward != 0) || (sideway != 0))) {
+      headTimer += delta * 3.0f;
+      walkLerp = Lerp(walkLerp, 1.0f, 10.0f * delta);
+      player.camera.fovy = Lerp(player.camera.fovy, 55.0f, 5.0f * delta);
+    } else {
+      walkLerp = Lerp(walkLerp, 0.0f, 10.0f * delta);
+      player.camera.fovy = Lerp(player.camera.fovy, 60.0f, 5.0f * delta);
+    }
+
+    lean.x = Lerp(lean.x, sideway * 0.02f, 10.0f * delta);
+    lean.y = Lerp(lean.y, forward * 0.015f, 10.0f * delta);
+
+    UpdateCameraAngle(&player);
 
     // Draw 3D
     BeginDrawing();

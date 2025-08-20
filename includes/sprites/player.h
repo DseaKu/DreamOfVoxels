@@ -37,13 +37,16 @@ typedef struct {
 typedef struct Player {
   Camera camera;
   Vector3 position;
+  Vector3 velocity;
+  Vector3 dir;
+  bool isGrounded;
 } Player;
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
 static Vector2 sensitivity = {0.001f, 0.001f};
 
-static Body player = {0};
+// static Body player = {0};
 static Vector2 lookRotation = {0};
 static float headTimer = 0.0f;
 static float walkLerp = 0.0f;
@@ -53,8 +56,7 @@ static Vector2 lean = {0};
 //----------------------------------------------------------------------------------
 // Module functions declaration
 //----------------------------------------------------------------------------------
-static void DrawLevel(void);
-static void UpdateCameraAngle(Player *player);
+void UpdateCameraAngle(Player *player);
 static void UpdateBody(Body *body, float rot, char side, char forward,
                        bool jumpPressed, bool crouchHold);
 
