@@ -69,6 +69,7 @@ int Scene3DGame() {
     bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
     UpdateBody(&player.body, lookRotation.x, sideway, forward,
                IsKeyPressed(KEY_SPACE), crouching);
+    player.position = player.body.position;
 
     float delta = GetFrameTime();
     headLerp = Lerp(headLerp, (crouching ? CROUCH_HEIGHT : STAND_HEIGHT),
