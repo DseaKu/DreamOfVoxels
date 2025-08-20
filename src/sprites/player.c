@@ -2,6 +2,16 @@
 #include "raymath.h"
 #include <raylib.h>
 
+//----------------------------------------------------------------------------------
+// Global Variables Definition
+//----------------------------------------------------------------------------------
+Vector2 sensitivity = {0.001f, 0.001f};
+Vector2 lookRotation = {0};
+float headTimer = 0.0f;
+float walkLerp = 0.0f;
+float headLerp = STAND_HEIGHT;
+Vector2 lean = {0};
+
 Player InitPlayer(void) {
   Player player = {0};
   player.camera.position = (Vector3){

@@ -42,13 +42,12 @@ typedef struct Player {
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
-static Vector2 sensitivity = {0.001f, 0.001f};
-
-static Vector2 lookRotation = {0};
-static float headTimer = 0.0f;
-static float walkLerp = 0.0f;
-static float headLerp = STAND_HEIGHT;
-static Vector2 lean = {0};
+extern Vector2 sensitivity;
+extern Vector2 lookRotation;
+extern float headTimer;
+extern float walkLerp;
+extern float headLerp;
+extern Vector2 lean;
 
 //----------------------------------------------------------------------------------
 // Module functions declaration
