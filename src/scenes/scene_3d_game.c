@@ -67,7 +67,7 @@ int Scene3DGame() {
     char sideway = (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
     char forward = (IsKeyDown(KEY_W) - IsKeyDown(KEY_S));
     bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
-    UpdateBody(&player, lookRotation.x, sideway, forward,
+    UpdateBody(&player.body, lookRotation.x, sideway, forward,
                IsKeyPressed(KEY_SPACE), crouching);
 
     float delta = GetFrameTime();
@@ -79,7 +79,7 @@ int Scene3DGame() {
         player.position.z,
     };
 
-    if (player.isGrounded && ((forward != 0) || (sideway != 0))) {
+    if (player.body.isGrounded && ((forward != 0) || (sideway != 0))) {
       headTimer += delta * 3.0f;
       walkLerp = Lerp(walkLerp, 1.0f, 10.0f * delta);
       player.camera.fovy = Lerp(player.camera.fovy, 55.0f, 5.0f * delta);

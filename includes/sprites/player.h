@@ -37,16 +37,13 @@ typedef struct {
 typedef struct Player {
   Camera camera;
   Vector3 position;
-  Vector3 velocity;
-  Vector3 dir;
-  bool isGrounded;
+  Body body;
 } Player;
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
 static Vector2 sensitivity = {0.001f, 0.001f};
 
-// static Body player = {0};
 static Vector2 lookRotation = {0};
 static float headTimer = 0.0f;
 static float walkLerp = 0.0f;
