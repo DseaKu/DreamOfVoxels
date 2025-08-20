@@ -69,15 +69,14 @@ int Scene3DGame() {
     bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
     UpdateBody(&player.body, lookRotation.x, sideway, forward,
                IsKeyPressed(KEY_SPACE), crouching);
-    player.position = player.body.position;
 
     float delta = GetFrameTime();
     headLerp = Lerp(headLerp, (crouching ? CROUCH_HEIGHT : STAND_HEIGHT),
                     20.0f * delta);
     player.camera.position = (Vector3){
-        player.position.x,
-        player.position.y + (BOTTOM_HEIGHT + headLerp),
-        player.position.z,
+        player.body.position.x,
+        player.body.position.y + (BOTTOM_HEIGHT + headLerp),
+        player.body.position.z,
     };
 
     if (player.body.isGrounded && ((forward != 0) || (sideway != 0))) {

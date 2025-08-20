@@ -36,7 +36,6 @@ typedef struct {
 
 typedef struct Player {
   Camera camera;
-  Vector3 position;
   Body body;
 } Player;
 //----------------------------------------------------------------------------------
