@@ -12,7 +12,7 @@
 #define JUMP_FORCE 12.0f
 #define MAX_ACCEL 150.0f
 // Grounded drag
-#define FRICTION 0.86f
+#define FRICTION .98f
 // Increasing air drag, increases strafing speed
 #define AIR_DRAG 0.98f
 // Responsiveness for turning movement direction to looked direction
