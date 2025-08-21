@@ -11,8 +11,8 @@
 #define BLOCK_SIZE 1.0f
 #define HALF_BLOCK_SIZE (BLOCK_SIZE / 2.0f)
 #define MAX_PLAYER_RANGE 4.0f
-#define N_CHUNKS_X 4
-#define N_CHUNKS_Z 4
+#define N_CHUNKS_X 2
+#define N_CHUNKS_Z 2
 #define CHUNKS_IN_TOTAL N_CHUNKS_Z *N_CHUNKS_X
 typedef u64 Voxel;
 typedef struct SnVector2D {

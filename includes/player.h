@@ -51,7 +51,7 @@ typedef struct Player {
 //----------------------------------------------------------------------------------
 void UpdateCameraAngle(Player *player);
 void UpdateBody(Body *body, float rot, char side, char forward,
-                bool jumpPressed, bool crouchHold, Chunk *chunk_data);
+                bool jumpPressed, bool crouchHold, Chunk current_chunk);
 
 Player InitPlayer(void);
 void UpdatePlayer(Player *player, Chunk *chunk_data);

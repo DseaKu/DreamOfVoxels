@@ -13,7 +13,7 @@ Player InitPlayer(void) {
   player.camera.projection = CAMERA_PERSPECTIVE;
   player.body.headLerp = STAND_HEIGHT;
   // N_VOXEL_Y to spawn above chunks
-  player.body.position = (Vector3){2, N_VOXEL_Y - 2, 2};
+  player.body.position = (Vector3){2, N_VOXEL_Y + 2, 2};
   // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
   player.body.sensitivity = (Vector2){0.001f, 0.001f};
   return player;
@@ -53,8 +53,10 @@ void UpdatePlayer(Player *player, Chunk *chunk_data) {
   char sideway = (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
   char forward = (IsKeyDown(KEY_W) - IsKeyDown(KEY_S));
   bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
+
   UpdateBody(&player->body, player->body.lookRotation.x, sideway, forward,
-             IsKeyPressed(KEY_SPACE), crouching, chunk_data);
+             IsKeyPressed(KEY_SPACE), crouching,
+             chunk_data[GetIndexCurrentChunk(player)]);
 
   float delta = GetFrameTime();
   player->body.headLerp =
@@ -83,9 +85,10 @@ void UpdatePlayer(Player *player, Chunk *chunk_data) {
 }
 
 void UpdateBody(Body *body, float rot, char side, char forward,
-                bool jumpPressed, bool crouchHold, Chunk *chunk_data) {
+                bool jumpPressed, bool crouchHold, Chunk current_chunk) {
   Vector2 input = (Vector2){(float)side, (float)-forward};
 
+  Voxel *voxel_data = current_chunk.p_voxel_data;
   // Slow down diagonal movement
   if ((side != 0) && (forward != 0))
     input = Vector2Normalize(input);
@@ -139,21 +142,21 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 
   Vector3 new_position = body->position;
   new_position.x += body->velocity.x * delta;
-  // if (IsColliding(voxel_data, new_position)) {
-  //   new_position.x = body->position.x;
-  // }
+  if (IsColliding(voxel_data, new_position)) {
+    new_position.x = body->position.x;
+  }
 
   new_position.y += body->velocity.y * delta;
-  // if (IsColliding(voxel_data, new_position)) {
-  //   new_position.y = body->position.y;
-  //   body->velocity.y = 0;
-  //   body->isGrounded = true;
-  // }
+  if (IsColliding(voxel_data, new_position)) {
+    new_position.y = body->position.y;
+    body->velocity.y = 0;
+    body->isGrounded = true;
+  }
 
   new_position.z += body->velocity.z * delta;
-  // if (IsColliding(voxel_data, new_position)) {
-  //   new_position.z = body->position.z;
-  // }
+  if (IsColliding(voxel_data, new_position)) {
+    new_position.z = body->position.z;
+  }
 
   body->position = new_position;
 
