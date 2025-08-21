@@ -20,7 +20,7 @@
 #define Z_NEIGHBOUR_OFFSET N_VOXEL_X
 #define Y_NEIGHBOUR_OFFSET N_VOXEL_X *N_VOXEL_Z
 
-#define NUMBER_OF_VOXELS N_VOXEL_X *N_VOXEL_Y *N_VOXEL_Z
+#define VOXELS_IN_TOTAL N_VOXEL_X *N_VOXEL_Y *N_VOXEL_Z
 
 /* Each coordinate will be represented by 6bits.
  * That means the coordinates cant exeed 63,

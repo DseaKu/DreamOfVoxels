@@ -10,7 +10,7 @@
 // Init xzy-coordinates to voxels
 Voxel *InitVoxelPointer(bool is_random) {
   // 0.527000 ms (avg over 1 runs):Init Voxels
-  Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
+  Voxel *voxel_data = (Voxel *)calloc(VOXELS_IN_TOTAL, sizeof(Voxel));
   StartPerformanceTracker("Init Voxels");
   u64 index = 0;
 
@@ -184,7 +184,7 @@ bool RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
   int hit_voxel_x = -1, hit_voxel_y = -1, hit_voxel_z = -1;
 
   // Iterate over a reasonable distance from the player
-  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
+  for (u64 index = 0; index < VOXELS_IN_TOTAL; index++) {
     Voxel v = voxel_data[index];
     if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
       continue;
@@ -229,7 +229,7 @@ void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
   int hit_voxel_x = -1, hit_voxel_y = -1, hit_voxel_z = -1;
 
   // Iterate over a reasonable distance from the player
-  for (u64 index = 0; index < NUMBER_OF_VOXELS; index++) {
+  for (u64 index = 0; index < VOXELS_IN_TOTAL; index++) {
     Voxel v = voxel_data[index];
     if (((v >> VOXEL_SHIFT_ID) & VOXEL_MASK_ID) == EMPTY) {
       continue;
@@ -297,8 +297,8 @@ void CulledMeshing(Chunk *chunk_data) {
     // which would be slow. Max vertices = total voxels * 6 faces/voxel * 4
     // vertices/face. Max indices = total voxels * 6 faces/voxel * 6
     // indices/face (2 triangles/face).
-    int max_vertices = NUMBER_OF_VOXELS * 6 * 4;
-    int max_indices = NUMBER_OF_VOXELS * 6 * 6;
+    int max_vertices = VOXELS_IN_TOTAL * 6 * 4;
+    int max_indices = VOXELS_IN_TOTAL * 6 * 6;
     float *vertices = (float *)malloc(max_vertices * 3 * sizeof(float));
     float *texcoords = (float *)malloc(max_vertices * 2 * sizeof(float));
     unsigned short *indices =
@@ -310,7 +310,7 @@ void CulledMeshing(Chunk *chunk_data) {
 
     // --- 2. Voxel Iteration ---
     // Loop through every potential voxel position in the world data.
-    for (u64 i = 0; i < NUMBER_OF_VOXELS; i++) {
+    for (u64 i = 0; i < VOXELS_IN_TOTAL; i++) {
       Voxel v = voxel_data[i];
 
       // Extract voxel properties using bitwise operations.

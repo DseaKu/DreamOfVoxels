@@ -7,7 +7,7 @@
 
 static bool IsColliding(Voxel *voxel_data, Vector3 position) {
   StartPerformanceTracker("  └-> Check Collision");
-  for (int i = 0; i < NUMBER_OF_VOXELS; i++) {
+  for (int i = 0; i < VOXELS_IN_TOTAL; i++) {
     Voxel v = voxel_data[i];
 
     if (Voxel_IsActive(v)) {
