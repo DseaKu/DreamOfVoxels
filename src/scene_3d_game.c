@@ -59,35 +59,38 @@ int Scene3DGame() {
     // Update
     //----------------------------------------------------------------------------------
     Vector2 mouse_delta = GetMouseDelta();
-    lookRotation.x -= mouse_delta.x * sensitivity.x;
-    lookRotation.y += mouse_delta.y * sensitivity.y;
+    player.body.lookRotation.x -= mouse_delta.x * player.body.sensitivity.x;
+    player.body.lookRotation.y += mouse_delta.y * player.body.sensitivity.y;
 
     char sideway = (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
     char forward = (IsKeyDown(KEY_W) - IsKeyDown(KEY_S));
     bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
-    UpdateBody(&player.body, lookRotation.x, sideway, forward,
+    UpdateBody(&player.body, player.body.lookRotation.x, sideway, forward,
                IsKeyPressed(KEY_SPACE), crouching);
 
     float delta = GetFrameTime();
-    headLerp = Lerp(headLerp, (crouching ? CROUCH_HEIGHT : STAND_HEIGHT),
-                    20.0f * delta);
+    player.body.headLerp =
+        Lerp(player.body.headLerp, (crouching ? CROUCH_HEIGHT : STAND_HEIGHT),
+             20.0f * delta);
     player.camera.position = (Vector3){
         player.body.position.x,
-        player.body.position.y + (BOTTOM_HEIGHT + headLerp),
+        player.body.position.y + (BOTTOM_HEIGHT + player.body.headLerp),
         player.body.position.z,
     };
 
     if (player.body.isGrounded && ((forward != 0) || (sideway != 0))) {
-      headTimer += delta * 3.0f;
-      walkLerp = Lerp(walkLerp, 1.0f, 10.0f * delta);
+      player.body.headTimer += delta * 3.0f;
+      player.body.walkLerp = Lerp(player.body.walkLerp, 1.0f, 10.0f * delta);
       player.camera.fovy = Lerp(player.camera.fovy, 55.0f, 5.0f * delta);
     } else {
-      walkLerp = Lerp(walkLerp, 0.0f, 10.0f * delta);
+      player.body.walkLerp = Lerp(player.body.walkLerp, 0.0f, 10.0f * delta);
       player.camera.fovy = Lerp(player.camera.fovy, 60.0f, 5.0f * delta);
     }
 
-    lean.x = Lerp(lean.x, sideway * 0.02f, 10.0f * delta);
-    lean.y = Lerp(lean.y, forward * 0.015f, 10.0f * delta);
+    player.body.lean.x =
+        Lerp(player.body.lean.x, sideway * 0.02f, 10.0f * delta);
+    player.body.lean.y =
+        Lerp(player.body.lean.y, forward * 0.015f, 10.0f * delta);
 
     UpdateCameraAngle(&player);
     // UpdatePlayer(&player);

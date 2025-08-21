@@ -11,15 +11,15 @@
 #define CROUCH_SPEED 5.0f
 #define JUMP_FORCE 12.0f
 #define MAX_ACCEL 150.0f
+#define CROUCH_HEIGHT 0.0f
+#define STAND_HEIGHT 1.0f
+#define BOTTOM_HEIGHT 0.5f
 // Grounded drag
 #define FRICTION .98f
 // Increasing air drag, increases strafing speed
 #define AIR_DRAG 0.98f
 // Responsiveness for turning movement direction to looked direction
 #define CONTROL 15.0f
-#define CROUCH_HEIGHT 0.0f
-#define STAND_HEIGHT 1.0f
-#define BOTTOM_HEIGHT 0.5f
 
 #define NORMALIZE_INPUT 0
 
@@ -28,10 +28,16 @@
 //----------------------------------------------------------------------------------
 // Body structure
 typedef struct {
+  bool isGrounded;
+  float headTimer;
+  float walkLerp;
+  float headLerp;
+  Vector2 lean;
+  Vector2 sensitivity;
+  Vector2 lookRotation;
   Vector3 position;
   Vector3 velocity;
   Vector3 dir;
-  bool isGrounded;
 } Body;
 
 typedef struct Player {
@@ -41,12 +47,12 @@ typedef struct Player {
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
-extern Vector2 sensitivity;
-extern Vector2 lookRotation;
-extern float headTimer;
-extern float walkLerp;
-extern float headLerp;
-extern Vector2 lean;
+// extern Vector2 sensitivity;
+// extern Vector2 lookRotation;
+// extern float headTimer;
+// extern float walkLerp;
+// extern float headLerp;
+// extern Vector2 lean;
 
 //----------------------------------------------------------------------------------
 // Module functions declaration

@@ -5,12 +5,12 @@
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
-Vector2 sensitivity = {0.001f, 0.001f};
-Vector2 lookRotation = {0};
-float headTimer = 0.0f;
-float walkLerp = 0.0f;
-float headLerp = STAND_HEIGHT;
-Vector2 lean = {0};
+// Vector2 sensitivity = {0.001f, 0.001f};
+// Vector2 lookRotation = {0};
+// float headTimer = 0.0f;
+// float walkLerp = 0.0f;
+// float headLerp = STAND_HEIGHT;
+// Vector2 lean = {0};
 
 Player InitPlayer(void) {
   Player player = {0};
@@ -18,6 +18,9 @@ Player InitPlayer(void) {
   player.camera.up = (Vector3){0.0f, 1.0f, 0.0f};
   player.camera.fovy = 60.0f;
   player.camera.projection = CAMERA_PERSPECTIVE;
+  player.body.headLerp = STAND_HEIGHT;
+  player.body.sensitivity.x = 0.001f;
+  player.body.sensitivity.y = 0.001f;
   return player;
 }
 
@@ -100,37 +103,38 @@ void UpdateCameraAngle(Player *player) {
   const Vector3 targetOffset = (Vector3){0.0f, 0.0f, -1.0f};
 
   // Left and right
-  Vector3 yaw = Vector3RotateByAxisAngle(targetOffset, up, lookRotation.x);
+  Vector3 yaw =
+      Vector3RotateByAxisAngle(targetOffset, up, player->body.lookRotation.x);
 
   // Clamp view up
   float maxAngleUp = Vector3Angle(up, yaw);
   maxAngleUp -= 0.001f; // Avoid numerical errors
-  if (-(lookRotation.y) > maxAngleUp) {
-    lookRotation.y = -maxAngleUp;
+  if (-(player->body.lookRotation.y) > maxAngleUp) {
+    player->body.lookRotation.y = -maxAngleUp;
   }
 
   // Clamp view down
   float maxAngleDown = Vector3Angle(Vector3Negate(up), yaw);
   maxAngleDown *= -1.0f;  // Downwards angle is negative
   maxAngleDown += 0.001f; // Avoid numerical errors
-  if (-(lookRotation.y) < maxAngleDown) {
-    lookRotation.y = -maxAngleDown;
+  if (-(player->body.lookRotation.y) < maxAngleDown) {
+    player->body.lookRotation.y = -maxAngleDown;
   }
 
   // Up and down
   Vector3 right = Vector3Normalize(Vector3CrossProduct(yaw, up));
 
   // Rotate view vector around right axis
-  Vector3 pitch =
-      Vector3RotateByAxisAngle(yaw, right, -lookRotation.y - lean.y);
+  Vector3 pitch = Vector3RotateByAxisAngle(
+      yaw, right, -player->body.lookRotation.y - player->body.lean.y);
 
   // Head animation
   // Rotate up direction around forward axis
-  float headSin = sin(headTimer * PI);
-  float headCos = cos(headTimer * PI);
+  float headSin = sin(player->body.headTimer * PI);
+  float headCos = cos(player->body.headTimer * PI);
   const float stepRotation = 0.01f;
-  player->camera.up =
-      Vector3RotateByAxisAngle(up, pitch, headSin * stepRotation + lean.x);
+  player->camera.up = Vector3RotateByAxisAngle(
+      up, pitch, headSin * stepRotation + player->body.lean.x);
 
   // Camera BOB
   const float bobSide = 0.1f;
@@ -138,7 +142,7 @@ void UpdateCameraAngle(Player *player) {
   Vector3 bobbing = Vector3Scale(right, headSin * bobSide);
   bobbing.y = fabsf(headCos * bobUp);
 
-  player->camera.position =
-      Vector3Add(player->camera.position, Vector3Scale(bobbing, walkLerp));
+  player->camera.position = Vector3Add(
+      player->camera.position, Vector3Scale(bobbing, player->body.walkLerp));
   player->camera.target = Vector3Add(player->camera.position, pitch);
 }
