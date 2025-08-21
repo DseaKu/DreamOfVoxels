@@ -542,7 +542,6 @@ void CulledMeshing(Chunk *chunk_data) {
     UploadMesh(&mesh,
                false); // We are providing our own CPU-side copy of the data.
     chunk_data[i].chunk_mesh = mesh;
-    UnloadMesh(mesh);
   }
   EndPerformanceTracker("GenerateGreedyMesh");
 }
