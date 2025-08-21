@@ -1,7 +1,7 @@
-#include "core/voxel.h"
+#include "voxel.h"
+#include "resource_tracker.h"
 #include "rlgl.h"
 #include "std_includes.h"
-#include "utils/resource_tracker.h"
 #include <math.h>
 #include <raylib.h>
 #include <stdbool.h>

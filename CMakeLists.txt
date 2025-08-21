@@ -11,10 +11,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(raylib CONFIG REQUIRED)
 
 set(SOURCES
-  src/scenes/scene_3d_game.c
-  src/sprites/player.c
-  src/core/voxel.c
-  src/utils/resource_tracker.c
+  src/scene_3d_game.c
+  src/player.c
+  src/voxel.c
+  src/resource_tracker.c
 )
 
 add_executable(game main.c ${SOURCES})

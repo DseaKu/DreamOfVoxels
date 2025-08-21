@@ -1,8 +1,8 @@
-#include "scenes/scene_3d_game.h"
-#include "core/voxel.h"
+#include "scene_3d_game.h"
+#include "player.h"
+#include "resource_tracker.h"
 #include "rlgl.h"
-#include "sprites/player.h"
-#include "utils/resource_tracker.h"
+#include "voxel.h"
 #include <float.h>
 #include <raylib.h>
 #include <stdbool.h>

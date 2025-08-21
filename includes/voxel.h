@@ -1,7 +1,7 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
-#include "sprites/player.h"
+#include "player.h"
 #include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>

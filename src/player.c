@@ -1,4 +1,4 @@
-#include "sprites/player.h"
+#include "player.h"
 #include "raymath.h"
 #include <raylib.h>
 
