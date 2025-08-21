@@ -1,8 +1,6 @@
 #ifndef STD_INCLUDES_H
 #define STD_INCLUDES_H
 
-#include "raylib.h"
-#include "raymath.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>

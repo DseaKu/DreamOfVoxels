@@ -5,6 +5,7 @@
 #include "voxel.h"
 #include <float.h>
 #include <raylib.h>
+#include <raymath.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h> // For memset
