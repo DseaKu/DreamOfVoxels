@@ -49,19 +49,10 @@ int Scene3DGame() {
       }
     }
 
-    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+    if (input_data.mouse_pressed & RIGHT_MOUSE_PRESSED) {
       TryPlaceVoxel(voxel_data, &player, screen_width, screen_height,
                     MAX_PLAYER_RANGE);
       is_visibility_updatable = true;
-    }
-
-    // Update objects
-    UpdatePlayer(&player);
-    if (is_visibility_updatable) {
-      UpdateVisibility(voxel_data);
-      UnloadMesh(chunk_mesh);
-      chunk_mesh = CulledMeshing(voxel_data);
-      is_visibility_updatable = false;
     }
 
     //----------------------------------------------------------------------------------
@@ -99,7 +90,13 @@ int Scene3DGame() {
     lean.y = Lerp(lean.y, forward * 0.015f, 10.0f * delta);
 
     UpdateCameraAngle(&player);
-
+    // UpdatePlayer(&player);
+    if (is_visibility_updatable) {
+      UpdateVisibility(voxel_data);
+      UnloadMesh(chunk_mesh);
+      chunk_mesh = CulledMeshing(voxel_data);
+      is_visibility_updatable = false;
+    }
     //----------------------------------------------------------------------------------
     // Draw 3D
     //----------------------------------------------------------------------------------
