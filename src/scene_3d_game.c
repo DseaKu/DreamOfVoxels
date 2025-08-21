@@ -65,8 +65,8 @@ int Scene3DGame() {
     StartPerformanceTracker("Render mesh");
     for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
       Matrix transform = MatrixTranslate(
-          p_chunk_data[i].x_offset * N_VOXEL_X * VOXEL_SIZE, 0.0f,
-          p_chunk_data[i].z_offset * N_VOXEL_Z * VOXEL_SIZE);
+          p_chunk_data[i].position.x_offset * N_VOXEL_X * VOXEL_SIZE, 0.0f,
+          p_chunk_data[i].position.z_offset * N_VOXEL_Z * VOXEL_SIZE);
       DrawMesh(p_chunk_data[i].chunk_mesh, material, transform);
     }
 
@@ -135,8 +135,7 @@ Chunk *InitChunks() {
   for (u8 x = 0; x < N_CHUNKS_X; x++) {
     for (u8 z = 0; z < N_CHUNKS_Z; z++) {
       chunk_data[i].p_voxel_data = InitVoxelPointer(true);
-      chunk_data[i].x_offset = x - (N_CHUNKS_X / 2);
-      chunk_data[i].z_offset = z - (N_CHUNKS_Z / 2);
+      chunk_data[i].position = (SnVector2D){(N_CHUNKS_X / 2), (N_CHUNKS_Z / 2)};
       chunk_data[i].is_dirty = true;
       i++;
     }

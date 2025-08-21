@@ -16,14 +16,13 @@
 #define CHUNKS_IN_TOTAL N_CHUNKS_Z *N_CHUNKS_X
 typedef u64 Voxel;
 typedef struct SnVector2D {
-  s64 z_offset;
   s64 x_offset;
+  s64 z_offset;
 } SnVector2D;
 
 typedef struct Chunk {
   bool is_dirty;
-  s64 z_offset;
-  s64 x_offset;
+  SnVector2D position;
   Voxel *p_voxel_data;
   Mesh chunk_mesh;
 } Chunk;
