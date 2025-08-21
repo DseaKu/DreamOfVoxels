@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "raylib.h"
+#include "voxel.h"
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
@@ -50,9 +51,9 @@ typedef struct Player {
 //----------------------------------------------------------------------------------
 void UpdateCameraAngle(Player *player);
 void UpdateBody(Body *body, float rot, char side, char forward,
-                bool jumpPressed, bool crouchHold);
+                bool jumpPressed, bool crouchHold, Voxel *voxel_data);
 
 Player InitPlayer(void);
-void UpdatePlayer(Player *player);
+void UpdatePlayer(Player *player, Voxel *voxel_data);
 
 #endif // PLAYER_H

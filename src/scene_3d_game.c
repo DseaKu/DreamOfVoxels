@@ -1,5 +1,5 @@
 #include "scene_3d_game.h"
-#include "input_handler.h"
+#include "player.h"
 #include "resource_tracker.h"
 #include "voxel.h"
 #include <raylib.h>
@@ -49,7 +49,7 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     // Update
     //----------------------------------------------------------------------------------
-    UpdatePlayer(&player);
+    UpdatePlayer(&player, voxel_data);
     UpdateCameraAngle(&player);
     if (is_visibility_updatable) {
       UpdateVisibility(voxel_data);

@@ -1,6 +1,7 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
+// #include "player.h"
 #include "player.h"
 #include "std_includes.h"
 #include <iso646.h>
@@ -51,12 +52,12 @@
 typedef u32 Voxel;
 
 typedef enum {
-  FACE_DIR_POS_X = 0b000001, // Right
-  FACE_DIR_NEG_X = 0b000010, // Left
-  FACE_DIR_POS_Z = 0b000100, // Front
-  FACE_DIR_NEG_Z = 0b001000, // Back
-  FACE_DIR_POS_Y = 0b010000, // Top
-  FACE_DIR_NEG_Y = 0b100000, // Bottom
+  FACE_DIR_POS_X = 1 << 0, // Right
+  FACE_DIR_NEG_X = 1 << 1, // Left
+  FACE_DIR_POS_Z = 1 << 2, // Front
+  FACE_DIR_NEG_Z = 1 << 3, // Back
+  FACE_DIR_POS_Y = 1 << 4, // Top
+  FACE_DIR_NEG_Y = 1 << 5, // Bottom
 } VoxelFaceDirection;
 
 typedef enum {
