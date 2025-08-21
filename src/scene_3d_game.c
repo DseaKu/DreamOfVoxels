@@ -16,14 +16,13 @@ int Scene3DGame() {
   InitWindow(screen_width, screen_height, "Raylib ");
   DisableCursor();
 
-  u16 n_chunks = CalcNumChuncks(NUMBER_OF_CHUNK_RINGS);
   // SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
-  Chunk *chunk_data = InitChunks(n_chunks);
+  Chunk *p_chunk_data = InitChunks();
   // Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
   // InitVoxel(voxel_data, true, NUMBER_OF_CHUNKS);
 
-  UpdateVisibility(chunk_data, n_chunks);
+  UpdateVisibility(p_chunk_data, n_chunks);
   Mesh chunk_mesh = CulledMeshing(voxel_data);
   Material material = LoadMaterialDefault();
   Image texture_atlas_img = LoadImage("assets/texture_atlas.png");
@@ -121,21 +120,18 @@ void Draw2DDebugInformation(int screen_width, int screen_height) {
   EndPerformanceTracker("Draw 2D debug information");
 }
 
-Chunk *InitChunks(u16 number_of_chunks) {
+Chunk *InitChunks() {
+  u8 i = 0;
 
-  Chunk *chunk_data = calloc(number_of_chunks, sizeof(Chunk));
+  Chunk *chunk_data = calloc(CHUNKS_IN_TOTAL, sizeof(Chunk));
 
-  for (u8 i = 0; i < number_of_chunks; i++) {
-    chunk_data[i].p_voxel_data = InitVoxelPointer(true);
-    chunk_data[i].x_offset = CHUNK_SIZE;
-    chunk_data[i].y_offset = CHUNK_SIZE;
+  for (u8 x = 0; x < N_CHUNKS_X; x++) {
+    for (u8 y = 0; y < N_CHUNKS_X; y++) {
+      chunk_data[i].p_voxel_data = InitVoxelPointer(true);
+      chunk_data[i].x_offset = x;
+      chunk_data[i].y_offset = y;
+      i++;
+    }
   }
   return chunk_data;
-}
-u16 CalcNumChuncks(u8 n_rings) {
-  u16 number_of_chunks = 1;
-  for (u8 i = 0; i < n_rings; i++) {
-    number_of_chunks *= 4;
-  }
-  return number_of_chunks;
 }
