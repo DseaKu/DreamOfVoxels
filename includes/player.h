@@ -51,9 +51,9 @@ typedef struct Player {
 //----------------------------------------------------------------------------------
 void UpdateCameraAngle(Player *player);
 void UpdateBody(Body *body, float rot, char side, char forward,
-                bool jumpPressed, bool crouchHold, Voxel *voxel_data);
+                bool jumpPressed, bool crouchHold, Chunk *chunk_data);
 
 Player InitPlayer(void);
-void UpdatePlayer(Player *player, Voxel *voxel_data);
+void UpdatePlayer(Player *player, Chunk *chunk_data);
 
 #endif // PLAYER_H

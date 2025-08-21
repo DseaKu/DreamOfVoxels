@@ -83,7 +83,7 @@ Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);
 // Allocate xzy-coordinates to voxels
 Voxel *InitVoxelPointer(bool is_random);
 
-void UpdateVisibility(Chunk *chunk_data, u8 n_chunks);
+void UpdateVisibility(Chunk *chunk_data);
 
 u8 Voxel_GetPosX(Voxel v);
 
@@ -105,5 +105,5 @@ void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
 
 VoxelID GetVoxelID(Voxel *voxel_data, int x, int y, int z);
 
-Mesh CulledMeshing(Voxel *voxel_data);
+void CulledMeshing(Chunk *chunk_data);
 #endif // VOXEL_H

@@ -19,18 +19,14 @@ int Scene3DGame() {
   // SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
   Chunk *p_chunk_data = InitChunks();
-  // Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
-  // InitVoxel(voxel_data, true, NUMBER_OF_CHUNKS);
 
-  UpdateVisibility(p_chunk_data, n_chunks);
-  Mesh chunk_mesh = CulledMeshing(voxel_data);
   Material material = LoadMaterialDefault();
   Image texture_atlas_img = LoadImage("assets/texture_atlas.png");
   material.maps[MATERIAL_MAP_DIFFUSE].texture =
       LoadTextureFromImage(texture_atlas_img);
   UnloadImage(texture_atlas_img);
 
-  bool is_visibility_updatable = false;
+  bool is_visibility_updatable = true;
 
   //----------------------------------------------------------------------------------
   // Game loop
@@ -43,21 +39,20 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-      if (RemoveVoxel(voxel_data, &player, screen_width, screen_height,
-                      MAX_PLAYER_RANGE)) {
-        is_visibility_updatable = true;
-      }
+      // if (RemoveVoxel(voxel_data, &player, screen_width, screen_height,
+      //                 MAX_PLAYER_RANGE)) {
+      //   is_visibility_updatable = true;
+      // }
     }
 
     //----------------------------------------------------------------------------------
     // Update
     //----------------------------------------------------------------------------------
-    UpdatePlayer(&player, voxel_data);
+    UpdatePlayer(&player, p_chunk_data);
     UpdateCameraAngle(&player);
     if (is_visibility_updatable) {
-      UpdateVisibility(voxel_data);
-      UnloadMesh(chunk_mesh);
-      chunk_mesh = CulledMeshing(voxel_data);
+      UpdateVisibility(p_chunk_data);
+      CulledMeshing(p_chunk_data);
       is_visibility_updatable = false;
     }
     //----------------------------------------------------------------------------------
@@ -67,8 +62,9 @@ int Scene3DGame() {
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
     StartPerformanceTracker("Render mesh");
-
-    DrawMesh(chunk_mesh, material, MatrixIdentity());
+    for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
+      DrawMesh(p_chunk_data[i].chunk_mesh, material, MatrixIdentity());
+    }
 
     EndPerformanceTracker("Render mesh");
 
@@ -90,14 +86,19 @@ int Scene3DGame() {
   // Free rescource
   //----------------------------------------------------------------------------------
   UnloadMaterial(material);
-  UnloadMesh(chunk_mesh);
-  free(voxel_data);
+  FreeAllChunkData(p_chunk_data);
   CloseWindow();
   PrintPerformanceTrackers();
   WritePerformanceTrackersToFile("Performance_Report.txt");
   return 0;
 }
 
+void FreeAllChunkData(Chunk *chunk_data) {
+  for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
+    UnloadMesh(chunk_data[i].chunk_mesh);
+    free(chunk_data[i].p_voxel_data);
+  }
+}
 void Draw3DDebugInformation(int screen_width, int screen_height) {
 
   StartPerformanceTracker("Draw 3D debug information");
@@ -126,10 +127,11 @@ Chunk *InitChunks() {
   Chunk *chunk_data = calloc(CHUNKS_IN_TOTAL, sizeof(Chunk));
 
   for (u8 x = 0; x < N_CHUNKS_X; x++) {
-    for (u8 y = 0; y < N_CHUNKS_X; y++) {
+    for (u8 z = 0; z < N_CHUNKS_Z; z++) {
       chunk_data[i].p_voxel_data = InitVoxelPointer(true);
       chunk_data[i].x_offset = x;
-      chunk_data[i].y_offset = y;
+      chunk_data[i].z_offset = z;
+      chunk_data[i].is_dirty = true;
       i++;
     }
   }

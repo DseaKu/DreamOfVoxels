@@ -41,7 +41,7 @@ Player InitPlayer(void) {
   return player;
 }
 
-void UpdatePlayer(Player *player, Voxel *voxel_data) {
+void UpdatePlayer(Player *player, Chunk *chunk_data) {
   StartPerformanceTracker("Update Player");
 
   Vector2 mouse_delta = GetMouseDelta();
@@ -52,7 +52,7 @@ void UpdatePlayer(Player *player, Voxel *voxel_data) {
   char forward = (IsKeyDown(KEY_W) - IsKeyDown(KEY_S));
   bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
   UpdateBody(&player->body, player->body.lookRotation.x, sideway, forward,
-             IsKeyPressed(KEY_SPACE), crouching, voxel_data);
+             IsKeyPressed(KEY_SPACE), crouching, chunk_data);
 
   float delta = GetFrameTime();
   player->body.headLerp =
@@ -81,7 +81,7 @@ void UpdatePlayer(Player *player, Voxel *voxel_data) {
 }
 
 void UpdateBody(Body *body, float rot, char side, char forward,
-                bool jumpPressed, bool crouchHold, Voxel *voxel_data) {
+                bool jumpPressed, bool crouchHold, Chunk *chunk_data) {
   Vector2 input = (Vector2){(float)side, (float)-forward};
 
   // Slow down diagonal movement
@@ -137,21 +137,21 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 
   Vector3 new_position = body->position;
   new_position.x += body->velocity.x * delta;
-  if (IsColliding(voxel_data, new_position)) {
-    new_position.x = body->position.x;
-  }
+  // if (IsColliding(voxel_data, new_position)) {
+  //   new_position.x = body->position.x;
+  // }
 
   new_position.y += body->velocity.y * delta;
-  if (IsColliding(voxel_data, new_position)) {
-    new_position.y = body->position.y;
-    body->velocity.y = 0;
-    body->isGrounded = true;
-  }
+  // if (IsColliding(voxel_data, new_position)) {
+  //   new_position.y = body->position.y;
+  //   body->velocity.y = 0;
+  //   body->isGrounded = true;
+  // }
 
   new_position.z += body->velocity.z * delta;
-  if (IsColliding(voxel_data, new_position)) {
-    new_position.z = body->position.z;
-  }
+  // if (IsColliding(voxel_data, new_position)) {
+  //   new_position.z = body->position.z;
+  // }
 
   body->position = new_position;
 

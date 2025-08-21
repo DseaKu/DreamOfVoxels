@@ -1,3 +1,4 @@
+#include <raylib.h>
 #ifndef SCENE_3D_GAME_H
 #include "std_includes.h"
 #define SCENE_3D_GAME_H
@@ -11,14 +12,15 @@
 #define HALF_BLOCK_SIZE (BLOCK_SIZE / 2.0f)
 #define MAX_PLAYER_RANGE 4.0f
 #define N_CHUNKS_X 2
-#define N_CHUNKS_Y 2
-#define CHUNKS_IN_TOTAL N_CHUNKS_Y *N_CHUNKS_X
+#define N_CHUNKS_Z 2
+#define CHUNKS_IN_TOTAL N_CHUNKS_Z *N_CHUNKS_X
 typedef u64 Voxel;
 typedef struct Chunk {
-  u8 y_offset;
+  bool is_dirty;
+  u8 z_offset;
   u8 x_offset;
   Voxel *p_voxel_data;
-  bool is_dirty;
+  Mesh chunk_mesh;
 } Chunk;
 
 int Scene3DGame();
@@ -26,5 +28,5 @@ void Draw3DDebugInformation(int screen_width, int screen_height);
 void Draw2DDebugInformation(int screen_width, int screen_height);
 
 Chunk *InitChunks();
-u8 DestroyAllChunks(Chunk *chunk_data);
+void FreeAllChunkData(Chunk *chunk_data);
 #endif // SCENE_3D_GAME_H
