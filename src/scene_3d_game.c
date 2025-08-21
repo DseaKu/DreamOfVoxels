@@ -4,6 +4,7 @@
 #include "voxel.h"
 #include <raylib.h>
 #include <raymath.h>
+#include <stdlib.h>
 
 int Scene3DGame() {
 
@@ -17,7 +18,7 @@ int Scene3DGame() {
   // SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
   Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
-  InitVoxel(voxel_data, true, NUMBER_OF_CHUNKS);
+  // InitVoxel(voxel_data, true, NUMBER_OF_CHUNKS);
 
   UpdateVisibility(voxel_data);
   Mesh chunk_mesh = CulledMeshing(voxel_data);
@@ -115,4 +116,22 @@ void Draw2DDebugInformation(int screen_width, int screen_height) {
   DrawText("Z-Axis", 30, 30, 10, BLUE);
   DrawFPS(screen_width - 100, 10);
   EndPerformanceTracker("Draw 2D debug information");
+}
+
+Chunk *InitChunks(u8 n_rings) {
+
+  u16 number_of_chunks = CalcNumChuncks(n_rings);
+  Chunk *chunk_data = calloc(number_of_chunks, sizeof(Chunk));
+
+  for (u8 i = 0; i < number_of_chunks; i++) {
+    chunk_data[i].p_voxel_data = InitVoxelPointer(true);
+  }
+  return chunk_data;
+}
+u16 CalcNumChuncks(u8 n_rings) {
+  u16 number_of_chunks = 1;
+  for (u8 i = 0; i < n_rings; i++) {
+    number_of_chunks *= 4;
+  }
+  return number_of_chunks;
 }

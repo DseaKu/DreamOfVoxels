@@ -80,7 +80,7 @@ Mesh GenMeshCustom(Vector3 offset);
 Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);
 
 // Allocate xzy-coordinates to voxels
-void InitVoxel(Voxel *voxel_data, bool is_random, u8 n_chunks);
+Voxel *InitVoxelPointer(bool is_random);
 
 void UpdateVisibility(Voxel *voxel_data);
 

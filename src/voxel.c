@@ -1,14 +1,16 @@
 #include "voxel.h"
 #include "resource_tracker.h"
 #include "rlgl.h"
+#include "scene_3d_game.h"
 #include "std_includes.h"
 #include <math.h>
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdio.h>
 // Init xzy-coordinates to voxels
-void InitVoxel(Voxel *voxel_data, bool is_random, u8 n_chunks) {
+Voxel *InitVoxelPointer(bool is_random) {
   // 0.527000 ms (avg over 1 runs):Init Voxels
+  Voxel *voxel_data = (Voxel *)calloc(NUMBER_OF_VOXELS, sizeof(Voxel));
   StartPerformanceTracker("Init Voxels");
   u64 index = 0;
 
@@ -37,6 +39,7 @@ void InitVoxel(Voxel *voxel_data, bool is_random, u8 n_chunks) {
     }
   }
   EndPerformanceTracker("Init Voxels");
+  return voxel_data;
 }
 
 // Gets the X position from a voxel
