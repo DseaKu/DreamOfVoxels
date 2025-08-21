@@ -1,24 +1,28 @@
 #ifndef INPUT_HANDLER_H
 #define INPUT_HANDLER_H
+#include "std_includes.h"
 
+//----------------------------------------------------------------------------------
+// Keyboard inputs
+//----------------------------------------------------------------------------------
 typedef enum {
+  NONE_INPUT = 1 << 0,
 
-  //----------------------------------------------------------------------------------
-  // Keyboard inputs 0x00ff
-  //----------------------------------------------------------------------------------
-  KEY_INPUT_A_PRESSED = 0x0001,
-  KEY_INPUT_W_PRESSED = 0x0002,
-  KEY_INPUT_S_PRESSED = 0x0003,
-  KEY_INPUT_D_PRESSED = 0x0004,
-  KEY_INPUT_SPACE_PRESSED = 0x0005,
+  KEY_INPUT_A_PRESSED = 1 << 1,
+  KEY_INPUT_W_PRESSED = 1 << 2,
+  KEY_INPUT_S_PRESSED = 1 << 3,
+  KEY_INPUT_D_PRESSED = 1 << 4,
+  KEY_INPUT_SPACE_PRESSED = 1 << 5,
+} KeyboardInputsPressed;
+typedef enum {
+  LEFT_MOUSE_PRESSED = 1 << 0,
 
-  //----------------------------------------------------------------------------------
-  // Mouse inputs 0x0f00
-  //----------------------------------------------------------------------------------
+} MouseInputsPressed;
 
-  //----------------------------------------------------------------------------------
-  // Game Pad inputs 0xf000
-  //----------------------------------------------------------------------------------
-} UserInputs;
+typedef struct InputFlags {
+
+  u32 keyboard_pressed;
+  u8 mouse_pressed;
+} InputFlags;
 
 #endif // INPUT_HANDLER_H
