@@ -15,7 +15,7 @@ Voxel *InitVoxelPointer(bool is_random) {
   u64 index = 0;
 
   for (u8 y = 0; y < Y_MAX; y++) {
-    for (u8 z = 0; z < Z_MAX; z++) {
+    for (u8 z = 0; z < N_VOXEL_Z; z++) {
       for (u8 x = 0; x < X_MAX; x++) {
 
         Voxel v = 0;
@@ -66,7 +66,7 @@ void UpdateVisibility(Chunk *chunk_data) {
 
     u64 index = 0;
     for (u8 y = 0; y < Y_MAX; y++) {
-      for (u8 z = 0; z < Z_MAX; z++) {
+      for (u8 z = 0; z < N_VOXEL_Z; z++) {
         for (u8 x = 0; x < X_MAX; x++) {
 
           Voxel v = voxel_data[index];
@@ -80,7 +80,7 @@ void UpdateVisibility(Chunk *chunk_data) {
 
           // For voxels not on the boundary, skip boundary checks.
           if (x > 0 && x < X_MAX - 1 && y > 0 && y < Y_MAX - 1 && z > 0 &&
-              z < Z_MAX - 1) {
+              z < N_VOXEL_Z - 1) {
             if (((voxel_data[index + X_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
                  VOXEL_MASK_ID) == EMPTY)
               visible_faces |= FACE_DIR_POS_X;
@@ -112,7 +112,7 @@ void UpdateVisibility(Chunk *chunk_data) {
                  VOXEL_MASK_ID) == EMPTY) {
               visible_faces |= FACE_DIR_NEG_X;
             }
-            if (z == Z_MAX - 1 ||
+            if (z == N_VOXEL_Z - 1 ||
                 ((voxel_data[index + Z_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
                  VOXEL_MASK_ID) == EMPTY) {
               visible_faces |= FACE_DIR_POS_Z;
@@ -144,7 +144,7 @@ void UpdateVisibility(Chunk *chunk_data) {
 }
 
 u64 GetVoxelIndex(int x, int y, int z) {
-  if (x < 0 || x >= X_MAX || y < 0 || y >= Y_MAX || z < 0 || z >= Z_MAX) {
+  if (x < 0 || x >= X_MAX || y < 0 || y >= Y_MAX || z < 0 || z >= N_VOXEL_Z) {
     return -1; // Invalid index
   }
   return (y * Y_NEIGHBOUR_OFFSET) + (z * Z_NEIGHBOUR_OFFSET) + x;
@@ -371,18 +371,24 @@ void CulledMeshing(Chunk *chunk_data) {
       float half_size = VOXEL_SIZE / 2.0f;
       float v_data[] = {
           // Front (+Z), Back (-Z), Top (+Y), Bottom (-Y), Right (+X), Left (-X)
-          -half_size, -half_size, half_size,  half_size,  -half_size, half_size,
-          half_size,  half_size,  half_size,  -half_size, half_size,  half_size, // Front
-          half_size, -half_size, -half_size, -half_size, -half_size, -half_size,
-          -half_size,  half_size, -half_size, half_size,  half_size, -half_size, // Back
-          -half_size,  half_size,  half_size,  half_size,  half_size,  half_size,
-          half_size,  half_size, -half_size, -half_size,  half_size, -half_size, // Top
-          -half_size, -half_size, -half_size, half_size, -half_size, -half_size,
-          half_size, -half_size,  half_size, -half_size, -half_size,  half_size, // Bottom
-          half_size, -half_size,  half_size,  half_size, -half_size, -half_size,
-          half_size,  half_size, -half_size,  half_size,  half_size,  half_size, // Right
-          -half_size, -half_size, -half_size, -half_size, -half_size,  half_size,
-          -half_size,  half_size,  half_size, -half_size,  half_size, -half_size // Left
+          -half_size, -half_size, half_size,  half_size,
+          -half_size, half_size,  half_size,  half_size,
+          half_size,  -half_size, half_size,  half_size, // Front
+          half_size,  -half_size, -half_size, -half_size,
+          -half_size, -half_size, -half_size, half_size,
+          -half_size, half_size,  half_size,  -half_size, // Back
+          -half_size, half_size,  half_size,  half_size,
+          half_size,  half_size,  half_size,  half_size,
+          -half_size, -half_size, half_size,  -half_size, // Top
+          -half_size, -half_size, -half_size, half_size,
+          -half_size, -half_size, half_size,  -half_size,
+          half_size,  -half_size, -half_size, half_size, // Bottom
+          half_size,  -half_size, half_size,  half_size,
+          -half_size, -half_size, half_size,  half_size,
+          -half_size, half_size,  half_size,  half_size, // Right
+          -half_size, -half_size, -half_size, -half_size,
+          -half_size, half_size,  -half_size, half_size,
+          half_size,  -half_size, half_size,  -half_size // Left
       };
 
       // Define the UV coordinates for a single quad, mapping to the correct

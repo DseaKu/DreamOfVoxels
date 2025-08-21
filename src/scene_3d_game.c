@@ -65,7 +65,7 @@ int Scene3DGame() {
     for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
       Matrix transform =
           MatrixTranslate(p_chunk_data[i].x_offset * X_MAX * VOXEL_SIZE, 0.0f,
-                          p_chunk_data[i].z_offset * Z_MAX * VOXEL_SIZE);
+                          p_chunk_data[i].z_offset * N_VOXEL_Z * VOXEL_SIZE);
       DrawMesh(p_chunk_data[i].chunk_mesh, material, transform);
     }
 

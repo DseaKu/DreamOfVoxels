@@ -13,14 +13,14 @@
 
 #define CHUNK_SIZE 16
 #define X_MAX CHUNK_SIZE
-#define Z_MAX CHUNK_SIZE
+#define N_VOXEL_Z CHUNK_SIZE
 #define Y_MAX 4
 
 #define X_NEIGHBOUR_OFFSET 1
 #define Z_NEIGHBOUR_OFFSET X_MAX
-#define Y_NEIGHBOUR_OFFSET X_MAX *Z_MAX
+#define Y_NEIGHBOUR_OFFSET X_MAX *N_VOXEL_Z
 
-#define NUMBER_OF_VOXELS X_MAX *Y_MAX *Z_MAX
+#define NUMBER_OF_VOXELS X_MAX *Y_MAX *N_VOXEL_Z
 
 /* Each coordinate will be represented by 6bits.
  * That means the coordinates cant exeed 63,
@@ -28,7 +28,6 @@
 
 /* MSB:
  * typedef u64 Voxel; Is defined in 'scene_3d_game.h' to avoid cycle include
- * with player.h #define X_MAX 32 #define Z_MAX 32 #define Y_MAX 32
  *
  *| oooooo | iiiiiiii | ffffff | yyyyyy | zzzzzz | xxxxxx |
  *|--------|----------|--------|--------|--------|--------|

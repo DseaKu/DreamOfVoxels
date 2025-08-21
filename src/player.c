@@ -2,8 +2,8 @@
 #include "raymath.h"
 #include "resource_tracker.h"
 #include "voxel.h"
-#include <raylib.h>
 #include <math.h>
+#include <raylib.h>
 
 static bool IsColliding(Voxel *voxel_data, Vector3 position) {
   StartPerformanceTracker("  └-> Check Collision");
@@ -216,16 +216,20 @@ void UpdateCameraAngle(Player *player) {
 
 int get_current_chunk(Player *player) {
   float chunk_size_x = X_MAX * VOXEL_SIZE;
-  float chunk_size_z = Z_MAX * VOXEL_SIZE;
+  float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
 
   int chunk_x = floorf(player->body.position.x / chunk_size_x);
   int chunk_z = floorf(player->body.position.z / chunk_size_z);
 
   // Clamp chunk coordinates to be within the world boundaries
-  if (chunk_x < 0) chunk_x = 0;
-  if (chunk_x >= N_CHUNKS_X) chunk_x = N_CHUNKS_X - 1;
-  if (chunk_z < 0) chunk_z = 0;
-  if (chunk_z >= N_CHUNKS_Z) chunk_z = N_CHUNKS_Z - 1;
+  if (chunk_x < 0)
+    chunk_x = 0;
+  if (chunk_x >= N_CHUNKS_X)
+    chunk_x = N_CHUNKS_X - 1;
+  if (chunk_z < 0)
+    chunk_z = 0;
+  if (chunk_z >= N_CHUNKS_Z)
+    chunk_z = N_CHUNKS_Z - 1;
 
   return chunk_x * N_CHUNKS_Z + chunk_z;
 }
