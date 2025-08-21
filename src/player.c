@@ -215,7 +215,7 @@ void UpdateCameraAngle(Player *player) {
 }
 
 int get_current_chunk(Player *player) {
-  float chunk_size_x = X_MAX * VOXEL_SIZE;
+  float chunk_size_x = N_VOXEL_X * VOXEL_SIZE;
   float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
 
   int chunk_x = floorf(player->body.position.x / chunk_size_x);
