@@ -49,8 +49,6 @@
 #define VOXEL_MASK_FACE 0x3F
 #define VOXEL_MASK_ID 0xFF
 
-typedef u32 Voxel;
-
 typedef enum {
   FACE_DIR_POS_X = 1 << 0, // Right
   FACE_DIR_NEG_X = 1 << 1, // Left

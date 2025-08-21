@@ -9,6 +9,8 @@
 #define BLOCK_SIZE 1.0f
 #define HALF_BLOCK_SIZE (BLOCK_SIZE / 2.0f)
 #define MAX_PLAYER_RANGE 4.0f
+#include "std_includes.h"
+typedef u32 Voxel;
 
 int Scene3DGame();
 void Draw3DDebugInformation(int screen_width, int screen_height);

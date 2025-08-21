@@ -1,6 +1,7 @@
 #include "player.h"
 #include "raymath.h"
 #include "resource_tracker.h"
+#include "voxel.h"
 #include <raylib.h>
 
 static bool IsColliding(Voxel *voxel_data, Vector3 position) {
@@ -30,6 +31,7 @@ Player InitPlayer(void) {
   player.camera.fovy = 60.0f;
   player.camera.projection = CAMERA_PERSPECTIVE;
   player.body.headLerp = STAND_HEIGHT;
+  player.body.position = (Vector3){-2, 1, -2};
   player.body.sensitivity.x = 0.001f;
   player.body.sensitivity.y = 0.001f;
   return player;
