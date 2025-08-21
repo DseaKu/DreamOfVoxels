@@ -16,7 +16,7 @@
 #define CHUNK_SIZE 63
 #define X_MAX CHUNK_SIZE
 #define Z_MAX CHUNK_SIZE
-#define Y_MAX CHUNK_SIZE
+#define Y_MAX 8
 
 #define X_NEIGHBOUR_OFFSET 1
 #define Z_NEIGHBOUR_OFFSET X_MAX
@@ -70,7 +70,8 @@ typedef enum {
 
 Mesh GenMeshCustom(Vector3 offset);
 
-// Mesh GenVertexMesh(Vertex vertices_data);
+// Return all indicies for all neighbour in range
+Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);
 
 // Allocate xzy-coordinates to voxels
 void InitVoxel(Voxel *voxel_data, bool is_random);
@@ -82,6 +83,8 @@ u8 Voxel_GetPosX(Voxel v);
 u8 Voxel_GetPosY(Voxel v);
 
 u8 Voxel_GetPosZ(Voxel v);
+
+bool Voxel_IsActive(Voxel v);
 
 u64 GetVoxelIndex(int x, int y, int z);
 

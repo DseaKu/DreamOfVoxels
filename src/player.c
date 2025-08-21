@@ -5,22 +5,26 @@
 #include <raylib.h>
 
 static bool IsColliding(Voxel *voxel_data, Vector3 position) {
+  StartPerformanceTracker("  └-> Check Collision");
   for (int i = 0; i < NUMBER_OF_VOXELS; i++) {
     Voxel v = voxel_data[i];
-    // if (voxel_data[i].is_active) {
-    BoundingBox voxel_box = {
-        (Vector3){Voxel_GetPosX(v) - 0.5f, Voxel_GetPosY(v) - 0.5f,
-                  Voxel_GetPosZ(v) - 0.5f},
-        (Vector3){Voxel_GetPosX(v) + 0.5f, Voxel_GetPosY(v) + 0.5f,
-                  Voxel_GetPosZ(v) + 0.5f}};
-    BoundingBox player_box = {
-        (Vector3){position.x - 0.25f, position.y, position.z - 0.25f},
-        (Vector3){position.x + 0.25f, position.y + 1.8f, position.z + 0.25f}};
-    if (CheckCollisionBoxes(player_box, voxel_box)) {
-      return true;
-      // }
+
+    if (Voxel_IsActive(v)) {
+
+      BoundingBox voxel_box = {
+          (Vector3){Voxel_GetPosX(v) - 0.5f, Voxel_GetPosY(v) - 0.5f,
+                    Voxel_GetPosZ(v) - 0.5f},
+          (Vector3){Voxel_GetPosX(v) + 0.5f, Voxel_GetPosY(v) + 0.5f,
+                    Voxel_GetPosZ(v) + 0.5f}};
+      BoundingBox player_box = {
+          (Vector3){position.x - 0.25f, position.y, position.z - 0.25f},
+          (Vector3){position.x + 0.25f, position.y + 1.8f, position.z + 0.25f}};
+      if (CheckCollisionBoxes(player_box, voxel_box)) {
+        return true;
+      }
     }
   }
+  EndPerformanceTracker("  └-> Check Collision");
   return false;
 }
 
@@ -31,7 +35,7 @@ Player InitPlayer(void) {
   player.camera.fovy = 60.0f;
   player.camera.projection = CAMERA_PERSPECTIVE;
   player.body.headLerp = STAND_HEIGHT;
-  player.body.position = (Vector3){-2, 1, -2};
+  player.body.position = (Vector3){-2, 0, -2};
   player.body.sensitivity.x = 0.001f;
   player.body.sensitivity.y = 0.001f;
   return player;

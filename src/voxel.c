@@ -54,6 +54,8 @@ u8 Voxel_GetPosZ(Voxel v) {
   return (u8)((v >> VOXEL_SHIFT_POS_Z) & VOXEL_MASK_POS);
 }
 
+bool Voxel_IsActive(Voxel v) { return ((v >> 24) & VOXEL_MASK_ID) != 0; }
+
 void UpdateVisibility(Voxel *voxel_data) {
   /* 1.282267 ms (avg over 5952 runs):Update visibilty
   // After boundary check
