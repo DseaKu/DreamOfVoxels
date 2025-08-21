@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 // Init xzy-coordinates to voxels
-void InitVoxel(Voxel *voxel_data, bool is_random) {
+void InitVoxel(Voxel *voxel_data, bool is_random, u8 n_chunks) {
   // 0.527000 ms (avg over 1 runs):Init Voxels
   StartPerformanceTracker("Init Voxels");
   u64 index = 0;

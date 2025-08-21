@@ -10,9 +10,6 @@
 
 #define VOXEL_SIZE 1.0f
 
-// #define X_MAX 32
-// #define Z_MAX 32
-// #define Y_MAX 32
 #define CHUNK_SIZE 63
 #define X_MAX CHUNK_SIZE
 #define Z_MAX CHUNK_SIZE
@@ -29,12 +26,19 @@
  * */
 
 /* MSB:
- * iiiiiiii ffffff yyyyyy zzzzzz xxxxxx
+ * typedef u64 Voxel; Is defined in 'scene_3d_game.h' to avoid cycle include
+ * with player.h #define X_MAX 32 #define Z_MAX 32 #define Y_MAX 32
+ *
+ *| oooooo | iiiiiiii | ffffff | yyyyyy | zzzzzz | xxxxxx |
+ *|--------|----------|--------|--------|--------|--------|
+ *| 10 bits| 8 bits   | 6 bits | 6 bits | 6 bits | 6 bits |
+ *
  * 6bit = posX
  * 6bit = posy
  * 6bit = posz
  * 6bit = face direction
  * 8bit = texture
+ * 10bit = xy-position offset
  */
 
 // --- SHIFTS ---
@@ -43,11 +47,13 @@
 #define VOXEL_SHIFT_POS_Y 12
 #define VOXEL_SHIFT_FACE 18
 #define VOXEL_SHIFT_ID 24
+#define VOXEL_SHIFT_XZ_POS_OFFSET 32
 
 // --- MASKS ---
 #define VOXEL_MASK_POS 0x3F
 #define VOXEL_MASK_FACE 0x3F
 #define VOXEL_MASK_ID 0xFF
+#define VOXEL_MASK_XZ_POS_OFFSET 0x3FF
 
 typedef enum {
   FACE_DIR_POS_X = 1 << 0, // Right
@@ -74,7 +80,7 @@ Mesh GenMeshCustom(Vector3 offset);
 Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);
 
 // Allocate xzy-coordinates to voxels
-void InitVoxel(Voxel *voxel_data, bool is_random);
+void InitVoxel(Voxel *voxel_data, bool is_random, u8 n_chunks);
 
 void UpdateVisibility(Voxel *voxel_data);
 
