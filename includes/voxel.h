@@ -3,6 +3,7 @@
 
 // #include "player.h"
 #include "player.h"
+#include "scene_3d_game.h"
 #include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>
@@ -82,7 +83,7 @@ Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);
 // Allocate xzy-coordinates to voxels
 Voxel *InitVoxelPointer(bool is_random);
 
-void UpdateVisibility(Voxel *voxel_data);
+void UpdateVisibility(Chunk *chunk_data, u8 n_chunks);
 
 u8 Voxel_GetPosX(Voxel v);
 

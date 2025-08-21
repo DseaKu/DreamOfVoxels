@@ -24,7 +24,7 @@ int Scene3DGame();
 void Draw3DDebugInformation(int screen_width, int screen_height);
 void Draw2DDebugInformation(int screen_width, int screen_height);
 
-Chunk *InitChunks(u8 n_rings);
+Chunk *InitChunks(u16 n_chunks);
 u16 CalcNumChuncks(u8 num);
 u8 DestroyAllChunks(Chunk *chunk_data);
 #endif // SCENE_3D_GAME_H
