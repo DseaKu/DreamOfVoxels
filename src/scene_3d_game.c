@@ -29,7 +29,6 @@ int Scene3DGame() {
   UnloadImage(texture_atlas_img);
 
   bool is_visibility_updatable = false;
-  UpdateCameraAngle(&player); // Update camera parameters
 
   //----------------------------------------------------------------------------------
   // Game loop
@@ -58,42 +57,8 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     // Update
     //----------------------------------------------------------------------------------
-    Vector2 mouse_delta = GetMouseDelta();
-    player.body.lookRotation.x -= mouse_delta.x * player.body.sensitivity.x;
-    player.body.lookRotation.y += mouse_delta.y * player.body.sensitivity.y;
-
-    char sideway = (IsKeyDown(KEY_D) - IsKeyDown(KEY_A));
-    char forward = (IsKeyDown(KEY_W) - IsKeyDown(KEY_S));
-    bool crouching = IsKeyDown(KEY_LEFT_CONTROL);
-    UpdateBody(&player.body, player.body.lookRotation.x, sideway, forward,
-               IsKeyPressed(KEY_SPACE), crouching);
-
-    float delta = GetFrameTime();
-    player.body.headLerp =
-        Lerp(player.body.headLerp, (crouching ? CROUCH_HEIGHT : STAND_HEIGHT),
-             20.0f * delta);
-    player.camera.position = (Vector3){
-        player.body.position.x,
-        player.body.position.y + (BOTTOM_HEIGHT + player.body.headLerp),
-        player.body.position.z,
-    };
-
-    if (player.body.isGrounded && ((forward != 0) || (sideway != 0))) {
-      player.body.headTimer += delta * 3.0f;
-      player.body.walkLerp = Lerp(player.body.walkLerp, 1.0f, 10.0f * delta);
-      player.camera.fovy = Lerp(player.camera.fovy, 55.0f, 5.0f * delta);
-    } else {
-      player.body.walkLerp = Lerp(player.body.walkLerp, 0.0f, 10.0f * delta);
-      player.camera.fovy = Lerp(player.camera.fovy, 60.0f, 5.0f * delta);
-    }
-
-    player.body.lean.x =
-        Lerp(player.body.lean.x, sideway * 0.02f, 10.0f * delta);
-    player.body.lean.y =
-        Lerp(player.body.lean.y, forward * 0.015f, 10.0f * delta);
-
+    UpdatePlayer(&player);
     UpdateCameraAngle(&player);
-    // UpdatePlayer(&player);
     if (is_visibility_updatable) {
       UpdateVisibility(voxel_data);
       UnloadMesh(chunk_mesh);

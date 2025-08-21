@@ -44,15 +44,6 @@ typedef struct Player {
   Camera camera;
   Body body;
 } Player;
-//----------------------------------------------------------------------------------
-// Global Variables Definition
-//----------------------------------------------------------------------------------
-// extern Vector2 sensitivity;
-// extern Vector2 lookRotation;
-// extern float headTimer;
-// extern float walkLerp;
-// extern float headLerp;
-// extern Vector2 lean;
 
 //----------------------------------------------------------------------------------
 // Module functions declaration
