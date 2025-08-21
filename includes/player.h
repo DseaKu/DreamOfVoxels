@@ -55,6 +55,6 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 
 Player InitPlayer(void);
 void UpdatePlayer(Player *player, Chunk *chunk_data);
-int get_current_chunk(Player *player);
+int GerCurrentChunk(Player *player);
 
 #endif // PLAYER_H
