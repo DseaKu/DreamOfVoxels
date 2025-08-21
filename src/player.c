@@ -1,5 +1,6 @@
 #include "player.h"
 #include "raymath.h"
+#include "resource_tracker.h"
 #include <raylib.h>
 
 Player InitPlayer(void) {
@@ -15,6 +16,7 @@ Player InitPlayer(void) {
 }
 
 void UpdatePlayer(Player *player) {
+  StartPerformanceTracker("Update Player");
 
   Vector2 mouse_delta = GetMouseDelta();
   player->body.lookRotation.x -= mouse_delta.x * player->body.sensitivity.x;
@@ -49,6 +51,7 @@ void UpdatePlayer(Player *player) {
       Lerp(player->body.lean.x, sideway * 0.02f, 10.0f * delta);
   player->body.lean.y =
       Lerp(player->body.lean.y, forward * 0.015f, 10.0f * delta);
+  EndPerformanceTracker("Update Player");
 }
 
 void UpdateBody(Body *body, float rot, char side, char forward,

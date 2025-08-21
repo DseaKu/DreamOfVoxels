@@ -2,18 +2,17 @@
 #include "input_handler.h"
 #include "resource_tracker.h"
 #include "voxel.h"
+#include <raylib.h>
 #include <raymath.h>
 
 int Scene3DGame() {
 
-  const u64 screen_width = MAX_SCREEN_WIDTH;
-  const u64 screen_height = MAX_SCREEN_HEIGHT;
-
   //----------------------------------------------------------------------------------
   // Init
   //----------------------------------------------------------------------------------
+  const u64 screen_width = MAX_SCREEN_WIDTH;
+  const u64 screen_height = MAX_SCREEN_HEIGHT;
   InitWindow(screen_width, screen_height, "Raylib ");
-  InputData input_data = InitInputsFlags();
   DisableCursor();
   // SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
@@ -39,19 +38,12 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     // Get and process inputs
     //----------------------------------------------------------------------------------
-    GetInputs(&input_data);
 
-    if (input_data.mouse_pressed & LEFT_MOUSE_PRESSED) {
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
       if (RemoveVoxel(voxel_data, &player, screen_width, screen_height,
                       MAX_PLAYER_RANGE)) {
         is_visibility_updatable = true;
       }
-    }
-
-    if (input_data.mouse_pressed & RIGHT_MOUSE_PRESSED) {
-      TryPlaceVoxel(voxel_data, &player, screen_width, screen_height,
-                    MAX_PLAYER_RANGE);
-      is_visibility_updatable = true;
     }
 
     //----------------------------------------------------------------------------------
@@ -86,14 +78,14 @@ int Scene3DGame() {
     DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
     Draw2DDebugInformation(screen_width, screen_height);
 
-    //----------------------------------------------------------------------------------
-    // End Drawing
-    //----------------------------------------------------------------------------------
     EndDrawing();
 
     EndPerformanceTracker("CompleteLoop");
   } while (!WindowShouldClose());
 
+  //----------------------------------------------------------------------------------
+  // Free rescource
+  //----------------------------------------------------------------------------------
   UnloadMaterial(material);
   UnloadMesh(chunk_mesh);
   free(voxel_data);
