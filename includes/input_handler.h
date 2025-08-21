@@ -24,17 +24,18 @@ typedef enum {
 
   NO_MOUSE_PRESSED = 1 << 0,
   LEFT_MOUSE_PRESSED = 1 << 1,
+  RIGHT_MOUSE_PRESSED = 1 << 2,
 
 } MouseInputsPressed;
 
 typedef struct InputData {
 
-  u32 keyboard_pressed;
+  u16 keyboard_pressed;
   u8 mouse_pressed;
   Vector2 mouse_delta;
 } InputData;
 
 InputData InitInputsFlags();
-void UpdateInputs(InputData *input_data);
+void GetInputs(InputData *input_data);
 
 #endif // INPUT_HANDLER_H

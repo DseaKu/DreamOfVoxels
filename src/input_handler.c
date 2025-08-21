@@ -6,7 +6,7 @@ InputData InitInputsFlags() {
   InputData input_flags = {0};
   return input_flags;
 }
-void UpdateInputs(InputData *input_flags) {
+void GetInputs(InputData *input_flags) {
   StartPerformanceTracker("Check for inputs");
   //----------------------------------------------------------------------------------
   // Keyboard inputs
@@ -37,6 +37,9 @@ void UpdateInputs(InputData *input_flags) {
   input_flags->mouse_delta = GetMouseDelta();
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     input_flags->mouse_pressed |= LEFT_MOUSE_PRESSED;
+  }
+  if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+    input_flags->mouse_pressed |= RIGHT_MOUSE_PRESSED;
   }
   EndPerformanceTracker("Check for inputs");
 }

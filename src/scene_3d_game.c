@@ -1,15 +1,8 @@
 #include "scene_3d_game.h"
 #include "input_handler.h"
-#include "player.h"
 #include "resource_tracker.h"
-#include "rlgl.h"
 #include "voxel.h"
-#include <float.h>
-#include <raylib.h>
 #include <raymath.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h> // For memset
 
 int Scene3DGame() {
 
@@ -47,7 +40,7 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     // Get and process inputs
     //----------------------------------------------------------------------------------
-    UpdateInputs(&input_data);
+    GetInputs(&input_data);
 
     if (input_data.mouse_pressed & LEFT_MOUSE_PRESSED) {
       if (RemoveVoxel(voxel_data, &player, screen_width, screen_height,
