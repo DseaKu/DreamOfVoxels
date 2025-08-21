@@ -12,9 +12,10 @@
 // #define X_MAX 32
 // #define Z_MAX 32
 // #define Y_MAX 32
-#define X_MAX 63
-#define Z_MAX 63
-#define Y_MAX 63
+#define CHUNK_SIZE 63
+#define X_MAX CHUNK_SIZE
+#define Z_MAX CHUNK_SIZE
+#define Y_MAX CHUNK_SIZE
 
 #define X_NEIGHBOUR_OFFSET 1
 #define Z_NEIGHBOUR_OFFSET X_MAX
