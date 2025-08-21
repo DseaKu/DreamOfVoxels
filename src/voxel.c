@@ -371,25 +371,36 @@ void CulledMeshing(Chunk *chunk_data) {
       // Ordered by face.
       float half_size = VOXEL_SIZE / 2.0f;
       float v_data[] = {
-          // Front (+Z), Back (-Z), Top (+Y), Bottom (-Y), Right (+X), Left (-X)
-          -half_size, -half_size, half_size,  half_size,
-          -half_size, half_size,  half_size,  half_size,
-          half_size,  -half_size, half_size,  half_size, // Front
-          half_size,  -half_size, -half_size, -half_size,
-          -half_size, -half_size, -half_size, half_size,
-          -half_size, half_size,  half_size,  -half_size, // Back
-          -half_size, half_size,  half_size,  half_size,
-          half_size,  half_size,  half_size,  half_size,
-          -half_size, -half_size, half_size,  -half_size, // Top
-          -half_size, -half_size, -half_size, half_size,
-          -half_size, -half_size, half_size,  -half_size,
-          half_size,  -half_size, -half_size, half_size, // Bottom
-          half_size,  -half_size, half_size,  half_size,
-          -half_size, -half_size, half_size,  half_size,
-          -half_size, half_size,  half_size,  half_size, // Right
-          -half_size, -half_size, -half_size, -half_size,
-          -half_size, half_size,  -half_size, half_size,
-          half_size,  -half_size, half_size,  -half_size // Left
+          // Front (+Z)
+          -half_size, -half_size,  half_size,
+           half_size, -half_size,  half_size,
+           half_size,  half_size,  half_size,
+          -half_size,  half_size,  half_size,
+          // Back (-Z)
+           half_size, -half_size, -half_size,
+          -half_size, -half_size, -half_size,
+          -half_size,  half_size, -half_size,
+           half_size,  half_size, -half_size,
+          // Top (+Y)
+          -half_size,  half_size,  half_size,
+           half_size,  half_size,  half_size,
+           half_size,  half_size, -half_size,
+          -half_size,  half_size, -half_size,
+          // Bottom (-Y)
+          -half_size, -half_size, -half_size,
+           half_size, -half_size, -half_size,
+           half_size, -half_size,  half_size,
+          -half_size, -half_size,  half_size,
+          // Right (+X)
+           half_size, -half_size,  half_size,
+           half_size, -half_size, -half_size,
+           half_size,  half_size, -half_size,
+           half_size,  half_size,  half_size,
+          // Left (-X)
+          -half_size, -half_size, -half_size,
+          -half_size, -half_size,  half_size,
+          -half_size,  half_size,  half_size,
+          -half_size,  half_size, -half_size
       };
 
       // Define the UV coordinates for a single quad, mapping to the correct

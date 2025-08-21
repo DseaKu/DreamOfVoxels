@@ -17,8 +17,8 @@
 typedef u64 Voxel;
 typedef struct Chunk {
   bool is_dirty;
-  u8 z_offset;
-  u8 x_offset;
+  s64 z_offset;
+  s64 x_offset;
   Voxel *p_voxel_data;
   Mesh chunk_mesh;
 } Chunk;

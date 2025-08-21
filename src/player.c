@@ -37,7 +37,7 @@ Player InitPlayer(void) {
   player.camera.projection = CAMERA_PERSPECTIVE;
   player.body.headLerp = STAND_HEIGHT;
   // N_VOXEL_Y to spawn above chunks
-  player.body.position = (Vector3){N_VOXEL_X, N_VOXEL_Y + 2, N_VOXEL_Z};
+  player.body.position = (Vector3){0, N_VOXEL_Y + 2, 0};
   // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
   player.body.sensitivity = (Vector2){0.001f, 0.001f};
   return player;
@@ -219,18 +219,21 @@ int GetCurrentChunk(Player *player) {
   float chunk_size_x = N_VOXEL_X * VOXEL_SIZE;
   float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
 
-  int chunk_x = floorf(player->body.position.x / chunk_size_x);
-  int chunk_z = floorf(player->body.position.z / chunk_size_z);
+  int chunk_x_offset = floorf(player->body.position.x / chunk_size_x);
+  int chunk_z_offset = floorf(player->body.position.z / chunk_size_z);
 
-  // Clamp chunk coordinates to be within the world boundaries
-  if (chunk_x < 0)
-    chunk_x = 0;
-  if (chunk_x >= N_CHUNKS_X)
-    chunk_x = N_CHUNKS_X - 1;
-  if (chunk_z < 0)
-    chunk_z = 0;
-  if (chunk_z >= N_CHUNKS_Z)
-    chunk_z = N_CHUNKS_Z - 1;
+  int chunk_x_index = chunk_x_offset + (N_CHUNKS_X / 2);
+  int chunk_z_index = chunk_z_offset + (N_CHUNKS_Z / 2);
 
-  return chunk_x * N_CHUNKS_Z + chunk_z;
+  // Clamp chunk indices to be within the world boundaries
+  if (chunk_x_index < 0)
+    chunk_x_index = 0;
+  if (chunk_x_index >= N_CHUNKS_X)
+    chunk_x_index = N_CHUNKS_X - 1;
+  if (chunk_z_index < 0)
+    chunk_z_index = 0;
+  if (chunk_z_index >= N_CHUNKS_Z)
+    chunk_z_index = N_CHUNKS_Z - 1;
+
+  return chunk_x_index * N_CHUNKS_Z + chunk_z_index;
 }

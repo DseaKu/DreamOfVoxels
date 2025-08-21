@@ -107,12 +107,14 @@ void Draw3DDebugInformation(int screen_width, int screen_height) {
   StartPerformanceTracker("Draw 3D debug information");
   DrawGrid(100, VOXEL_SIZE);
   // Draw coordinate system
-  DrawCylinderEx((Vector3){-1.0f, 0.0f, -1.0f}, (Vector3){50.0f, 0.0f, 0.0f},
-                 0.01f, 0.01f, 24, RED);
-  DrawCylinderEx((Vector3){-1.0f, 0.0f, -1.0f}, (Vector3){0.0f, 50.0f, 0.0f},
-                 0.01f, 0.01f, 24, GREEN);
-  DrawCylinderEx((Vector3){-1.0f, 0.0f, -1.0f}, (Vector3){0.0f, 0.0f, 50.0f},
-                 0.01f, 0.01f, 24, BLUE);
+  DrawCylinderEx(
+      (Vector3){-VOXEL_SIZE / 2, (float)N_VOXEL_Y / 2, -VOXEL_SIZE / 2},
+      (Vector3){50.0f, (float)N_VOXEL_Y / 2, 0.0f}, 0.01f, 0.01f, 24, RED);
+  DrawCylinderEx((Vector3){-VOXEL_SIZE / 2, 0.0f, -VOXEL_SIZE / 2},
+                 (Vector3){0.0f, 50.0f, 0.0f}, 0.01f, 0.01f, 24, GREEN);
+  DrawCylinderEx(
+      (Vector3){-VOXEL_SIZE / 2, (float)N_VOXEL_Y / 2, -VOXEL_SIZE / 2},
+      (Vector3){0.0f, (float)N_VOXEL_Y / 2, 50.0f}, 0.01f, 0.01f, 24, BLUE);
   EndPerformanceTracker("Draw 3D debug information");
 }
 void Draw2DDebugInformation(int screen_width, int screen_height) {
@@ -132,8 +134,8 @@ Chunk *InitChunks() {
   for (u8 x = 0; x < N_CHUNKS_X; x++) {
     for (u8 z = 0; z < N_CHUNKS_Z; z++) {
       chunk_data[i].p_voxel_data = InitVoxelPointer(true);
-      chunk_data[i].x_offset = x;
-      chunk_data[i].z_offset = z;
+      chunk_data[i].x_offset = x - (N_CHUNKS_X / 2);
+      chunk_data[i].z_offset = z - (N_CHUNKS_Z / 2);
       chunk_data[i].is_dirty = true;
       i++;
     }
