@@ -1,4 +1,5 @@
 #include "scene_3d_game.h"
+#include "input_handler.h"
 #include "player.h"
 #include "resource_tracker.h"
 #include "rlgl.h"
@@ -19,6 +20,7 @@ int Scene3DGame() {
   // Init
   //----------------------------------------------------------------------------------
   InitWindow(screen_width, screen_height, "Raylib ");
+  InputData input_data = InitInputsFlags();
   DisableCursor();
   // SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
@@ -41,14 +43,13 @@ int Scene3DGame() {
   //----------------------------------------------------------------------------------
   do {
     StartPerformanceTracker("CompleteLoop");
-    //----------------------------------------------------------------------------------
-    // Process inputs
-    //----------------------------------------------------------------------------------
 
     //----------------------------------------------------------------------------------
-    // Process events
+    // Get and process inputs
     //----------------------------------------------------------------------------------
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    UpdateInputs(&input_data);
+
+    if (input_data.mouse_pressed & LEFT_MOUSE_PRESSED) {
       if (RemoveVoxel(voxel_data, &player, screen_width, screen_height,
                       MAX_PLAYER_RANGE)) {
         is_visibility_updatable = true;

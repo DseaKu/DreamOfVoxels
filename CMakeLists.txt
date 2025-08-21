@@ -19,7 +19,7 @@ set(SOURCES
   src/input_handler.c
 )
 
-add_executable(game main.c ${SOURCES})
+add_executable(game src/main.c ${SOURCES})
 
 target_include_directories(game PRIVATE includes)
 
