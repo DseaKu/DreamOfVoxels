@@ -27,6 +27,21 @@ typedef struct Chunk {
   Mesh chunk_mesh;
 } Chunk;
 
+/*
+ *
+ *           |z positiv
+ *           |
+ *  x=1,z=1  |   x=-1,z=1
+ *           |
+ *    -------------
+ * x positiv |  x negative
+ *           |
+ *  x=1,z=-1 |   x=-1,z=-1
+ *           |
+ *           |z negative
+ *
+ * */
+
 int Scene3DGame();
 void Draw3DDebugInformation(int screen_width, int screen_height);
 void Draw2DDebugInformation(int screen_width, int screen_height);
