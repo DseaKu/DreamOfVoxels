@@ -36,8 +36,8 @@ Player InitPlayer(void) {
   player.camera.fovy = 60.0f;
   player.camera.projection = CAMERA_PERSPECTIVE;
   player.body.headLerp = STAND_HEIGHT;
-  // Y_MAX to spawn above chunks
-  player.body.position = (Vector3){-2, Y_MAX + 2, -2};
+  // N_VOXEL_Y to spawn above chunks
+  player.body.position = (Vector3){-2, N_VOXEL_Y + 2, -2};
   player.body.sensitivity = (Vector2){0.001f, 0.001f};
   return player;
 }

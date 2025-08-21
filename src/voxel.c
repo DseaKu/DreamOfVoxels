@@ -14,7 +14,7 @@ Voxel *InitVoxelPointer(bool is_random) {
   StartPerformanceTracker("Init Voxels");
   u64 index = 0;
 
-  for (u8 y = 0; y < Y_MAX; y++) {
+  for (u8 y = 0; y < N_VOXEL_Y; y++) {
     for (u8 z = 0; z < N_VOXEL_Z; z++) {
       for (u8 x = 0; x < N_VOXEL_X; x++) {
 
@@ -65,7 +65,7 @@ void UpdateVisibility(Chunk *chunk_data) {
     Voxel *voxel_data = chunk_data[i].p_voxel_data;
 
     u64 index = 0;
-    for (u8 y = 0; y < Y_MAX; y++) {
+    for (u8 y = 0; y < N_VOXEL_Y; y++) {
       for (u8 z = 0; z < N_VOXEL_Z; z++) {
         for (u8 x = 0; x < N_VOXEL_X; x++) {
 
@@ -79,8 +79,8 @@ void UpdateVisibility(Chunk *chunk_data) {
           }
 
           // For voxels not on the boundary, skip boundary checks.
-          if (x > 0 && x < N_VOXEL_X - 1 && y > 0 && y < Y_MAX - 1 && z > 0 &&
-              z < N_VOXEL_Z - 1) {
+          if (x > 0 && x < N_VOXEL_X - 1 && y > 0 && y < N_VOXEL_Y - 1 &&
+              z > 0 && z < N_VOXEL_Z - 1) {
             if (((voxel_data[index + X_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
                  VOXEL_MASK_ID) == EMPTY)
               visible_faces |= FACE_DIR_POS_X;
@@ -122,7 +122,7 @@ void UpdateVisibility(Chunk *chunk_data) {
                  VOXEL_MASK_ID) == EMPTY) {
               visible_faces |= FACE_DIR_NEG_Z;
             }
-            if (y == Y_MAX - 1 ||
+            if (y == N_VOXEL_Y - 1 ||
                 ((voxel_data[index + Y_NEIGHBOUR_OFFSET] >> VOXEL_SHIFT_ID) &
                  VOXEL_MASK_ID) == EMPTY) {
               visible_faces |= FACE_DIR_POS_Y;
@@ -144,7 +144,7 @@ void UpdateVisibility(Chunk *chunk_data) {
 }
 
 u64 GetVoxelIndex(int x, int y, int z) {
-  if (x < 0 || x >= N_VOXEL_X || y < 0 || y >= Y_MAX || z < 0 ||
+  if (x < 0 || x >= N_VOXEL_X || y < 0 || y >= N_VOXEL_Y || z < 0 ||
       z >= N_VOXEL_Z) {
     return -1; // Invalid index
   }

@@ -14,13 +14,13 @@
 #define CHUNK_SIZE 16
 #define N_VOXEL_X CHUNK_SIZE
 #define N_VOXEL_Z CHUNK_SIZE
-#define Y_MAX 4
+#define N_VOXEL_Y 4
 
 #define X_NEIGHBOUR_OFFSET 1
 #define Z_NEIGHBOUR_OFFSET N_VOXEL_X
 #define Y_NEIGHBOUR_OFFSET N_VOXEL_X *N_VOXEL_Z
 
-#define NUMBER_OF_VOXELS N_VOXEL_X *Y_MAX *N_VOXEL_Z
+#define NUMBER_OF_VOXELS N_VOXEL_X *N_VOXEL_Y *N_VOXEL_Z
 
 /* Each coordinate will be represented by 6bits.
  * That means the coordinates cant exeed 63,
