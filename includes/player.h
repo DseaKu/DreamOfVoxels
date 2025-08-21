@@ -47,7 +47,7 @@ typedef struct Player {
 } Player;
 
 //----------------------------------------------------------------------------------
-// Module functions declaration
+// Functions declaration
 //----------------------------------------------------------------------------------
 void UpdateCameraAngle(Player *player);
 void UpdateBody(Body *body, float rot, char side, char forward,
@@ -55,6 +55,6 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 
 Player InitPlayer(void);
 void UpdatePlayer(Player *player, Chunk *chunk_data);
-int GerCurrentChunk(Player *player);
+SnVector2D GetCurrentChunk(Player *player);
 
 #endif // PLAYER_H

@@ -5,6 +5,20 @@
 #include <math.h>
 #include <raylib.h>
 
+Player InitPlayer(void) {
+  Player player = {0};
+  player.camera.target = (Vector3){0.0f, 1.8f, 0.0f};
+  player.camera.up = (Vector3){0.0f, 1.0f, 0.0f};
+  player.camera.fovy = 60.0f;
+  player.camera.projection = CAMERA_PERSPECTIVE;
+  player.body.headLerp = STAND_HEIGHT;
+  // N_VOXEL_Y to spawn above chunks
+  player.body.position = (Vector3){-2, N_VOXEL_Y - 2, -2};
+  // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
+  player.body.sensitivity = (Vector2){0.001f, 0.001f};
+  return player;
+}
+
 static bool IsColliding(Voxel *voxel_data, Vector3 position) {
   StartPerformanceTracker("  └-> Check Collision");
   for (int i = 0; i < VOXELS_IN_TOTAL; i++) {
@@ -27,20 +41,6 @@ static bool IsColliding(Voxel *voxel_data, Vector3 position) {
   }
   EndPerformanceTracker("  └-> Check Collision");
   return false;
-}
-
-Player InitPlayer(void) {
-  Player player = {0};
-  player.camera.target = (Vector3){0.0f, 1.8f, 0.0f};
-  player.camera.up = (Vector3){0.0f, 1.0f, 0.0f};
-  player.camera.fovy = 60.0f;
-  player.camera.projection = CAMERA_PERSPECTIVE;
-  player.body.headLerp = STAND_HEIGHT;
-  // N_VOXEL_Y to spawn above chunks
-  player.body.position = (Vector3){0, N_VOXEL_Y + 2, 0};
-  // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
-  player.body.sensitivity = (Vector2){0.001f, 0.001f};
-  return player;
 }
 
 void UpdatePlayer(Player *player, Chunk *chunk_data) {
@@ -215,25 +215,10 @@ void UpdateCameraAngle(Player *player) {
   player->camera.target = Vector3Add(player->camera.position, pitch);
 }
 
-int GetCurrentChunk(Player *player) {
+SnVector2D GetCurrentChunk(Player *player) {
   float chunk_size_x = N_VOXEL_X * VOXEL_SIZE;
   float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
 
-  int chunk_x_offset = floorf(player->body.position.x / chunk_size_x);
-  int chunk_z_offset = floorf(player->body.position.z / chunk_size_z);
-
-  int chunk_x_index = chunk_x_offset + (N_CHUNKS_X / 2);
-  int chunk_z_index = chunk_z_offset + (N_CHUNKS_Z / 2);
-
-  // Clamp chunk indices to be within the world boundaries
-  if (chunk_x_index < 0)
-    chunk_x_index = 0;
-  if (chunk_x_index >= N_CHUNKS_X)
-    chunk_x_index = N_CHUNKS_X - 1;
-  if (chunk_z_index < 0)
-    chunk_z_index = 0;
-  if (chunk_z_index >= N_CHUNKS_Z)
-    chunk_z_index = N_CHUNKS_Z - 1;
-
-  return chunk_x_index * N_CHUNKS_Z + chunk_z_index;
+  return (SnVector2D){floorf(player->body.position.x / chunk_size_x),
+                      floorf(player->body.position.z / chunk_size_z)};
 }

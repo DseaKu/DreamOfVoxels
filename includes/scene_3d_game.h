@@ -11,10 +11,15 @@
 #define BLOCK_SIZE 1.0f
 #define HALF_BLOCK_SIZE (BLOCK_SIZE / 2.0f)
 #define MAX_PLAYER_RANGE 4.0f
-#define N_CHUNKS_X 1
-#define N_CHUNKS_Z 1
+#define N_CHUNKS_X 2
+#define N_CHUNKS_Z 2
 #define CHUNKS_IN_TOTAL N_CHUNKS_Z *N_CHUNKS_X
 typedef u64 Voxel;
+typedef struct SnVector2D {
+  s64 z_offset;
+  s64 x_offset;
+} SnVector2D;
+
 typedef struct Chunk {
   bool is_dirty;
   s64 z_offset;
