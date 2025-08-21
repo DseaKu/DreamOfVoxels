@@ -55,6 +55,6 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 
 Player InitPlayer(void);
 void UpdatePlayer(Player *player, Chunk *chunk_data);
-SnVector2D GetCurrentChunk(Player *player);
+SnVector2D GetXZCurrentChunk(Player *player);
 
 #endif // PLAYER_H

@@ -215,7 +215,7 @@ void UpdateCameraAngle(Player *player) {
   player->camera.target = Vector3Add(player->camera.position, pitch);
 }
 
-SnVector2D GetCurrentChunk(Player *player) {
+SnVector2D GetXZCurrentChunk(Player *player) {
   float chunk_size_x = N_VOXEL_X * VOXEL_SIZE;
   float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
 
