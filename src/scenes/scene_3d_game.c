@@ -14,7 +14,9 @@ int Scene3DGame() {
   const u64 screen_width = MAX_SCREEN_WIDTH;
   const u64 screen_height = MAX_SCREEN_HEIGHT;
 
-  // INIT
+  //----------------------------------------------------------------------------------
+  // Init
+  //----------------------------------------------------------------------------------
   InitWindow(screen_width, screen_height, "Raylib ");
   DisableCursor();
   // SetTargetFPS(TARGET_FPS);
@@ -33,9 +35,18 @@ int Scene3DGame() {
   bool is_visibility_updatable = false;
   UpdateCameraAngle(&player); // Update camera parameters
 
+  //----------------------------------------------------------------------------------
+  // Game loop
+  //----------------------------------------------------------------------------------
   do {
     StartPerformanceTracker("CompleteLoop");
+    //----------------------------------------------------------------------------------
+    // Process inputs
+    //----------------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------------
     // Process events
+    //----------------------------------------------------------------------------------
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
       if (RemoveVoxel(voxel_data, &player, screen_width, screen_height,
                       MAX_PLAYER_RANGE)) {
@@ -58,6 +69,7 @@ int Scene3DGame() {
       is_visibility_updatable = false;
     }
 
+    //----------------------------------------------------------------------------------
     // Update
     //----------------------------------------------------------------------------------
     Vector2 mouse_delta = GetMouseDelta();
@@ -93,7 +105,9 @@ int Scene3DGame() {
 
     UpdateCameraAngle(&player);
 
+    //----------------------------------------------------------------------------------
     // Draw 3D
+    //----------------------------------------------------------------------------------
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
@@ -106,11 +120,15 @@ int Scene3DGame() {
     Draw3DDebugInformation(screen_width, screen_height);
     EndMode3D();
 
+    //----------------------------------------------------------------------------------
     // Draw 2D
+    //----------------------------------------------------------------------------------
     DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
     Draw2DDebugInformation(screen_width, screen_height);
 
-    // End drawing
+    //----------------------------------------------------------------------------------
+    // End Drawing
+    //----------------------------------------------------------------------------------
     EndDrawing();
 
     EndPerformanceTracker("CompleteLoop");
