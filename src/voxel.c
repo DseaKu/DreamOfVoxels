@@ -321,11 +321,10 @@ void CulledMeshing(Chunk *chunk_data) {
         continue;
       }
 
-      // Get the world coordinates (x, y, z) of the voxel.
-      float x = (float)Voxel_GetPosX(v) + chunk_data[i].x_offset * X_MAX;
-      float z = (float)Voxel_GetPosZ(v) + chunk_data[i].z_offset * Z_MAX;
+      // Get the local coordinates (x, y, z) of the voxel.
+      float x = (float)Voxel_GetPosX(v);
       float y = (float)Voxel_GetPosY(v);
-      ;
+      float z = (float)Voxel_GetPosZ(v);
 
       // --- 3. Texture Coordinate Calculation ---
       // Define the layout of the 2D texture atlas (we assume a 2x2 grid).

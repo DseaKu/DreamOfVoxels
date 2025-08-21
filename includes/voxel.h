@@ -11,7 +11,7 @@
 
 #define VOXEL_SIZE 1.0f
 
-#define CHUNK_SIZE 63
+#define CHUNK_SIZE 3
 #define X_MAX CHUNK_SIZE
 #define Z_MAX CHUNK_SIZE
 #define Y_MAX 8

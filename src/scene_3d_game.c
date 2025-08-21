@@ -63,7 +63,8 @@ int Scene3DGame() {
     BeginMode3D(player.camera);
     StartPerformanceTracker("Render mesh");
     for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
-      DrawMesh(p_chunk_data[i].chunk_mesh, material, MatrixIdentity());
+      Matrix transform = MatrixTranslate(p_chunk_data[i].x_offset * X_MAX, 0.0f, p_chunk_data[i].z_offset * Z_MAX);
+      DrawMesh(p_chunk_data[i].chunk_mesh, material, transform);
     }
 
     EndPerformanceTracker("Render mesh");
