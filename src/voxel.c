@@ -322,9 +322,9 @@ void CulledMeshing(Chunk *chunk_data) {
       }
 
       // Get the local coordinates (x, y, z) of the voxel.
-      float x = (float)Voxel_GetPosX(v);
-      float y = (float)Voxel_GetPosY(v);
-      float z = (float)Voxel_GetPosZ(v);
+      float x = (float)Voxel_GetPosX(v) * VOXEL_SIZE;
+      float y = (float)Voxel_GetPosY(v) * VOXEL_SIZE;
+      float z = (float)Voxel_GetPosZ(v) * VOXEL_SIZE;
 
       // --- 3. Texture Coordinate Calculation ---
       // Define the layout of the 2D texture atlas (we assume a 2x2 grid).
@@ -368,20 +368,21 @@ void CulledMeshing(Chunk *chunk_data) {
       // --- 4. Vertex and UV Definition ---
       // Define the local-space vertex positions for a standard 1x1x1 cube.
       // Ordered by face.
+      float half_size = VOXEL_SIZE / 2.0f;
       float v_data[] = {
           // Front (+Z), Back (-Z), Top (+Y), Bottom (-Y), Right (+X), Left (-X)
-          -0.5f, -0.5f, 0.5f,  0.5f,  -0.5f, 0.5f,
-          0.5f,  0.5f,  0.5f,  -0.5f, 0.5f,  0.5f, // Front
-          0.5f,  -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
-          -0.5f, 0.5f,  -0.5f, 0.5f,  0.5f,  -0.5f, // Back
-          -0.5f, 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,
-          0.5f,  0.5f,  -0.5f, -0.5f, 0.5f,  -0.5f, // Top
-          -0.5f, -0.5f, -0.5f, 0.5f,  -0.5f, -0.5f,
-          0.5f,  -0.5f, 0.5f,  -0.5f, -0.5f, 0.5f, // Bottom
-          0.5f,  -0.5f, 0.5f,  0.5f,  -0.5f, -0.5f,
-          0.5f,  0.5f,  -0.5f, 0.5f,  0.5f,  0.5f, // Right
-          -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f,
-          -0.5f, 0.5f,  0.5f,  -0.5f, 0.5f,  -0.5f // Left
+          -half_size, -half_size, half_size,  half_size,  -half_size, half_size,
+          half_size,  half_size,  half_size,  -half_size, half_size,  half_size, // Front
+          half_size, -half_size, -half_size, -half_size, -half_size, -half_size,
+          -half_size,  half_size, -half_size, half_size,  half_size, -half_size, // Back
+          -half_size,  half_size,  half_size,  half_size,  half_size,  half_size,
+          half_size,  half_size, -half_size, -half_size,  half_size, -half_size, // Top
+          -half_size, -half_size, -half_size, half_size, -half_size, -half_size,
+          half_size, -half_size,  half_size, -half_size, -half_size,  half_size, // Bottom
+          half_size, -half_size,  half_size,  half_size, -half_size, -half_size,
+          half_size,  half_size, -half_size,  half_size,  half_size,  half_size, // Right
+          -half_size, -half_size, -half_size, -half_size, -half_size,  half_size,
+          -half_size,  half_size,  half_size, -half_size,  half_size, -half_size // Left
       };
 
       // Define the UV coordinates for a single quad, mapping to the correct

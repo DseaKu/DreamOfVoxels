@@ -63,7 +63,9 @@ int Scene3DGame() {
     BeginMode3D(player.camera);
     StartPerformanceTracker("Render mesh");
     for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
-      Matrix transform = MatrixTranslate(p_chunk_data[i].x_offset * X_MAX, 0.0f, p_chunk_data[i].z_offset * Z_MAX);
+      Matrix transform =
+          MatrixTranslate(p_chunk_data[i].x_offset * X_MAX * VOXEL_SIZE, 0.0f,
+                          p_chunk_data[i].z_offset * Z_MAX * VOXEL_SIZE);
       DrawMesh(p_chunk_data[i].chunk_mesh, material, transform);
     }
 
@@ -103,7 +105,7 @@ void FreeAllChunkData(Chunk *chunk_data) {
 void Draw3DDebugInformation(int screen_width, int screen_height) {
 
   StartPerformanceTracker("Draw 3D debug information");
-  DrawGrid(100, 1.0f);
+  DrawGrid(100, VOXEL_SIZE);
   // Draw coordinate system
   DrawCylinderEx((Vector3){-1.0f, 0.0f, -1.0f}, (Vector3){50.0f, 0.0f, 0.0f},
                  0.01f, 0.01f, 24, RED);

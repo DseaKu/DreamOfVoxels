@@ -9,12 +9,12 @@
 #include <raylib.h>
 #include <stdint.h>
 
-#define VOXEL_SIZE 1.0f
+#define VOXEL_SIZE 0.5f
 
-#define CHUNK_SIZE 3
+#define CHUNK_SIZE 16
 #define X_MAX CHUNK_SIZE
 #define Z_MAX CHUNK_SIZE
-#define Y_MAX 8
+#define Y_MAX 4
 
 #define X_NEIGHBOUR_OFFSET 1
 #define Z_NEIGHBOUR_OFFSET X_MAX
