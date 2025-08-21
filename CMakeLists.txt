@@ -15,6 +15,8 @@ set(SOURCES
   src/player.c
   src/voxel.c
   src/resource_tracker.c
+  src/event_handler.c
+  src/input_handler.c
 )
 
 add_executable(game main.c ${SOURCES})
