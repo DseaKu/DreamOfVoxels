@@ -19,18 +19,23 @@ Player InitPlayer(void) {
   return player;
 }
 
-static bool IsColliding(Voxel *voxel_data, Vector3 position) {
+static bool IsColliding(Voxel *voxel_data, Vector3 position,
+                         Chunk current_chunk) {
   StartPerformanceTracker("  └-> Check Collision");
   for (int i = 0; i < VOXELS_IN_TOTAL; i++) {
     Voxel v = voxel_data[i];
 
     if (Voxel_IsActive(v)) {
-
+      // Calculate the world position of the voxel
+      float voxel_world_x =
+          (current_chunk.position.x_offset * N_VOXEL_X) + Voxel_GetPosX(v);
+      float voxel_world_z =
+          (current_chunk.position.z_offset * N_VOXEL_Z) + Voxel_GetPosZ(v);
       BoundingBox voxel_box = {
-          (Vector3){Voxel_GetPosX(v) - 0.5f, Voxel_GetPosY(v) - 0.5f,
-                    Voxel_GetPosZ(v) - 0.5f},
-          (Vector3){Voxel_GetPosX(v) + 0.5f, Voxel_GetPosY(v) + 0.5f,
-                    Voxel_GetPosZ(v) + 0.5f}};
+          (Vector3){voxel_world_x - 0.5f, Voxel_GetPosY(v) - 0.5f,
+                    voxel_world_z - 0.5f},
+          (Vector3){voxel_world_x + 0.5f, Voxel_GetPosY(v) + 0.5f,
+                    voxel_world_z + 0.5f}};
       BoundingBox player_box = {
           (Vector3){position.x - 0.25f, position.y, position.z - 0.25f},
           (Vector3){position.x + 0.25f, position.y + 1.8f, position.z + 0.25f}};
@@ -142,19 +147,19 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 
   Vector3 new_position = body->position;
   new_position.x += body->velocity.x * delta;
-  if (IsColliding(voxel_data, new_position)) {
+  if (IsColliding(voxel_data, new_position, current_chunk)) {
     new_position.x = body->position.x;
   }
 
   new_position.y += body->velocity.y * delta;
-  if (IsColliding(voxel_data, new_position)) {
+  if (IsColliding(voxel_data, new_position, current_chunk)) {
     new_position.y = body->position.y;
     body->velocity.y = 0;
     body->isGrounded = true;
   }
 
   new_position.z += body->velocity.z * delta;
-  if (IsColliding(voxel_data, new_position)) {
+  if (IsColliding(voxel_data, new_position, current_chunk)) {
     new_position.z = body->position.z;
   }
 
