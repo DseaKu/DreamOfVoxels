@@ -77,7 +77,6 @@ typedef enum {
 // Return all surrounding voxels of a position, regardless if the position
 // inbetween chunks
 // -> we have to return chunk + index and voxel + index
-Mesh GenMeshCustom(Vector3 offset);
 
 // Return all indicies for all neighbour in range
 Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);

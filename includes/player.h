@@ -11,14 +11,14 @@
 #define MAX_SPEED 40.0f
 #define CROUCH_SPEED 5.0f
 #define JUMP_FORCE 11.0f
-#define MAX_ACCEL 200.0f
+#define MAX_ACCEL 210.0f
 #define CROUCH_HEIGHT 0.0f
 #define STAND_HEIGHT 1.0f
 #define BOTTOM_HEIGHT 0.5f
 // Grounded drag
 #define FRICTION .97f
 // Increasing air drag, increases strafing speed
-#define AIR_DRAG 0.95f
+#define AIR_DRAG 0.97f
 // Responsiveness for turning movement direction to looked direction
 #define CONTROL 15.0f
 
