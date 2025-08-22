@@ -165,9 +165,17 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   body->velocity.x = hvel.x;
   body->velocity.z = hvel.z;
 
-  // Update player's position and collision shape
-  body->position = Vector3Add(body->position, Vector3Scale(body->velocity, delta));
-  body->collision_shape = UpdateBodyCollisionShape(body->position);
+  Vector3 new_position =
+      Vector3Add(body->position, Vector3Scale(body->velocity, delta));
+
+  if (GetTime() > 2) {
+    {
+    }
+  }
+  if (desiredDir.x != 0 && desiredDir.y != 0) {
+    {
+    }
+  }
 
   // Fancy collision system against the floor
   if (body->position.y <= 0.0f) {
@@ -175,6 +183,10 @@ void UpdateBody(Body *body, float rot, char side, char forward,
     body->velocity.y = 0.0f;
     body->isGrounded = true; // Enable jumping
   }
+
+  // Update body position + collision shape
+  body->position = new_position;
+  body->collision_shape = UpdateBodyCollisionShape(body->position);
 }
 
 // Update camera
