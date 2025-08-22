@@ -22,6 +22,9 @@
 // Responsiveness for turning movement direction to looked direction
 #define CONTROL 15.0f
 
+#define PLAYER_COLLISION_SHAPE_X 0.25f
+#define PLAYER_COLLISION_SHAPE_Z 0.25f
+#define PLAYER_COLLISION_SHAPE_Y 2.0f
 #define NORMALIZE_INPUT 0
 
 //----------------------------------------------------------------------------------
@@ -39,6 +42,7 @@ typedef struct {
   Vector3 position;
   Vector3 velocity;
   Vector3 dir;
+  BoundingBox collision_shape;
 } Body;
 
 typedef struct Player {
@@ -53,9 +57,10 @@ void UpdateCameraAngle(Player *player);
 void UpdateBody(Body *body, float rot, char side, char forward,
                 bool jumpPressed, bool crouchHold, Chunk current_chunk);
 
+Vector3 UpdateBodyPosition(Vector3 velocity, float delta);
 Player InitPlayer(void);
 void UpdatePlayer(Player *player, Chunk *chunk_data);
-SnVector2D GetXZCurrentChunk(Player *player);
+s16Vector2D GetXZCurrentChunk(Player *player);
 u32 GetIndexCurrentChunk(Player *player);
 
 #endif // PLAYER_H

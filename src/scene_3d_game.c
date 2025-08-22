@@ -135,7 +135,7 @@ Chunk *InitChunks() {
     for (u8 z = 0; z < N_CHUNKS_Z; z++) {
       chunk_data[i].p_voxel_data = InitVoxelPointer(true);
       chunk_data[i].position =
-          (SnVector2D){x - (N_CHUNKS_X / 2), z - (N_CHUNKS_Z / 2)};
+          (s16Vector2D){x - (N_CHUNKS_X / 2), z - (N_CHUNKS_Z / 2)};
       chunk_data[i].is_mesh_dirty = true;
       i++;
     }

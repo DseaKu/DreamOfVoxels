@@ -18,11 +18,11 @@ typedef u64 Voxel;
 typedef struct SnVector2D {
   s64 x_offset;
   s64 z_offset;
-} SnVector2D;
+} s16Vector2D;
 
 typedef struct Chunk {
   bool is_mesh_dirty;
-  SnVector2D position;
+  s16Vector2D position;
   Voxel *p_voxel_data;
   Mesh chunk_mesh;
 } Chunk;

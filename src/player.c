@@ -16,27 +16,38 @@ Player InitPlayer(void) {
   player.body.position = (Vector3){2, N_VOXEL_Y + 2, 2};
   // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
   player.body.sensitivity = (Vector2){0.001f, 0.001f};
+  player.body.collision_shape = (BoundingBox){
+      (Vector3){player.body.position.x - PLAYER_COLLISION_SHAPE_X,
+                player.body.position.y,
+                player.body.position.z - PLAYER_COLLISION_SHAPE_Z},
+      (Vector3){player.body.position.x + PLAYER_COLLISION_SHAPE_X,
+                player.body.position.y + PLAYER_COLLISION_SHAPE_Y,
+                player.body.position.z + PLAYER_COLLISION_SHAPE_Z}};
+
   return player;
 }
 
 static bool IsColliding(Voxel *voxel_data, Vector3 position,
                         Chunk current_chunk) {
-  StartPerformanceTracker("  └-> Check Collision");
+  StartPerformanceTracker("  └> Check Collision");
   for (int i = 0; i < VOXELS_IN_TOTAL; i++) {
     Voxel v = voxel_data[i];
 
     if (Voxel_IsActive(v)) {
       // Calculate the world position of the voxel
-      float voxel_world_x = (current_chunk.position.x_offset * N_VOXEL_X * VOXEL_SIZE) + (Voxel_GetPosX(v) * VOXEL_SIZE);
-      float voxel_world_z = (current_chunk.position.z_offset * N_VOXEL_Z * VOXEL_SIZE) + (Voxel_GetPosZ(v) * VOXEL_SIZE);
+      float voxel_world_x =
+          (current_chunk.position.x_offset * N_VOXEL_X * VOXEL_SIZE) +
+          (Voxel_GetPosX(v) * VOXEL_SIZE);
+      float voxel_world_z =
+          (current_chunk.position.z_offset * N_VOXEL_Z * VOXEL_SIZE) +
+          (Voxel_GetPosZ(v) * VOXEL_SIZE);
       float half_voxel_size = VOXEL_SIZE / 2.0f;
-      BoundingBox voxel_box = {
-          (Vector3){voxel_world_x - half_voxel_size,
-                    Voxel_GetPosY(v) - half_voxel_size,
-                    voxel_world_z - half_voxel_size},
-          (Vector3){voxel_world_x + half_voxel_size,
-                    Voxel_GetPosY(v) + half_voxel_size,
-                    voxel_world_z + half_voxel_size}};
+      BoundingBox voxel_box = {(Vector3){voxel_world_x - half_voxel_size,
+                                         Voxel_GetPosY(v) - half_voxel_size,
+                                         voxel_world_z - half_voxel_size},
+                               (Vector3){voxel_world_x + half_voxel_size,
+                                         Voxel_GetPosY(v) + half_voxel_size,
+                                         voxel_world_z + half_voxel_size}};
       BoundingBox player_box = {
           (Vector3){position.x - 0.25f, position.y, position.z - 0.25f},
           (Vector3){position.x + 0.25f, position.y + 1.8f, position.z + 0.25f}};
@@ -45,7 +56,7 @@ static bool IsColliding(Voxel *voxel_data, Vector3 position,
       }
     }
   }
-  EndPerformanceTracker("  └-> Check Collision");
+  EndPerformanceTracker("  └> Check Collision");
   return false;
 }
 
@@ -88,6 +99,14 @@ void UpdatePlayer(Player *player, Chunk *chunk_data) {
   player->body.lean.y =
       Lerp(player->body.lean.y, forward * 0.015f, 10.0f * delta);
   EndPerformanceTracker("Update Player");
+}
+BoundingBox UpdateBodyCollisionShape(Vector3 player_position) {
+  return (BoundingBox){(Vector3){player_position.x - PLAYER_COLLISION_SHAPE_X,
+                                 player_position.y,
+                                 player_position.z - PLAYER_COLLISION_SHAPE_Z},
+                       (Vector3){player_position.x + PLAYER_COLLISION_SHAPE_X,
+                                 player_position.y + PLAYER_COLLISION_SHAPE_Y,
+                                 player_position.z + PLAYER_COLLISION_SHAPE_Z}};
 }
 
 void UpdateBody(Body *body, float rot, char side, char forward,
@@ -146,25 +165,30 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   body->velocity.x = hvel.x;
   body->velocity.z = hvel.z;
 
-  Vector3 new_position = body->position;
-  new_position.x += body->velocity.x * delta;
-  if (IsColliding(voxel_data, new_position, current_chunk)) {
-    new_position.x = body->position.x;
-  }
+  // Vector3 new_position = body->position;
+  // new_position.x += body->velocity.x * delta;
 
-  new_position.y += body->velocity.y * delta;
-  if (IsColliding(voxel_data, new_position, current_chunk)) {
-    new_position.y = body->position.y;
-    body->velocity.y = 0;
-    body->isGrounded = true;
-  }
+  // Update player's position and collision shape
+  body->position = UpdateBodyPosition(body->velocity, delta);
+  body->collision_shape = UpdateBodyCollisionShape(body->position);
 
-  new_position.z += body->velocity.z * delta;
-  if (IsColliding(voxel_data, new_position, current_chunk)) {
-    new_position.z = body->position.z;
-  }
+  // if (IsColliding(voxel_data, new_position, current_chunk)) {
+  //   new_position.x = body->position.x;
+  // }
+  //
+  // new_position.y += body->velocity.y * delta;
+  // if (IsColliding(voxel_data, new_position, current_chunk)) {
+  //   new_position.y = body->position.y;
+  //   body->velocity.y = 0;
+  //   body->isGrounded = true;
+  // }
+  //
+  // new_position.z += body->velocity.z * delta;
+  // if (IsColliding(voxel_data, new_position, current_chunk)) {
+  //   new_position.z = body->position.z;
+  // }
 
-  body->position = new_position;
+  // body->position = new_position;
 
   // Fancy collision system against the floor
   if (body->position.y <= 0.0f) {
@@ -172,6 +196,9 @@ void UpdateBody(Body *body, float rot, char side, char forward,
     body->velocity.y = 0.0f;
     body->isGrounded = true; // Enable jumping
   }
+}
+Vector3 UpdateBodyPosition(Vector3 velocity, float delta) {
+  return (Vector3){velocity.x * delta, velocity.y * delta, velocity.z * delta};
 }
 
 // Update camera
@@ -249,10 +276,10 @@ u32 GetIndexCurrentChunk(Player *player) {
   return chunk_x_index * N_CHUNKS_Z + chunk_z_index;
 }
 
-SnVector2D GetXZCurrentChunk(Player *player) {
+s16Vector2D GetXZCurrentChunk(Player *player) {
   float chunk_size_x = N_VOXEL_X * VOXEL_SIZE;
   float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
 
-  return (SnVector2D){floorf(player->body.position.x / chunk_size_x),
-                      floorf(player->body.position.z / chunk_size_z)};
+  return (s16Vector2D){floorf(player->body.position.x / chunk_size_x),
+                       floorf(player->body.position.z / chunk_size_z)};
 }
