@@ -10,6 +10,7 @@
 #include <stdint.h>
 
 #define VOXEL_SIZE 0.5f
+#define HALF_VOXEL_SIZE 0.5f / 2.0f
 
 #define CHUNK_SIZE 16
 #define N_VOXEL_X CHUNK_SIZE

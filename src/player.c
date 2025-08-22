@@ -4,6 +4,7 @@
 #include "voxel.h"
 #include <math.h>
 #include <raylib.h>
+#include <stdbool.h>
 
 Player InitPlayer(void) {
   Player player = {0};
@@ -27,49 +28,35 @@ Player InitPlayer(void) {
   return player;
 }
 
-Vector3 AABB_Collision(Voxel *voxel_data, Vector3 position, Chunk current_chunk,
-                       Vector3 desiredDir) {
-  Voxel v = voxel_data[GetVoxelIndex(floorf(position.x), floorf(position.y),
-                                     floorf(position.z))];
-  if (desiredDir.x > 0) {
-
-    // Get current left neighbour
-  } else {
-  }
-
-  return position;
+BoundingBox GetVoxelBoundingBox(Voxel v) {
+  return (BoundingBox){(Vector3){(float)Voxel_GetPosX(v) - HALF_VOXEL_SIZE,
+                                 (float)Voxel_GetPosY(v) - HALF_VOXEL_SIZE,
+                                 (float)Voxel_GetPosZ(v) - HALF_VOXEL_SIZE},
+                       (Vector3){(float)Voxel_GetPosX(v) - HALF_VOXEL_SIZE,
+                                 (float)Voxel_GetPosY(v) - HALF_VOXEL_SIZE,
+                                 (float)Voxel_GetPosZ(v) - HALF_VOXEL_SIZE}};
 }
-static bool IsColliding(Voxel *voxel_data, Vector3 position,
-                        Chunk current_chunk) {
-  StartPerformanceTracker("  └> Check Collision");
-  for (int i = 0; i < VOXELS_IN_TOTAL; i++) {
-    Voxel v = voxel_data[i];
 
-    if (Voxel_IsActive(v)) {
-      // Calculate the world position of the voxel
-      float voxel_world_x =
-          (current_chunk.position.x_offset * N_VOXEL_X * VOXEL_SIZE) +
-          (Voxel_GetPosX(v) * VOXEL_SIZE);
-      float voxel_world_z =
-          (current_chunk.position.z_offset * N_VOXEL_Z * VOXEL_SIZE) +
-          (Voxel_GetPosZ(v) * VOXEL_SIZE);
-      float half_voxel_size = VOXEL_SIZE / 2.0f;
-      BoundingBox voxel_box = {(Vector3){voxel_world_x - half_voxel_size,
-                                         Voxel_GetPosY(v) - half_voxel_size,
-                                         voxel_world_z - half_voxel_size},
-                               (Vector3){voxel_world_x + half_voxel_size,
-                                         Voxel_GetPosY(v) + half_voxel_size,
-                                         voxel_world_z + half_voxel_size}};
-      BoundingBox player_box = {
-          (Vector3){position.x - 0.25f, position.y, position.z - 0.25f},
-          (Vector3){position.x + 0.25f, position.y + 1.8f, position.z + 0.25f}};
-      if (CheckCollisionBoxes(player_box, voxel_box)) {
-        return true;
-      }
+bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
+                    Vector3 desiredDir, u64 voxel_offset) {
+  StartPerformanceTracker("  └> Check Collision");
+  u64 current_voxel_index =
+      GetVoxelIndex(floorf(body.position.x), floorf(body.position.y),
+                    floorf(body.position.z));
+  Voxel v;
+  bool is_colliding = false;
+  if (desiredDir.x > 0) {
+    v = voxel_data[current_voxel_index + voxel_offset];
+  } else {
+    v = voxel_data[current_voxel_index - voxel_offset];
+  }
+  if (Voxel_IsActive(v)) {
+    if (CheckCollisionBoxes(GetVoxelBoundingBox(v), body.collision_shape)) {
+      is_colliding = true;
     }
   }
   EndPerformanceTracker("  └> Check Collision");
-  return false;
+  return is_colliding;
 }
 
 void UpdatePlayer(Player *player, Chunk *chunk_data) {
@@ -166,8 +153,8 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   float speed = Vector3DotProduct(hvel, body->dir);
 
   // Whenever the amount of acceleration to add is clamped by the maximum
-  // acceleration constant, a Player can make the speed faster by bringing the
-  // direction closer to horizontal velocity angle More info here:
+  // acceleration constant, a Player can make the speed faster by bringing
+  // the direction closer to horizontal velocity angle More info here:
   // https://youtu.be/v3zT3Z5apaM?t=165
   float maxSpeed = (crouchHold ? CROUCH_SPEED : MAX_SPEED);
   float accel = Clamp(maxSpeed - speed, 0.f, MAX_ACCEL * delta);
@@ -181,11 +168,19 @@ void UpdateBody(Body *body, float rot, char side, char forward,
       Vector3Add(body->position, Vector3Scale(body->velocity, delta));
 
   // If player moves xz direction, check for collision
-  if (desiredDir.x != 0 || desiredDir.z != 0) {
-    new_position =
-        AABB_Collision(voxel_data, body->position, current_chunk, desiredDir);
+  if (desiredDir.x != 0) {
+    if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
+                       X_NEIGHBOUR_OFFSET)) {
+      body->velocity.x = 0.0f;
+    }
   }
 
+  if (desiredDir.z != 0) {
+    if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
+                       Z_NEIGHBOUR_OFFSET)) {
+      body->velocity.z = 0.0f;
+    }
+  }
   // Update body position + collision shape
   body->position = new_position;
   body->collision_shape = UpdateBodyCollisionShape(body->position);
