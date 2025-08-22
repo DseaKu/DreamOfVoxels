@@ -27,12 +27,8 @@ static bool IsColliding(Voxel *voxel_data, Vector3 position,
 
     if (Voxel_IsActive(v)) {
       // Calculate the world position of the voxel
-      float voxel_world_x =
-          (current_chunk.position.x_offset * N_VOXEL_X * VOXEL_SIZE) +
-          Voxel_GetPosX(v);
-      float voxel_world_z =
-          (current_chunk.position.z_offset * N_VOXEL_Z * VOXEL_SIZE) +
-          Voxel_GetPosZ(v);
+      float voxel_world_x = (current_chunk.position.x_offset * N_VOXEL_X * VOXEL_SIZE) + (Voxel_GetPosX(v) * VOXEL_SIZE);
+      float voxel_world_z = (current_chunk.position.z_offset * N_VOXEL_Z * VOXEL_SIZE) + (Voxel_GetPosZ(v) * VOXEL_SIZE);
       float half_voxel_size = VOXEL_SIZE / 2.0f;
       BoundingBox voxel_box = {
           (Vector3){voxel_world_x - half_voxel_size,
