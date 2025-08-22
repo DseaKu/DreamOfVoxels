@@ -3,6 +3,7 @@
 #include "rlgl.h"
 #include "scene_3d_game.h"
 #include "std_includes.h"
+#include <math.h>
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -150,6 +151,10 @@ u64 GetVoxelIndex(int x, int y, int z) {
   return (y * Y_NEIGHBOUR_OFFSET) + (z * Z_NEIGHBOUR_OFFSET) + x;
 }
 
+Voxel GetVoxel_XZY(Voxel *voxel_data, Vector3 position) {
+  return voxel_data[GetVoxelIndex(floorf(position.x), floorf(position.y),
+                                  floorf(position.z))];
+}
 VoxelID GetVoxelID(Voxel *voxel_data, int x, int y, int z) {
   u64 index = GetVoxelIndex(x, y, z);
   if (index == -1) {

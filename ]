@@ -94,7 +94,6 @@ u8 Voxel_GetPosZ(Voxel v);
 
 bool Voxel_IsActive(Voxel v);
 
-Voxel GetVoxel_XZY(Voxel *voxel_data, Vector3 position);
 u64 GetVoxelIndex(int x, int y, int z);
 
 void PlaceVoxel(Voxel *voxel_data, int x, int y, int z, VoxelID id);

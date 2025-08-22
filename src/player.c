@@ -27,6 +27,18 @@ Player InitPlayer(void) {
   return player;
 }
 
+Vector3 AABB_Collision(Voxel *voxel_data, Vector3 position, Chunk current_chunk,
+                       Vector3 desiredDir) {
+  Voxel v = voxel_data[GetVoxelIndex(floorf(position.x), floorf(position.y),
+                                     floorf(position.z))];
+  if (desiredDir.x > 0) {
+
+    // Get current left neighbour
+  } else {
+  }
+
+  return position;
+}
 static bool IsColliding(Voxel *voxel_data, Vector3 position,
                         Chunk current_chunk) {
   StartPerformanceTracker("  └> Check Collision");
@@ -168,14 +180,15 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   Vector3 new_position =
       Vector3Add(body->position, Vector3Scale(body->velocity, delta));
 
-  if (GetTime() > 2) {
-    {
-    }
+  // If player moves xz direction, check for collision
+  if (desiredDir.x != 0 || desiredDir.z != 0) {
+    new_position =
+        AABB_Collision(voxel_data, body->position, current_chunk, desiredDir);
   }
-  if (desiredDir.x != 0 && desiredDir.y != 0) {
-    {
-    }
-  }
+
+  // Update body position + collision shape
+  body->position = new_position;
+  body->collision_shape = UpdateBodyCollisionShape(body->position);
 
   // Fancy collision system against the floor
   if (body->position.y <= 0.0f) {
@@ -183,10 +196,6 @@ void UpdateBody(Body *body, float rot, char side, char forward,
     body->velocity.y = 0.0f;
     body->isGrounded = true; // Enable jumping
   }
-
-  // Update body position + collision shape
-  body->position = new_position;
-  body->collision_shape = UpdateBodyCollisionShape(body->position);
 }
 
 // Update camera
