@@ -281,7 +281,7 @@ void TryPlaceVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
 void CulledMeshing(Chunk *chunk_data) {
   StartPerformanceTracker("GenerateGreedyMesh");
   for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
-    if (chunk_data[i].is_dirty == false) {
+    if (chunk_data[i].is_mesh_dirty == false) {
       continue;
     }
     Voxel *voxel_data = chunk_data[i].p_voxel_data;
@@ -372,36 +372,23 @@ void CulledMeshing(Chunk *chunk_data) {
       float half_size = VOXEL_SIZE / 2.0f;
       float v_data[] = {
           // Front (+Z)
-          -half_size, -half_size,  half_size,
-           half_size, -half_size,  half_size,
-           half_size,  half_size,  half_size,
-          -half_size,  half_size,  half_size,
+          -half_size, -half_size, half_size, half_size, -half_size, half_size,
+          half_size, half_size, half_size, -half_size, half_size, half_size,
           // Back (-Z)
-           half_size, -half_size, -half_size,
-          -half_size, -half_size, -half_size,
-          -half_size,  half_size, -half_size,
-           half_size,  half_size, -half_size,
+          half_size, -half_size, -half_size, -half_size, -half_size, -half_size,
+          -half_size, half_size, -half_size, half_size, half_size, -half_size,
           // Top (+Y)
-          -half_size,  half_size,  half_size,
-           half_size,  half_size,  half_size,
-           half_size,  half_size, -half_size,
-          -half_size,  half_size, -half_size,
+          -half_size, half_size, half_size, half_size, half_size, half_size,
+          half_size, half_size, -half_size, -half_size, half_size, -half_size,
           // Bottom (-Y)
-          -half_size, -half_size, -half_size,
-           half_size, -half_size, -half_size,
-           half_size, -half_size,  half_size,
-          -half_size, -half_size,  half_size,
+          -half_size, -half_size, -half_size, half_size, -half_size, -half_size,
+          half_size, -half_size, half_size, -half_size, -half_size, half_size,
           // Right (+X)
-           half_size, -half_size,  half_size,
-           half_size, -half_size, -half_size,
-           half_size,  half_size, -half_size,
-           half_size,  half_size,  half_size,
+          half_size, -half_size, half_size, half_size, -half_size, -half_size,
+          half_size, half_size, -half_size, half_size, half_size, half_size,
           // Left (-X)
-          -half_size, -half_size, -half_size,
-          -half_size, -half_size,  half_size,
-          -half_size,  half_size,  half_size,
-          -half_size,  half_size, -half_size
-      };
+          -half_size, -half_size, -half_size, -half_size, -half_size, half_size,
+          -half_size, half_size, half_size, -half_size, half_size, -half_size};
 
       // Define the UV coordinates for a single quad, mapping to the correct
       // sub-texture in the atlas. (0,0) is top-left of the texture.
@@ -560,6 +547,8 @@ void CulledMeshing(Chunk *chunk_data) {
     UploadMesh(&mesh,
                false); // We are providing our own CPU-side copy of the data.
     chunk_data[i].chunk_mesh = mesh;
+
+    chunk_data[i].is_mesh_dirty = false;
   }
   EndPerformanceTracker("GenerateGreedyMesh");
 }

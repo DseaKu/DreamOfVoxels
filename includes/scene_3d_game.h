@@ -21,7 +21,7 @@ typedef struct SnVector2D {
 } SnVector2D;
 
 typedef struct Chunk {
-  bool is_dirty;
+  bool is_mesh_dirty;
   SnVector2D position;
   Voxel *p_voxel_data;
   Mesh chunk_mesh;
