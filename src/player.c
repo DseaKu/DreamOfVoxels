@@ -13,7 +13,7 @@ Player InitPlayer(void) {
   player.camera.projection = CAMERA_PERSPECTIVE;
   player.body.headLerp = STAND_HEIGHT;
   // N_VOXEL_Y to spawn above chunks
-  player.body.position = (Vector3){2, N_VOXEL_Y + 2, 2};
+  player.body.position = (Vector3){4, N_VOXEL_Y + 2, 4};
   // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
   player.body.sensitivity = (Vector2){0.001f, 0.001f};
   player.body.collision_shape = (BoundingBox){
@@ -165,30 +165,9 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   body->velocity.x = hvel.x;
   body->velocity.z = hvel.z;
 
-  // Vector3 new_position = body->position;
-  // new_position.x += body->velocity.x * delta;
-
   // Update player's position and collision shape
-  body->position = UpdateBodyPosition(body->velocity, delta);
+  body->position = Vector3Add(body->position, Vector3Scale(body->velocity, delta));
   body->collision_shape = UpdateBodyCollisionShape(body->position);
-
-  // if (IsColliding(voxel_data, new_position, current_chunk)) {
-  //   new_position.x = body->position.x;
-  // }
-  //
-  // new_position.y += body->velocity.y * delta;
-  // if (IsColliding(voxel_data, new_position, current_chunk)) {
-  //   new_position.y = body->position.y;
-  //   body->velocity.y = 0;
-  //   body->isGrounded = true;
-  // }
-  //
-  // new_position.z += body->velocity.z * delta;
-  // if (IsColliding(voxel_data, new_position, current_chunk)) {
-  //   new_position.z = body->position.z;
-  // }
-
-  // body->position = new_position;
 
   // Fancy collision system against the floor
   if (body->position.y <= 0.0f) {
@@ -196,9 +175,6 @@ void UpdateBody(Body *body, float rot, char side, char forward,
     body->velocity.y = 0.0f;
     body->isGrounded = true; // Enable jumping
   }
-}
-Vector3 UpdateBodyPosition(Vector3 velocity, float delta) {
-  return (Vector3){velocity.x * delta, velocity.y * delta, velocity.z * delta};
 }
 
 // Update camera
