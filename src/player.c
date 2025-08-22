@@ -20,7 +20,7 @@ Player InitPlayer(void) {
 }
 
 static bool IsColliding(Voxel *voxel_data, Vector3 position,
-                         Chunk current_chunk) {
+                        Chunk current_chunk) {
   StartPerformanceTracker("  └-> Check Collision");
   for (int i = 0; i < VOXELS_IN_TOTAL; i++) {
     Voxel v = voxel_data[i];
@@ -28,14 +28,19 @@ static bool IsColliding(Voxel *voxel_data, Vector3 position,
     if (Voxel_IsActive(v)) {
       // Calculate the world position of the voxel
       float voxel_world_x =
-          (current_chunk.position.x_offset * N_VOXEL_X) + Voxel_GetPosX(v);
+          (current_chunk.position.x_offset * N_VOXEL_X * VOXEL_SIZE) +
+          Voxel_GetPosX(v);
       float voxel_world_z =
-          (current_chunk.position.z_offset * N_VOXEL_Z) + Voxel_GetPosZ(v);
+          (current_chunk.position.z_offset * N_VOXEL_Z * VOXEL_SIZE) +
+          Voxel_GetPosZ(v);
+      float half_voxel_size = VOXEL_SIZE / 2.0f;
       BoundingBox voxel_box = {
-          (Vector3){voxel_world_x - 0.5f, Voxel_GetPosY(v) - 0.5f,
-                    voxel_world_z - 0.5f},
-          (Vector3){voxel_world_x + 0.5f, Voxel_GetPosY(v) + 0.5f,
-                    voxel_world_z + 0.5f}};
+          (Vector3){voxel_world_x - half_voxel_size,
+                    Voxel_GetPosY(v) - half_voxel_size,
+                    voxel_world_z - half_voxel_size},
+          (Vector3){voxel_world_x + half_voxel_size,
+                    Voxel_GetPosY(v) + half_voxel_size,
+                    voxel_world_z + half_voxel_size}};
       BoundingBox player_box = {
           (Vector3){position.x - 0.25f, position.y, position.z - 0.25f},
           (Vector3){position.x + 0.25f, position.y + 1.8f, position.z + 0.25f}};
@@ -175,6 +180,7 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 
 // Update camera
 void UpdateCameraAngle(Player *player) {
+  StartPerformanceTracker("Update Camera Angele");
   const Vector3 up = (Vector3){0.0f, 1.0f, 0.0f};
   const Vector3 targetOffset = (Vector3){0.0f, 0.0f, -1.0f};
 
@@ -221,6 +227,7 @@ void UpdateCameraAngle(Player *player) {
   player->camera.position = Vector3Add(
       player->camera.position, Vector3Scale(bobbing, player->body.walkLerp));
   player->camera.target = Vector3Add(player->camera.position, pitch);
+  EndPerformanceTracker("Update Camera Angele");
 }
 
 u32 GetIndexCurrentChunk(Player *player) {
