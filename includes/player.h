@@ -22,8 +22,8 @@
 // Responsiveness for turning movement direction to looked direction
 #define CONTROL 15.0f
 
-#define PLAYER_COLLISION_SHAPE_X 0.25f
-#define PLAYER_COLLISION_SHAPE_Z 0.25f
+#define PLAYER_COLLISION_SHAPE_X 1.5f
+#define PLAYER_COLLISION_SHAPE_Z 1.5f
 #define PLAYER_COLLISION_SHAPE_Y 2.0f
 #define NORMALIZE_INPUT 0
 

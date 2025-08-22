@@ -1,0 +1,3 @@
+/Users/minimop/Workspace/DreamOfBlocks/CMakeFiles/game.dir
+/Users/minimop/Workspace/DreamOfBlocks/CMakeFiles/edit_cache.dir
+/Users/minimop/Workspace/DreamOfBlocks/CMakeFiles/rebuild_cache.dir

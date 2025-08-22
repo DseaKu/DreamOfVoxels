@@ -30,41 +30,86 @@ Player InitPlayer(void) {
 }
 
 BoundingBox GetVoxelBoundingBox(Voxel v) {
-  return (BoundingBox){(Vector3){(float)Voxel_GetPosX(v) - HALF_VOXEL_SIZE,
-                                 (float)Voxel_GetPosY(v) - HALF_VOXEL_SIZE,
-                                 (float)Voxel_GetPosZ(v) - HALF_VOXEL_SIZE},
-                       (Vector3){(float)Voxel_GetPosX(v) - HALF_VOXEL_SIZE,
-                                 (float)Voxel_GetPosY(v) - HALF_VOXEL_SIZE,
-                                 (float)Voxel_GetPosZ(v) - HALF_VOXEL_SIZE}};
+  float x = (float)Voxel_GetPosX(v) * VOXEL_SIZE;
+  float y = (float)Voxel_GetPosY(v) * VOXEL_SIZE;
+  float z = (float)Voxel_GetPosZ(v) * VOXEL_SIZE;
+  return (BoundingBox){
+      (Vector3){x - HALF_VOXEL_SIZE, y - HALF_VOXEL_SIZE, z - HALF_VOXEL_SIZE},
+      (Vector3){x + HALF_VOXEL_SIZE, y + HALF_VOXEL_SIZE, z + HALF_VOXEL_SIZE}};
 }
 
 bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
                     Vector3 desiredDir, u64 voxel_offset) {
   StartPerformanceTracker("  └> Check Collision");
+
+  // Player's world position.
+  Vector3 player_pos = body.position;
+
+  // Convert player's world position to local-to-chunk voxel coordinates.
+  int player_local_x = (int)floorf(player_pos.x / VOXEL_SIZE) -
+                       (current_chunk.position.x_offset * N_VOXEL_X);
+  int player_local_y = (int)floorf(player_pos.y / VOXEL_SIZE);
+  int player_local_z = (int)floorf(player_pos.z / VOXEL_SIZE) -
+                       (current_chunk.position.z_offset * N_VOXEL_Z);
+
   u64 current_voxel_index =
-      GetVoxelIndex(floorf(body.position.x), floorf(body.position.y),
-                    floorf(body.position.z));
-  Voxel v;
-  bool is_colliding = false;
-  if (desiredDir.x > 0) {
-    v = voxel_data[current_voxel_index + voxel_offset];
-  } else {
-    v = voxel_data[current_voxel_index - voxel_offset];
+      GetVoxelIndex(player_local_x, player_local_y, player_local_z);
+
+  if (current_voxel_index ==
+      -1) { // Player is outside of this chunk's voxel data array bounds
+    EndPerformanceTracker("  └> Check Collision");
+    return false;
   }
+
+  u64 target_voxel_index;
+  if (voxel_offset == X_NEIGHBOUR_OFFSET) {
+    if (desiredDir.x > 0)
+      target_voxel_index = current_voxel_index + X_NEIGHBOUR_OFFSET;
+    else
+      target_voxel_index = current_voxel_index - X_NEIGHBOUR_OFFSET;
+  } else if (voxel_offset == Z_NEIGHBOUR_OFFSET) {
+    if (desiredDir.z > 0)
+      target_voxel_index = current_voxel_index + Z_NEIGHBOUR_OFFSET;
+    else
+      target_voxel_index = current_voxel_index - Z_NEIGHBOUR_OFFSET;
+  } else {
+    EndPerformanceTracker("  └> Check Collision");
+    return false; // Not handling Y axis for now
+  }
+
+  if (target_voxel_index >=
+      VOXELS_IN_TOTAL) { // Unsigned, so no need for < 0 check
+    EndPerformanceTracker("  └> Check Collision");
+    return false; // Target is outside of this chunk's voxel data array bounds
+  }
+
+  Voxel v = voxel_data[target_voxel_index];
+  bool is_colliding = false;
+
   int x = Voxel_GetPosX(v);
   int y = Voxel_GetPosY(v);
   int z = Voxel_GetPosZ(v);
 
-  int xc = Voxel_GetPosX(voxel_data[current_voxel_index]);
-  int yc = Voxel_GetPosY(voxel_data[current_voxel_index]);
-  int zc = Voxel_GetPosZ(voxel_data[current_voxel_index]);
-  printf("Check for collision target x:%u z:%u y:%u   player x:%u z:%u y:%u ",
-         x, z, y, xc, zc, yc);
+  printf("Check for collision target x:%u z:%u y:%u   player(local) x:%d z:%d "
+         "y:%d ",
+         x, z, y, player_local_x, player_local_z, player_local_y);
+
   if (Voxel_IsActive(v)) {
-    if (CheckCollisionBoxes(GetVoxelBoundingBox(v), body.collision_shape)) {
+    // Transform player's world AABB to chunk's local AABB
+    Vector3 chunk_world_offset = {
+        (float)current_chunk.position.x_offset * N_VOXEL_X * VOXEL_SIZE, 0.0f,
+        (float)current_chunk.position.z_offset * N_VOXEL_Z * VOXEL_SIZE};
+
+    BoundingBox player_box_local = {
+        Vector3Subtract(body.collision_shape.min, chunk_world_offset),
+        Vector3Subtract(body.collision_shape.max, chunk_world_offset)};
+
+    BoundingBox v_box_local = GetVoxelBoundingBox(v);
+    if (CheckCollisionBoxes(v_box_local, player_box_local)) {
       is_colliding = true;
     }
   }
+
   if (is_colliding) {
     printf("   Collision detected\n");
 
@@ -184,19 +229,19 @@ void UpdateBody(Body *body, float rot, char side, char forward,
       Vector3Add(body->position, Vector3Scale(body->velocity, delta));
 
   // If player moves xz direction, check for collision
-  if (desiredDir.x != 0) {
-    if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
-                       X_NEIGHBOUR_OFFSET)) {
-      body->velocity.x = 0.0f;
-    }
+  // if (desiredDir.x != 0) {
+  if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
+                     X_NEIGHBOUR_OFFSET)) {
+    body->velocity.x = 0.0f;
   }
+  // }
 
-  if (desiredDir.z != 0) {
-    if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
-                       Z_NEIGHBOUR_OFFSET)) {
-      body->velocity.z = 0.0f;
-    }
+  // if (desiredDir.z != 0) {
+  if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
+                     Z_NEIGHBOUR_OFFSET)) {
+    body->velocity.z = 0.0f;
   }
+  // }
   // Update body position + collision shape
   body->position = new_position;
   body->collision_shape = UpdateBodyCollisionShape(body->position);
