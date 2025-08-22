@@ -34,7 +34,7 @@ int Scene3DGame() {
   do {
     StartPerformanceTracker("CompleteLoop");
 
-    if (GetTime() > 2) {
+    if (GetTime() > 10) {
       {
       }
     }

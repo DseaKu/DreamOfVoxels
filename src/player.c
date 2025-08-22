@@ -15,7 +15,7 @@ Player InitPlayer(void) {
   player.camera.projection = CAMERA_PERSPECTIVE;
   player.body.headLerp = STAND_HEIGHT;
   // N_VOXEL_Y to spawn above chunks
-  player.body.position = (Vector3){-20, N_VOXEL_Y + 2, -20};
+  player.body.position = (Vector3){-10, N_VOXEL_Y + 2, -10};
   // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
   player.body.sensitivity = (Vector2){0.001f, 0.001f};
   player.body.collision_shape = (BoundingBox){
@@ -46,12 +46,20 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
                     floorf(body.position.z));
   Voxel v;
   bool is_colliding = false;
-  printf("Check for collision");
   if (desiredDir.x > 0) {
     v = voxel_data[current_voxel_index + voxel_offset];
   } else {
     v = voxel_data[current_voxel_index - voxel_offset];
   }
+  int x = Voxel_GetPosX(v);
+  int y = Voxel_GetPosY(v);
+  int z = Voxel_GetPosZ(v);
+
+  int xc = Voxel_GetPosX(voxel_data[current_voxel_index]);
+  int yc = Voxel_GetPosY(voxel_data[current_voxel_index]);
+  int zc = Voxel_GetPosZ(voxel_data[current_voxel_index]);
+  printf("Check for collision target x:%u z:%u y:%u   player x:%u z:%u y:%u ",
+         x, z, y, xc, zc, yc);
   if (Voxel_IsActive(v)) {
     if (CheckCollisionBoxes(GetVoxelBoundingBox(v), body.collision_shape)) {
       is_colliding = true;
