@@ -126,9 +126,9 @@ void Draw2DDebugInformation(int screen_width, int screen_height,
   StartPerformanceTracker("Draw 2D debug information");
 
   Chunk current_chunk = chunk_data[GetIndexCurrentChunk(player)];
-  DrawText("X-Axis", 30, 10, 10, RED);
-  DrawText("Y-Axis", 30, 20, 10, GREEN);
-  DrawText("Z-Axis", 30, 30, 10, BLUE);
+  DrawText("X-Axis", screen_width - 40, 30, 10, RED);
+  DrawText("Y-Axis", screen_width - 40, 40, 10, GREEN);
+  DrawText("Z-Axis", screen_width - 40, 50, 10, BLUE);
   DrawText(
       TextFormat("Player location\n Voxel:  x=%i z=%i y=%i\n Exact: x=%.1f "
                  "z=%.1f y=%.1f\n Chunk:: x=%d z=%d",
@@ -136,8 +136,10 @@ void Draw2DDebugInformation(int screen_width, int screen_height,
                  player->body.voxel_position.y, player->body.position.x,
                  player->body.position.z, player->body.position.y,
                  current_chunk.position.x, current_chunk.position.z),
-      30, 50, 10, BLACK);
+      screen_width - 200, 30, 10, BLACK);
 
+  // Print debug events in the following MAROON draw text function
+  DrawText("Debug text:", 30, 20, 10, MAROON);
   DrawFPS(screen_width - 100, 10);
 
   EndPerformanceTracker("Draw 2D debug information");

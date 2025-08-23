@@ -62,8 +62,6 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
     return false;
   }
 
-  DrawText("Collision fcuntion active", 500, 500, 10, RED);
-
   u64 target_voxel_index;
   if (voxel_offset == X_NEIGHBOUR_OFFSET) {
     if (desiredDir.x > 0)
@@ -93,12 +91,8 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
   int y = Voxel_GetPosY(v);
   int z = Voxel_GetPosZ(v);
 
-  DrawText(TextFormat("Check for collision\nTarget: x=%i z=%i y=%i", x, z, y),
-           GetScreenWidth() / 2, 10, 10, RED);
-  // printf("Check for collision target x:%u z:%u y:%u local) x:%d z:%d "
-  //        "y:%d ",
-  //        x, z, y, body.position.x, body.position.z,
-  //        body.position.y);
+  // Throw debug event. The event should be string with a Text: check for
+  // collision at x,z,y
 
   if (Voxel_IsActive(v)) {
     // Transform player's world AABB to chunk's local AABB
@@ -116,12 +110,6 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
     }
   }
 
-  if (is_colliding) {
-    printf("   Collision detected\n");
-
-  } else {
-    printf("   No Collision %f\n", GetTime());
-  }
   EndPerformanceTracker("  └> Check Collision");
   return is_colliding;
 }
