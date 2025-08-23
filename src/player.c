@@ -1,4 +1,5 @@
 #include "player.h"
+#include "debug_logger.h"
 #include "raymath.h"
 #include "resource_tracker.h"
 #include "voxel.h"
@@ -107,6 +108,7 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
     BoundingBox v_box_local = GetVoxelBoundingBox(v);
     if (CheckCollisionBoxes(v_box_local, player_box_local)) {
       is_colliding = true;
+      SetDebugMessage("Collision at x:%d y:%d z:%d", x, y, z);
     }
   }
 

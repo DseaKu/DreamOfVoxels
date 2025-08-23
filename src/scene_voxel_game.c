@@ -1,4 +1,5 @@
 #include "scene_voxel_game.h"
+#include "debug_logger.h"
 #include "player.h"
 #include "resource_tracker.h"
 #include "voxel.h"
@@ -139,7 +140,7 @@ void Draw2DDebugInformation(int screen_width, int screen_height,
       screen_width - 200, 30, 10, BLACK);
 
   // Print debug events in the following MAROON draw text function
-  DrawText("Debug text:", 30, 20, 10, MAROON);
+  DrawDebugMessages();
   DrawFPS(screen_width - 100, 10);
 
   EndPerformanceTracker("Draw 2D debug information");
