@@ -6,8 +6,8 @@
 //----------------------------------------------------------------------------------
 // Defines Window
 //----------------------------------------------------------------------------------
-#define MAX_SCREEN_WIDTH 800
-#define MAX_SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
 #define CURSOR_RADIUS 2
 #define TARGET_FPS 3000
 #define MAX_PLAYER_RANGE 4.0f

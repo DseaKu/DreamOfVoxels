@@ -11,8 +11,8 @@ int Scene3DGame() {
   //----------------------------------------------------------------------------------
   // Init
   //----------------------------------------------------------------------------------
-  const u64 screen_width = MAX_SCREEN_WIDTH;
-  const u64 screen_height = MAX_SCREEN_HEIGHT;
+  const u64 screen_width = SCREEN_WIDTH;
+  const u64 screen_height = SCREEN_HEIGHT;
   InitWindow(screen_width, screen_height, "Raylib ");
   DisableCursor();
 
@@ -33,6 +33,7 @@ int Scene3DGame() {
   //----------------------------------------------------------------------------------
   do {
     StartPerformanceTracker("CompleteLoop");
+    BeginDrawing();
 
     if (GetTime() > 10) {
       {
@@ -62,7 +63,6 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     // Draw 3D
     //----------------------------------------------------------------------------------
-    BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
     StartPerformanceTracker("Render mesh");
