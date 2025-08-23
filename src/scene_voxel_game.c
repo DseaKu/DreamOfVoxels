@@ -28,6 +28,7 @@ int Scene3DGame() {
   UnloadImage(texture_atlas_img);
 
   bool is_visibility_updatable = true;
+  bool show_3d_debug_info = true;
 
   //----------------------------------------------------------------------------------
   // Game loop
@@ -43,6 +44,9 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     // Get and process inputs
     //----------------------------------------------------------------------------------
+    if (IsKeyPressed(KEY_F1)) {
+      show_3d_debug_info = !show_3d_debug_info;
+    }
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
       // if (RemoveVoxel(voxel_data, &player, screen_width, screen_height,
@@ -76,7 +80,9 @@ int Scene3DGame() {
 
     EndPerformanceTracker("Render mesh");
 
-    Draw3DDebugInformation(screen_width, screen_height);
+    if (show_3d_debug_info) {
+      Draw3DDebugInformation(screen_width, screen_height);
+    }
     EndMode3D();
 
     //----------------------------------------------------------------------------------
