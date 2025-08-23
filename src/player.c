@@ -47,14 +47,14 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
   Vector3 player_pos = body.position;
 
   // Convert player's world position to local-to-chunk voxel coordinates.
-  // int player_local_x = (int)floorf(player_pos.x / VOXEL_SIZE) -
-  //                      (current_chunk.position.x * N_VOXEL_X);
-  // int player_local_y = (int)floorf(player_pos.y / VOXEL_SIZE);
-  // int player_local_z = (int)floorf(player_pos.z / VOXEL_SIZE) -
-  //                      (current_chunk.position.z * N_VOXEL_Z);
+  int player_local_x =
+      body.voxel_position.x - (current_chunk.position.x * N_VOXEL_X);
+  int player_local_y = body.voxel_position.y;
+  int player_local_z =
+      body.voxel_position.z - (current_chunk.position.z * N_VOXEL_Z);
 
-  u64 current_voxel_index = GetVoxelIndex(
-      body.voxel_position.x, body.voxel_position.y, body.voxel_position.z);
+  u64 current_voxel_index =
+      GetVoxelIndex(player_local_x, player_local_y, player_local_z);
 
   if (current_voxel_index ==
       -1) { // Player is outside of this chunk's voxel data array bounds
