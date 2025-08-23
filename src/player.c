@@ -92,9 +92,6 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
   int y = Voxel_GetPosY(v);
   int z = Voxel_GetPosZ(v);
 
-  // Throw debug event. The event should be string with a Text: check for
-  // collision at x,z,y
-
   if (Voxel_IsActive(v)) {
     // Transform player's world AABB to chunk's local AABB
     Vector3 chunk_world_offset = {
@@ -108,10 +105,9 @@ bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
     BoundingBox v_box_local = GetVoxelBoundingBox(v);
     if (CheckCollisionBoxes(v_box_local, player_box_local)) {
       is_colliding = true;
-      SetDebugMessage("Collision at x:%d y:%d z:%d", x, y, z);
+      SetDebugMessage("Collision at x:%d z:%d y:%d", x, z, y);
     }
   }
-
   EndPerformanceTracker("  └> Check Collision");
   return is_colliding;
 }

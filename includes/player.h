@@ -8,7 +8,7 @@
 //----------------------------------------------------------------------------------
 #define GRAVITY 32.0f
 #define MAX_SPEED 10.0f
-#define CROUCH_SPEED 0.1f
+#define CROUCH_SPEED 0.8f
 #define JUMP_FORCE 11.0f
 #define MAX_ACCEL 1010.0f
 #define CROUCH_HEIGHT 0.0f
