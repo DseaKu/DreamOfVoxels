@@ -1,7 +1,6 @@
 #include "voxel.h"
 #include "resource_tracker.h"
 #include "rlgl.h"
-#include "scene_3d_game.h"
 #include "std_includes.h"
 #include <math.h>
 #include <raylib.h>

@@ -1,4 +1,4 @@
-#include "scene_3d_game.h"
+#include "scene_voxel_game.h"
 #include "player.h"
 #include "resource_tracker.h"
 #include "voxel.h"
@@ -18,7 +18,7 @@ int Scene3DGame() {
 
   // SetTargetFPS(TARGET_FPS);
   Player player = InitPlayer();
-  Chunk *p_chunk_data = InitChunks();
+  Chunk *chunk_data = InitChunks();
 
   Material material = LoadMaterialDefault();
   Image texture_atlas_img = LoadImage("assets/texture_atlas.png");
@@ -52,11 +52,11 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     // Update
     //----------------------------------------------------------------------------------
-    UpdatePlayer(&player, p_chunk_data);
+    UpdatePlayer(&player, chunk_data);
     UpdateCameraAngle(&player);
     if (is_visibility_updatable) {
-      UpdateVisibility(p_chunk_data);
-      CulledMeshing(p_chunk_data);
+      UpdateVisibility(chunk_data);
+      CulledMeshing(chunk_data);
       is_visibility_updatable = false;
     }
     //----------------------------------------------------------------------------------
@@ -68,9 +68,9 @@ int Scene3DGame() {
     StartPerformanceTracker("Render mesh");
     for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
       Matrix transform = MatrixTranslate(
-          p_chunk_data[i].position.x_offset * N_VOXEL_X * VOXEL_SIZE, 0.0f,
-          p_chunk_data[i].position.z_offset * N_VOXEL_Z * VOXEL_SIZE);
-      DrawMesh(p_chunk_data[i].chunk_mesh, material, transform);
+          chunk_data[i].position.x * N_VOXEL_X * VOXEL_SIZE, 0.0f,
+          chunk_data[i].position.z * N_VOXEL_Z * VOXEL_SIZE);
+      DrawMesh(chunk_data[i].chunk_mesh, material, transform);
     }
 
     EndPerformanceTracker("Render mesh");
@@ -82,7 +82,7 @@ int Scene3DGame() {
     // Draw 2D
     //----------------------------------------------------------------------------------
     DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
-    Draw2DDebugInformation(screen_width, screen_height);
+    Draw2DDebugInformation(screen_width, screen_height, chunk_data, &player);
 
     EndDrawing();
 
@@ -93,7 +93,7 @@ int Scene3DGame() {
   // Free rescource
   //----------------------------------------------------------------------------------
   UnloadMaterial(material);
-  FreeAllChunkData(p_chunk_data);
+  FreeAllChunkData(chunk_data);
   CloseWindow();
   PrintPerformanceTrackers();
   WritePerformanceTrackersToFile("Performance_Report.txt");
@@ -121,12 +121,25 @@ void Draw3DDebugInformation(int screen_width, int screen_height) {
       (Vector3){0.0f, (float)N_VOXEL_Y / 2, 50.0f}, 0.01f, 0.01f, 24, BLUE);
   EndPerformanceTracker("Draw 3D debug information");
 }
-void Draw2DDebugInformation(int screen_width, int screen_height) {
+void Draw2DDebugInformation(int screen_width, int screen_height,
+                            Chunk *chunk_data, Player *player) {
   StartPerformanceTracker("Draw 2D debug information");
+
+  Chunk current_chunk = chunk_data[GetIndexCurrentChunk(player)];
   DrawText("X-Axis", 30, 10, 10, RED);
   DrawText("Y-Axis", 30, 20, 10, GREEN);
   DrawText("Z-Axis", 30, 30, 10, BLUE);
+  DrawText(
+      TextFormat("Player location\n Voxel:  x=%i z=%i y=%i\n Exact: x=%.1f "
+                 "z=%.1f y=%.1f\n Chunk:: x=%d z=%d",
+                 player->body.voxel_position.x, player->body.voxel_position.z,
+                 player->body.voxel_position.y, player->body.position.x,
+                 player->body.position.z, player->body.position.y,
+                 current_chunk.position.x, current_chunk.position.z),
+      30, 50, 10, BLACK);
+
   DrawFPS(screen_width - 100, 10);
+
   EndPerformanceTracker("Draw 2D debug information");
 }
 

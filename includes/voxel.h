@@ -1,18 +1,12 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
-// #include "player.h"
-#include "player.h"
-#include "scene_3d_game.h"
+#include "scene_voxel_game.h"
 #include "std_includes.h"
 #include <iso646.h>
 #include <raylib.h>
 #include <stdint.h>
 
-#define VOXEL_SIZE 0.5f
-#define HALF_VOXEL_SIZE 0.5f / 2.0f
-
-#define CHUNK_SIZE 16
 #define N_VOXEL_X CHUNK_SIZE
 #define N_VOXEL_Z CHUNK_SIZE
 #define N_VOXEL_Y 4
@@ -30,16 +24,15 @@
 /* MSB:
  * typedef u64 Voxel; Is defined in 'scene_3d_game.h' to avoid cycle include
  *
- *| oooooo | iiiiiiii | ffffff | yyyyyy | zzzzzz | xxxxxx |
+ *|        | iiiiiiii | ffffff | yyyyyy | zzzzzz | xxxxxx |
  *|--------|----------|--------|--------|--------|--------|
- *| 10 bits| 8 bits   | 6 bits | 6 bits | 6 bits | 6 bits |
+ *|    bits| 8 bits   | 6 bits | 6 bits | 6 bits | 6 bits |
  *
  * 6bit = posX
  * 6bit = posy
  * 6bit = posz
  * 6bit = face direction
  * 8bit = texture
- * 10bit = xy-position offset
  */
 
 // --- SHIFTS ---

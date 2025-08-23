@@ -16,4 +16,21 @@ typedef int16_t s16;
 typedef int32_t s32;
 typedef int64_t s64;
 
-#endif // !STD_INCLUDES_H
+typedef struct s16Vector2D {
+  s16 x;
+  s16 z;
+} s16Vector2D;
+typedef struct s32Vector2D {
+  s32 x;
+  s32 z;
+} s32Vector2D;
+typedef struct s64Vector2D {
+  s64 x;
+  s64 z;
+} s64Vector2D;
+typedef struct s64Vector3D {
+  s64 x;
+  s64 z;
+  s64 y;
+} s64Vector3D;
+#endif // !STD_INCLUDES_H_offset
