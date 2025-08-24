@@ -96,7 +96,9 @@ void PlaceVoxel(Voxel *voxel_data, int x, int y, int z, VoxelID id);
 bool RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
                  u64 screen_height, float player_range);
 
-VoxelID GetVoxelID(Voxel *voxel_data, int x, int y, int z);
+VoxelID GetLocalVoxelIndex(Voxel *voxel_data, int x, int y, int z);
+VoxelIndex GetGlobalVoxelIndex(Chunk *chunk_data, s64Vector3D tar_v);
+Vector3 GetGlobalVoxelPosition(Chunk *chunk_data, s64Vector3D tar_v);
 
 void CulledMeshing(Chunk *chunk_data);
 #endif // VOXEL_H

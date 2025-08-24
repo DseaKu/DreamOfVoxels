@@ -18,6 +18,7 @@ set(SOURCES
   src/event_handler.c
   src/input_handler.c
   src/debug_logger.c
+  src/chunk.c
 )
 
 add_executable(game src/main.c ${SOURCES})

@@ -494,3 +494,14 @@ void CulledMeshing(Chunk *chunk_data) {
   }
   EndPerformanceTracker("GenerateGreedyMesh");
 }
+
+VoxelIndex GetGlobalVoxelIndex(Chunk *chunk_data, s64Vector3D tar_v) {
+  VoxelIndex a;
+  return a;
+}
+
+Vector3 GetGlobalVoxelPosition(Chunk *chunk_data, s64Vector3D tar_v) {
+
+  Vector3 a;
+  return a;
+}
