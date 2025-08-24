@@ -3,9 +3,83 @@
 #include "player.h"
 #include "resource_tracker.h"
 #include "voxel.h"
+#include <math.h>
 #include <raylib.h>
+#include <rlgl.h>
 #include <raymath.h>
 #include <stdlib.h>
+
+// Extracts the 6 planes of the camera frustum
+void ExtractFrustumPlanes(float frustum[6][4]) {
+  Matrix matView = rlGetMatrixModelview();
+  Matrix matProj = rlGetMatrixProjection();
+  Matrix clip = MatrixMultiply(matView, matProj);
+
+  // Right plane
+  frustum[0][0] = clip.m3 - clip.m0;
+  frustum[0][1] = clip.m7 - clip.m4;
+  frustum[0][2] = clip.m11 - clip.m8;
+  frustum[0][3] = clip.m15 - clip.m12;
+  // Left plane
+  frustum[1][0] = clip.m3 + clip.m0;
+  frustum[1][1] = clip.m7 + clip.m4;
+  frustum[1][2] = clip.m11 + clip.m8;
+  frustum[1][3] = clip.m15 + clip.m12;
+  // Bottom plane
+  frustum[2][0] = clip.m3 + clip.m1;
+  frustum[2][1] = clip.m7 + clip.m5;
+  frustum[2][2] = clip.m11 + clip.m9;
+  frustum[2][3] = clip.m15 + clip.m13;
+  // Top plane
+  frustum[3][0] = clip.m3 - clip.m1;
+  frustum[3][1] = clip.m7 - clip.m5;
+  frustum[3][2] = clip.m11 - clip.m9;
+  frustum[3][3] = clip.m15 - clip.m13;
+  // Far plane
+  frustum[4][0] = clip.m3 - clip.m2;
+  frustum[4][1] = clip.m7 - clip.m6;
+  frustum[4][2] = clip.m11 - clip.m10;
+  frustum[4][3] = clip.m15 - clip.m14;
+  // Near plane
+  frustum[5][0] = clip.m3 + clip.m2;
+  frustum[5][1] = clip.m7 + clip.m6;
+  frustum[5][2] = clip.m11 + clip.m10;
+  frustum[5][3] = clip.m15 + clip.m14;
+
+  // Normalize planes
+  for (int i = 0; i < 6; i++) {
+    float length =
+        sqrtf(frustum[i][0] * frustum[i][0] + frustum[i][1] * frustum[i][1] +
+              frustum[i][2] * frustum[i][2]);
+    frustum[i][0] /= length;
+    frustum[i][1] /= length;
+    frustum[i][2] /= length;
+    frustum[i][3] /= length;
+  }
+}
+
+// Check if a bounding box is inside the frustum
+bool IsBoxInFrustum(float frustum[6][4], BoundingBox box) {
+  for (int i = 0; i < 6; i++) {
+    // Find the vertex of the box that is furthest in the direction of the
+    // plane's normal
+    Vector3 p_vertex = {box.min.x, box.min.y, box.min.z};
+    if (frustum[i][0] > 0)
+      p_vertex.x = box.max.x;
+    if (frustum[i][1] > 0)
+      p_vertex.y = box.max.y;
+    if (frustum[i][2] > 0)
+      p_vertex.z = box.max.z;
+
+    // Check if this vertex is outside the plane
+    if (frustum[i][0] * p_vertex.x + frustum[i][1] * p_vertex.y +
+            frustum[i][2] * p_vertex.z + frustum[i][3] <
+        0) {
+      return false; // The entire box is outside this plane
+    }
+  }
+  return true; // Box is intersecting or inside the frustum
+}
 
 int Scene3DGame() {
 
@@ -70,12 +144,29 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     ClearBackground(RAYWHITE);
     BeginMode3D(player.camera);
+
+    float frustum[6][4];
+    ExtractFrustumPlanes(frustum);
+    int chunks_drawn = 0;
+
     StartPerformanceTracker("Render mesh");
     for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
-      Matrix transform = MatrixTranslate(
-          chunk_data[i].position.x * N_VOXEL_X * VOXEL_SIZE, 0.0f,
-          chunk_data[i].position.z * N_VOXEL_Z * VOXEL_SIZE);
-      DrawMesh(chunk_data[i].chunk_mesh, material, transform);
+      float chunk_world_x =
+          (float)chunk_data[i].position.x * N_VOXEL_X * VOXEL_SIZE;
+      float chunk_world_z =
+          (float)chunk_data[i].position.z * N_VOXEL_Z * VOXEL_SIZE;
+
+      BoundingBox chunk_bbox = {
+          .min = {chunk_world_x, 0.0f, chunk_world_z},
+          .max = {chunk_world_x + N_VOXEL_X * VOXEL_SIZE,
+                  N_VOXEL_Y * VOXEL_SIZE,
+                  chunk_world_z + N_VOXEL_Z * VOXEL_SIZE}};
+
+      if (IsBoxInFrustum(frustum, chunk_bbox)) {
+        Matrix transform = MatrixTranslate(chunk_world_x, 0.0f, chunk_world_z);
+        DrawMesh(chunk_data[i].chunk_mesh, material, transform);
+        chunks_drawn++;
+      }
     }
 
     EndPerformanceTracker("Render mesh");
@@ -89,7 +180,8 @@ int Scene3DGame() {
     // Draw 2D
     //----------------------------------------------------------------------------------
     DrawCircle(screen_width / 2, screen_height / 2, CURSOR_RADIUS, BLACK);
-    Draw2DDebugInformation(screen_width, screen_height, chunk_data, &player);
+    Draw2DDebugInformation(screen_width, screen_height, chunk_data, &player,
+                           chunks_drawn);
 
     EndDrawing();
 
@@ -129,7 +221,8 @@ void Draw3DDebugInformation(int screen_width, int screen_height) {
   EndPerformanceTracker("Draw 3D debug information");
 }
 void Draw2DDebugInformation(int screen_width, int screen_height,
-                            Chunk *chunk_data, Player *player) {
+                            Chunk *chunk_data, Player *player,
+                            int chunks_drawn) {
   StartPerformanceTracker("Draw 2D debug information");
 
   Chunk current_chunk = chunk_data[GetIndexCurrentChunk(player)];
@@ -144,6 +237,9 @@ void Draw2DDebugInformation(int screen_width, int screen_height,
                  player->body.position.z, player->body.position.y,
                  current_chunk.position.x, current_chunk.position.z),
       screen_width - 200, 30, 10, BLACK);
+
+  DrawText(TextFormat("Chunks drawn: %d/%d", chunks_drawn, CHUNKS_IN_TOTAL),
+           screen_width - 200, 100, 10, MAROON);
 
   // Print debug events in the following MAROON draw text function
   DrawDebugMessages();
