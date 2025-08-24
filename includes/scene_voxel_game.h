@@ -78,7 +78,7 @@ typedef struct Player {
 int Scene3DGame();
 void Draw3DDebugInformation(int screen_width, int screen_height);
 void Draw2DDebugInformation(int screen_width, int screen_height,
-                            Chunk *chunk_data, Player *player, int chunks_drawn);
+                            Chunk *chunk_data, Player *player);
 
 Chunk *InitChunks();
 void FreeAllChunkData(Chunk *chunk_data);
