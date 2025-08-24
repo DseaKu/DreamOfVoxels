@@ -2,6 +2,7 @@
 #include "chunk.h"
 #include "resource_tracker.h"
 #include "voxel.h"
+#include <rlgl.h>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -25,7 +26,10 @@ void DrawDebugMessages(void) {
 void Draw3DDebugInformation(int screen_width, int screen_height) {
 
   StartPerformanceTracker("Draw 3D debug information");
+  rlPushMatrix();
+  rlTranslatef(VOXEL_SIZE / 2.0f, -VOXEL_SIZE / 2.0f, VOXEL_SIZE / 2.0f);
   DrawGrid(100, VOXEL_SIZE);
+  rlPopMatrix();
   // Draw coordinate system
   DrawCylinderEx(
       (Vector3){-VOXEL_SIZE / 2, (float)N_VOXEL_Y + 2, -VOXEL_SIZE / 2},

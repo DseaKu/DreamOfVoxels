@@ -38,9 +38,14 @@ bool IsColliding(Chunk *chunk_data, const Body body,
                     body.voxel_position.y + target_voxel_offset.y};
 
   if (IsVoxelActive_Global(chunk_data, target_voxel)) {
+
+    SetDebugMessage("No Collision", target_voxel.x, target_voxel.z,
+                    target_voxel.y);
     BoundingBox v_box = CalcVoxelBox(target_voxel);
     if (CheckCollisionBoxes(v_box, body.collision_shape)) {
       IsColliding = true;
+      SetDebugMessage("Collision detected: x=%i ,z=%i , y=%i", target_voxel.x,
+                      target_voxel.z, target_voxel.y);
     }
   }
   EndPerformanceTracker("  └> Check Collision");
@@ -166,31 +171,15 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   body->velocity.z = hvel.z;
 
   body->collision_shape = UpdateBodyCollisionShape(body->position);
-  // If player moves xz direction, check for collision
-  if (desiredDir.x != 0) {
-    if (desiredDir.x < 0) {
-      if (IsColliding(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
-        body->velocity.x = 0.0f;
-      }
-    } else {
-      if (IsColliding(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
-        body->velocity.x = 0.0f;
-      }
-    }
-  }
-  if (desiredDir.z != 0) {
-    if (desiredDir.z < 0) {
-      if (IsColliding(chunk_data, *body, (s64Vector3D){0, 0, -1})) {
-        body->velocity.z = 0.0f;
-      }
-    } else {
-      if (IsColliding(chunk_data, *body, (s64Vector3D){0, 0, 1})) {
-        body->velocity.z = 0.0f;
-      }
-    }
-  }
 
-  // }
+  if (IsColliding(chunk_data, *body,
+                  (s64Vector3D){desiredDir.x, 0, desiredDir.y})) {
+    body->velocity.x = 0.0f;
+  }
+  if (IsColliding(chunk_data, *body,
+                  (s64Vector3D){0, desiredDir.z, desiredDir.y})) {
+    body->velocity.y = 0.0f;
+  }
   Vector3 new_position =
       Vector3Add(body->position, Vector3Scale(body->velocity, delta));
   // Update body position + collision shape
