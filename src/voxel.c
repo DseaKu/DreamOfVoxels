@@ -61,7 +61,8 @@ bool Voxel_IsActive(Voxel v) { return ((v >> 24) & VOXEL_MASK_ID) != 0; }
 void UpdateVisibility(Chunk *chunk_data) {
   StartPerformanceTracker("Update visibilty");
   for (u8 i = 0; i < CHUNKS_IN_TOTAL; i++) {
-    Voxel *voxel_data = chunk_data[i].p_voxel_data;
+    Chunk current_chunk = chunk_data[i];
+    Voxel *voxel_data = current_chunk.p_voxel_data;
 
     u64 index = 0;
     for (u8 y = 0; y < N_VOXEL_Y; y++) {

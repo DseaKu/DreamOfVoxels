@@ -16,8 +16,8 @@
 // Defines Chunk
 //----------------------------------------------------------------------------------
 #define CHUNK_SIZE 16
-#define N_CHUNKS_X 2
-#define N_CHUNKS_Z 2
+#define N_CHUNKS_X 4
+#define N_CHUNKS_Z 4
 #define CHUNKS_IN_TOTAL N_CHUNKS_Z *N_CHUNKS_X
 //----------------------------------------------------------------------------------
 // Defines  Voxel

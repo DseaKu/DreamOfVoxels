@@ -6,6 +6,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 int Scene3DGame() {
@@ -29,7 +30,8 @@ int Scene3DGame() {
   UnloadImage(texture_atlas_img);
 
   bool is_visibility_updatable = true;
-  bool show_3d_debug_info = true;
+  bool show_3d_debug_info = false;
+  bool show_fps_info = true;
 
   //----------------------------------------------------------------------------------
   // Game loop
@@ -47,6 +49,9 @@ int Scene3DGame() {
     //----------------------------------------------------------------------------------
     if (IsKeyPressed(KEY_F1)) {
       show_3d_debug_info = !show_3d_debug_info;
+    }
+    if (IsKeyPressed(KEY_F2)) {
+      show_fps_info = !show_fps_info;
     }
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -94,7 +99,9 @@ int Scene3DGame() {
     if (show_3d_debug_info) {
       Draw2DDebugInformation(screen_width, screen_height, chunk_data, &player);
     }
-    DrawFPS(screen_width - 100, 10);
+    if (show_fps_info) {
+      DrawFPS(screen_width - 100, 10);
+    }
 
     StartPerformanceTracker("EndDrawing");
     EndDrawing();
