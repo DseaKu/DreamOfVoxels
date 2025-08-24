@@ -1,4 +1,5 @@
 #include "voxel.h"
+#include "chunk.h"
 #include "resource_tracker.h"
 #include "rlgl.h"
 #include "std_includes.h"
@@ -7,7 +8,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 // Init xzy-coordinates to voxels
-Voxel *InitVoxelPointer(bool is_random) {
+Voxel *InitVoxel(bool is_random, bool is_empty) {
   // 0.527000 ms (avg over 1 runs):Init Voxels
   Voxel *voxel_data = (Voxel *)calloc(VOXELS_IN_TOTAL, sizeof(Voxel));
   StartPerformanceTracker("Init Voxels");
@@ -24,7 +25,9 @@ Voxel *InitVoxelPointer(bool is_random) {
         v |= ((Voxel)y << VOXEL_SHIFT_POS_Y);
         v |= ((Voxel)z << VOXEL_SHIFT_POS_Z);
 
-        if (!is_random) {
+        if (is_empty) {
+          v |= ((Voxel)EMPTY << VOXEL_SHIFT_ID);
+        } else if (!is_random) {
           v |= ((Voxel)WOOD << VOXEL_SHIFT_ID);
         } else {
           VoxelID random_id =
@@ -504,4 +507,22 @@ Vector3 GetGlobalVoxelPosition(Chunk *chunk_data, s64Vector3D tar_v) {
 
   Vector3 a;
   return a;
+}
+bool IsVoxelActive_Global(Chunk *chunk_data, s64Vector3D tar_v) {
+
+  // which chunk
+  u64 index = GetIndexXZYChunk(chunk_data, tar_v);
+  Chunk *chunk = &chunk_data[index];
+  Chunk tar_chunk = chunk_data[index];
+
+  // calc 3d position back to local xyz voxel position
+  float local_x = tar_v.x - chunk->voxel_offset_x;
+  float local_y = tar_v.y;
+  float local_z = tar_v.z - chunk->voxel_offset_z;
+  s64 test_z = tar_v.z - chunk->voxel_offset_z;
+  Voxel v = GetVoxel_XZY(tar_chunk.p_voxel_data,
+                         (Vector3){local_x, local_y, local_z});
+  bool is_active = Voxel_IsActive(v);
+
+  return is_active;
 }

@@ -2,6 +2,7 @@
 #include "debug_logger.h"
 #include "raymath.h"
 #include "resource_tracker.h"
+#include "scene_voxel_game.h"
 #include "std_includes.h"
 #include "voxel.h"
 #include <math.h>
@@ -36,15 +37,25 @@ BoundingBox GetVoxelBoundingBox(Voxel v) {
       (Vector3){x + HALF_VOXEL_SIZE, y + HALF_VOXEL_SIZE, z + HALF_VOXEL_SIZE}};
 }
 
-bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
-                    Vector3 desiredDir, s64Vector3D target_voxel_offset) {
+bool AABB_Collision(Chunk *chunk_data, const Body body,
+                    s64Vector3D target_voxel_offset) {
   StartPerformanceTracker("  └> Check Collision");
   // Get voxel from global map
   // Determine dir
+  //
+  //
+  // I just want to know, if target v is active. if so just craete the boundbox
+  // from tar voxel
   s64Vector3D target_voxel =
       (s64Vector3D){body.voxel_position.x + target_voxel_offset.x,
-                    body.voxel_position.z + target_voxel_offset.z,
-                    body.voxel_position.y + target_voxel_offset.y};
+                    body.voxel_position.y + target_voxel_offset.y,
+                    body.voxel_position.z + target_voxel_offset.z};
+  if (IsVoxelActive_Global(chunk_data, target_voxel)) {
+
+    u8 a=1;
+    // create BoundingBox from target voxel
+  }
+
   u64 tar_voxel;
   Voxel target_v; // = chunk_data etc..
   bool is_colliding = false;
@@ -83,7 +94,7 @@ void UpdatePlayer(Player *player, Chunk *chunk_data) {
 
   UpdateBody(&player->body, player->body.lookRotation.x, sideway, forward,
              IsKeyPressed(KEY_SPACE), crouching,
-             chunk_data[GetIndexCurrentChunk(player)]);
+             chunk_data[GetIndexCurrentChunk(player)], chunk_data);
 
   float delta = GetFrameTime();
   player->body.headLerp =
@@ -125,7 +136,8 @@ BoundingBox UpdateBodyCollisionShape(Vector3 player_position) {
 }
 
 void UpdateBody(Body *body, float rot, char side, char forward,
-                bool jumpPressed, bool crouchHold, Chunk current_chunk) {
+                bool jumpPressed, bool crouchHold, Chunk current_chunk,
+                Chunk *chunk_data) {
   Vector2 input = (Vector2){(float)side, (float)-forward};
 
   StartPerformanceTracker("UpdateBody");
@@ -191,13 +203,11 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   // If player moves xz direction, check for collision
   if (desiredDir.x != 0) {
     if (desiredDir.x < 0) {
-      if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
-                         (s64Vector3D){1, 0, 0})) {
+      if (AABB_Collision(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
         body->velocity.x = 0.0f;
       }
     } else {
-      if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
-                         (s64Vector3D){-1, 0, 0})) {
+      if (AABB_Collision(chunk_data, *body, (s64Vector3D){1, 0, 0})) {
         body->velocity.x = 0.0f;
       }
     }
@@ -269,35 +279,4 @@ void UpdateCameraAngle(Player *player) {
       player->camera.position, Vector3Scale(bobbing, player->body.walkLerp));
   player->camera.target = Vector3Add(player->camera.position, pitch);
   EndPerformanceTracker("Update Camera Angele");
-}
-
-u32 GetIndexCurrentChunk(Player *player) {
-  float chunk_size_x = N_VOXEL_X * VOXEL_SIZE;
-  float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
-
-  int chunk_x_offset = floorf(player->body.position.x / chunk_size_x);
-  int chunk_z_offset = floorf(player->body.position.z / chunk_size_z);
-
-  int chunk_x_index = chunk_x_offset + (N_CHUNKS_X / 2);
-  int chunk_z_index = chunk_z_offset + (N_CHUNKS_Z / 2);
-
-  // Clamp chunk indices to be within the world boundaries
-  if (chunk_x_index < 0)
-    chunk_x_index = 0;
-  if (chunk_x_index >= N_CHUNKS_X)
-    chunk_x_index = N_CHUNKS_X - 1;
-  if (chunk_z_index < 0)
-    chunk_z_index = 0;
-  if (chunk_z_index >= N_CHUNKS_Z)
-    chunk_z_index = N_CHUNKS_Z - 1;
-
-  return chunk_x_index * N_CHUNKS_Z + chunk_z_index;
-}
-
-s16Vector2D GetXZCurrentChunk(Player *player) {
-  float chunk_size_x = N_VOXEL_X * VOXEL_SIZE;
-  float chunk_size_z = N_VOXEL_Z * VOXEL_SIZE;
-
-  return (s16Vector2D){floorf(player->body.position.x / chunk_size_x),
-                       floorf(player->body.position.z / chunk_size_z)};
 }

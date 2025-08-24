@@ -76,7 +76,7 @@ typedef enum {
 Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);
 
 // Allocate xzy-coordinates to voxels
-Voxel *InitVoxelPointer(bool is_random);
+Voxel *InitVoxel(bool is_random, bool is_empty);
 
 void UpdateVisibility(Chunk *chunk_data);
 
@@ -99,6 +99,7 @@ bool RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
 VoxelID GetLocalVoxelIndex(Voxel *voxel_data, int x, int y, int z);
 VoxelIndex GetGlobalVoxelIndex(Chunk *chunk_data, s64Vector3D tar_v);
 Vector3 GetGlobalVoxelPosition(Chunk *chunk_data, s64Vector3D tar_v);
+bool IsVoxelActive_Global(Chunk *chunk_data, s64Vector3D tar_v);
 
 void CulledMeshing(Chunk *chunk_data);
 #endif // VOXEL_H

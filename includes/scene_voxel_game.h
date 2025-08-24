@@ -15,10 +15,11 @@
 //----------------------------------------------------------------------------------
 // Defines Chunk
 //----------------------------------------------------------------------------------
-#define CHUNK_SIZE 16
+#define CHUNK_SIZE 8
 #define N_CHUNKS_X 8
 #define N_CHUNKS_Z 8
 #define CHUNKS_IN_TOTAL N_CHUNKS_Z *N_CHUNKS_X
+#define N_EMPTY_VOXEL CHUNKS_IN_TOTAL / 2
 //----------------------------------------------------------------------------------
 // Defines  Voxel
 //----------------------------------------------------------------------------------
@@ -36,6 +37,8 @@ typedef struct Chunk {
   s16Vector2D position;
   Voxel *p_voxel_data;
   Mesh chunk_mesh;
+  u64 voxel_offset_x;
+  u64 voxel_offset_z;
 } Chunk;
 
 //----------------------------------------------------------------------------------
@@ -62,6 +65,9 @@ typedef struct Player {
   Body body;
 } Player;
 
+//----------------------------------------------------------------------------------
+// Look-Up map
+//----------------------------------------------------------------------------------
 /*
  *
  *            z pos
@@ -80,8 +86,5 @@ typedef struct Player {
  * */
 
 int Scene3DGame();
-void Draw3DDebugInformation(int screen_width, int screen_height);
-void Draw2DDebugInformation(int screen_width, int screen_height,
-                            Chunk *chunk_data, Player *player);
 
 #endif // SCENE_3D_GAME_H

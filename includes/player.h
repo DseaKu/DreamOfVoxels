@@ -31,7 +31,8 @@
 
 void UpdateCameraAngle(Player *player);
 void UpdateBody(Body *body, float rot, char side, char forward,
-                bool jumpPressed, bool crouchHold, Chunk current_chunk);
+                bool jumpPressed, bool crouchHold, Chunk current_chunk,
+                Chunk *chunk_data);
 
 Vector3 UpdateBodyPosition(Vector3 velocity, float delta);
 Player InitPlayer(void);
