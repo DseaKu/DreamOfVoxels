@@ -14,7 +14,7 @@ void SetDebugMessage(const char *message, ...) {
 }
 
 void DrawDebugMessages(void) {
-  if (GetTime() - debug_message_set_time < 2.0) {
+  if (GetTime() - debug_message_set_time < 0.001) {
     DrawText("Debug text:", 30, 20, 10, MAROON);
     DrawText(debug_message, 30, 40, 10, MAROON);
   }
