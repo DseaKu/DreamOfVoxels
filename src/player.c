@@ -171,8 +171,19 @@ void UpdateBody(Body *body, float rot, char side, char forward,
         body->velocity.x = 0.0f;
       }
     } else {
-      if (IsCollision(chunk_data, *body, (s64Vector3D){1, 0, 0})) {
+      if (IsCollision(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
         body->velocity.x = 0.0f;
+      }
+    }
+  }
+  if (desiredDir.z != 0) {
+    if (desiredDir.z < 0) {
+      if (IsCollision(chunk_data, *body, (s64Vector3D){-0, 1, 0})) {
+        body->velocity.z = 0.0f;
+      }
+    } else {
+      if (IsCollision(chunk_data, *body, (s64Vector3D){-0, 1, 0})) {
+        body->velocity.z = 0.0f;
       }
     }
   }
