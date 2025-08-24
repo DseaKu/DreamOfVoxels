@@ -28,57 +28,21 @@ Player InitPlayer(void) {
   return player;
 }
 
-BoundingBox GetVoxelBoundingBox(Voxel v) {
-  float x = (float)Voxel_GetPosX(v) * VOXEL_SIZE;
-  float y = (float)Voxel_GetPosY(v) * VOXEL_SIZE;
-  float z = (float)Voxel_GetPosZ(v) * VOXEL_SIZE;
-  return (BoundingBox){
-      (Vector3){x - HALF_VOXEL_SIZE, y - HALF_VOXEL_SIZE, z - HALF_VOXEL_SIZE},
-      (Vector3){x + HALF_VOXEL_SIZE, y + HALF_VOXEL_SIZE, z + HALF_VOXEL_SIZE}};
-}
-
-bool AABB_Collision(Chunk *chunk_data, const Body body,
-                    s64Vector3D target_voxel_offset) {
+bool IsCollision(Chunk *chunk_data, const Body body,
+                 s64Vector3D target_voxel_offset) {
   StartPerformanceTracker("  └> Check Collision");
-  // Get voxel from global map
-  // Determine dir
-  //
-  //
-  // I just want to know, if target v is active. if so just craete the boundbox
-  // from tar voxel
   s64Vector3D target_voxel =
       (s64Vector3D){body.voxel_position.x + target_voxel_offset.x,
                     body.voxel_position.y + target_voxel_offset.y,
                     body.voxel_position.z + target_voxel_offset.z};
   if (IsVoxelActive_Global(chunk_data, target_voxel)) {
 
-    u8 a=1;
-    // create BoundingBox from target voxel
+    // BoundingBox v_box = CalcVoxelBox(target_voxel);
+    EndPerformanceTracker("  └> Check Collision");
+    return true;
   }
-
-  u64 tar_voxel;
-  Voxel target_v; // = chunk_data etc..
-  bool is_colliding = false;
-
-  // if (Voxel_IsActive(v)) {
-  //   // Transform player's world AABB to chunk's local AABB
-  //   Vector3 chunk_world_offset = {
-  //       (float)current_chunk.position.x * N_VOXEL_X * VOXEL_SIZE, 0.0f,
-  //       (float)current_chunk.position.z * N_VOXEL_Z * VOXEL_SIZE};
-  //
-  //   BoundingBox player_box_local = {
-  //       Vector3Subtract(body.collision_shape.min, chunk_world_offset),
-  //       Vector3Subtract(body.collision_shape.max, chunk_world_offset)};
-  //
-  //   BoundingBox v_box_local = GetVoxelBoundingBox(v);
-  //   BoundingBox a = body.collision_shape;
-  //   if (CheckCollisionBoxes(v_box_local, body.collision_shape)) {
-  //     is_colliding = true;
-  //     SetDebugMessage("Collision at x:%d z:%d y:%d", x, z, y);
-  //   }
-  // }
   EndPerformanceTracker("  └> Check Collision");
-  return is_colliding;
+  return false;
 }
 
 void UpdatePlayer(Player *player, Chunk *chunk_data) {
@@ -203,11 +167,11 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   // If player moves xz direction, check for collision
   if (desiredDir.x != 0) {
     if (desiredDir.x < 0) {
-      if (AABB_Collision(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
+      if (IsCollision(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
         body->velocity.x = 0.0f;
       }
     } else {
-      if (AABB_Collision(chunk_data, *body, (s64Vector3D){1, 0, 0})) {
+      if (IsCollision(chunk_data, *body, (s64Vector3D){1, 0, 0})) {
         body->velocity.x = 0.0f;
       }
     }

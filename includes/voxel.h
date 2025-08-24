@@ -68,17 +68,14 @@ typedef enum {
 
 } VoxelID;
 
-// Return all surrounding voxels of a position, regardless if the position
-// inbetween chunks
-// -> we have to return chunk + index and voxel + index
-
-// Return all indicies for all neighbour in range
-Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);
-
+void CulledMeshing(Chunk *chunk_data);
 // Allocate xzy-coordinates to voxels
 Voxel *InitVoxel(bool is_random, bool is_empty);
-
 void UpdateVisibility(Chunk *chunk_data);
+BoundingBox CalcVoxelBox(s64Vector3D v_pos);
+//----------------------------------------------------------------------------------
+// Local
+//----------------------------------------------------------------------------------
 
 u8 Voxel_GetPosX(Voxel v);
 
@@ -97,9 +94,17 @@ bool RemoveVoxel(Voxel *voxel_data, Player *player, u64 screen_width,
                  u64 screen_height, float player_range);
 
 VoxelID GetLocalVoxelIndex(Voxel *voxel_data, int x, int y, int z);
+//----------------------------------------------------------------------------------
+// Global
+//----------------------------------------------------------------------------------
+bool IsVoxelActive_Global(Chunk *chunk_data, s64Vector3D tar_v);
 VoxelIndex GetGlobalVoxelIndex(Chunk *chunk_data, s64Vector3D tar_v);
 Vector3 GetGlobalVoxelPosition(Chunk *chunk_data, s64Vector3D tar_v);
-bool IsVoxelActive_Global(Chunk *chunk_data, s64Vector3D tar_v);
 
-void CulledMeshing(Chunk *chunk_data);
 #endif // VOXEL_H
+// Return all surrounding voxels of a position, regardless if the position
+// inbetween chunks
+// -> we have to return chunk + index and voxel + index
+
+// Return all indicies for all neighbour in range
+// Voxel *GetNeighbourVoxels(u16 search_scope, Voxel *voxel_data);

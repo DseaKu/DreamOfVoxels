@@ -59,6 +59,14 @@ u8 Voxel_GetPosZ(Voxel v) {
   return (u8)((v >> VOXEL_SHIFT_POS_Z) & VOXEL_MASK_POS);
 }
 
+BoundingBox CalcVoxelBox(s64Vector3D v_pos) {
+  return (BoundingBox){
+      (Vector3){v_pos.x - HALF_VOXEL_SIZE, v_pos.y - HALF_VOXEL_SIZE,
+                v_pos.z - HALF_VOXEL_SIZE},
+      (Vector3){v_pos.x + HALF_VOXEL_SIZE, v_pos.y + HALF_VOXEL_SIZE,
+                v_pos.z + HALF_VOXEL_SIZE}};
+}
+
 bool Voxel_IsActive(Voxel v) { return ((v >> 24) & VOXEL_MASK_ID) != 0; }
 
 void UpdateVisibility(Chunk *chunk_data) {
