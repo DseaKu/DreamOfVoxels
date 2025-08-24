@@ -19,7 +19,7 @@
 #define N_CHUNKS_X 8
 #define N_CHUNKS_Z 8
 #define CHUNKS_IN_TOTAL N_CHUNKS_Z *N_CHUNKS_X
-#define N_EMPTY_VOXEL CHUNKS_IN_TOTAL - 20
+#define N_EMPTY_VOXEL CHUNKS_IN_TOTAL - 15
 //----------------------------------------------------------------------------------
 // Defines  Voxel
 //----------------------------------------------------------------------------------

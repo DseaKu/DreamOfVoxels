@@ -28,21 +28,23 @@ Player InitPlayer(void) {
   return player;
 }
 
-bool IsCollision(Chunk *chunk_data, const Body body,
+bool IsColliding(Chunk *chunk_data, const Body body,
                  s64Vector3D target_voxel_offset) {
   StartPerformanceTracker("  └> Check Collision");
+  bool IsColliding = false;
   s64Vector3D target_voxel =
       (s64Vector3D){body.voxel_position.x + target_voxel_offset.x,
-                    body.voxel_position.y + target_voxel_offset.y,
-                    body.voxel_position.z + target_voxel_offset.z};
-  if (IsVoxelActive_Global(chunk_data, target_voxel)) {
+                    body.voxel_position.z + target_voxel_offset.z,
+                    body.voxel_position.y + target_voxel_offset.y};
 
-    // BoundingBox v_box = CalcVoxelBox(target_voxel);
-    EndPerformanceTracker("  └> Check Collision");
-    return true;
+  if (IsVoxelActive_Global(chunk_data, target_voxel)) {
+    BoundingBox v_box = CalcVoxelBox(target_voxel);
+    if (CheckCollisionBoxes(v_box, body.collision_shape)) {
+      IsColliding = true;
+    }
   }
   EndPerformanceTracker("  └> Check Collision");
-  return false;
+  return IsColliding;
 }
 
 void UpdatePlayer(Player *player, Chunk *chunk_data) {
@@ -93,10 +95,10 @@ BoundingBox UpdateBodyCollisionShape(Vector3 player_position) {
 
   return (BoundingBox){(Vector3){x - HALF_PLAYER_COLLISION_SHAPE_X,
                                  y - HALF_PLAYER_COLLISION_SHAPE_Y,
-                                 -HALF_PLAYER_COLLISION_SHAPE_X},
+                                 z - HALF_PLAYER_COLLISION_SHAPE_Z},
                        (Vector3){x + HALF_PLAYER_COLLISION_SHAPE_X,
                                  y + HALF_PLAYER_COLLISION_SHAPE_Y,
-                                 +HALF_PLAYER_COLLISION_SHAPE_X}};
+                                 +HALF_PLAYER_COLLISION_SHAPE_Z}};
 }
 
 void UpdateBody(Body *body, float rot, char side, char forward,
@@ -167,22 +169,22 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   // If player moves xz direction, check for collision
   if (desiredDir.x != 0) {
     if (desiredDir.x < 0) {
-      if (IsCollision(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
+      if (IsColliding(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
         body->velocity.x = 0.0f;
       }
     } else {
-      if (IsCollision(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
+      if (IsColliding(chunk_data, *body, (s64Vector3D){-1, 0, 0})) {
         body->velocity.x = 0.0f;
       }
     }
   }
   if (desiredDir.z != 0) {
     if (desiredDir.z < 0) {
-      if (IsCollision(chunk_data, *body, (s64Vector3D){-0, 1, 0})) {
+      if (IsColliding(chunk_data, *body, (s64Vector3D){0, 0, -1})) {
         body->velocity.z = 0.0f;
       }
     } else {
-      if (IsCollision(chunk_data, *body, (s64Vector3D){-0, 1, 0})) {
+      if (IsColliding(chunk_data, *body, (s64Vector3D){0, 0, 1})) {
         body->velocity.z = 0.0f;
       }
     }
