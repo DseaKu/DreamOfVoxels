@@ -2,6 +2,7 @@
 #include "debug_logger.h"
 #include "raymath.h"
 #include "resource_tracker.h"
+#include "std_includes.h"
 #include "voxel.h"
 #include <math.h>
 #include <raylib.h>
@@ -21,13 +22,7 @@ Player InitPlayer(void) {
                 (CHUNK_SIZE + 1) * VOXEL_SIZE};
   // (Vector3){(float)N_VOXEL_X / 2, N_VOXEL_Y + 2, (float)N_VOXEL_Z / 2};
   player.body.sensitivity = (Vector2){0.001f, 0.001f};
-  player.body.collision_shape = (BoundingBox){
-      (Vector3){player.body.position.x - PLAYER_COLLISION_SHAPE_X,
-                player.body.position.y,
-                player.body.position.z - PLAYER_COLLISION_SHAPE_Z},
-      (Vector3){player.body.position.x + PLAYER_COLLISION_SHAPE_X,
-                player.body.position.y + PLAYER_COLLISION_SHAPE_Y,
-                player.body.position.z + PLAYER_COLLISION_SHAPE_Z}};
+  player.body.collision_shape = UpdateBodyCollisionShape(player.body.position);
 
   return player;
 }
@@ -42,73 +37,35 @@ BoundingBox GetVoxelBoundingBox(Voxel v) {
 }
 
 bool AABB_Collision(Voxel *voxel_data, const Body body, Chunk current_chunk,
-                    Vector3 desiredDir, u64 voxel_offset) {
+                    Vector3 desiredDir, s64Vector3D target_voxel_offset) {
   StartPerformanceTracker("  └> Check Collision");
-
-  // Player's world position.
-  Vector3 player_pos = body.position;
-
-  // Convert player's world position to local-to-chunk voxel coordinates.
-  int player_local_x =
-      body.voxel_position.x - (current_chunk.position.x * N_VOXEL_X);
-  int player_local_y = body.voxel_position.y;
-  int player_local_z =
-      body.voxel_position.z - (current_chunk.position.z * N_VOXEL_Z);
-
-  u64 current_voxel_index =
-      GetVoxelIndex(player_local_x, player_local_y, player_local_z);
-
-  if (current_voxel_index ==
-      -1) { // Player is outside of this chunk's voxel data array bounds
-    EndPerformanceTracker("  └> Check Collision");
-    return false;
-  }
-
-  u64 target_voxel_index;
-  if (voxel_offset == X_NEIGHBOUR_OFFSET) {
-    if (desiredDir.x > 0)
-      target_voxel_index = current_voxel_index + X_NEIGHBOUR_OFFSET;
-    else
-      target_voxel_index = current_voxel_index - X_NEIGHBOUR_OFFSET;
-  } else if (voxel_offset == Z_NEIGHBOUR_OFFSET) {
-    if (desiredDir.z > 0)
-      target_voxel_index = current_voxel_index + Z_NEIGHBOUR_OFFSET;
-    else
-      target_voxel_index = current_voxel_index - Z_NEIGHBOUR_OFFSET;
-  } else {
-    EndPerformanceTracker("  └> Check Collision");
-    return false; // Not handling Y axis for now
-  }
-
-  if (target_voxel_index >=
-      VOXELS_IN_TOTAL) { // Unsigned, so no need for < 0 check
-    EndPerformanceTracker("  └> Check Collision");
-    return false; // Target is outside of this chunk's voxel data array bounds
-  }
-
-  Voxel v = voxel_data[target_voxel_index];
+  // Get voxel from global map
+  // Determine dir
+  s64Vector3D target_voxel =
+      (s64Vector3D){body.voxel_position.x + target_voxel_offset.x,
+                    body.voxel_position.z + target_voxel_offset.z,
+                    body.voxel_position.y + target_voxel_offset.y};
+  u64 tar_voxel;
+  Voxel target_v; // = chunk_data etc..
   bool is_colliding = false;
 
-  int x = Voxel_GetPosX(v);
-  int y = Voxel_GetPosY(v);
-  int z = Voxel_GetPosZ(v);
-
-  if (Voxel_IsActive(v)) {
-    // Transform player's world AABB to chunk's local AABB
-    Vector3 chunk_world_offset = {
-        (float)current_chunk.position.x * N_VOXEL_X * VOXEL_SIZE, 0.0f,
-        (float)current_chunk.position.z * N_VOXEL_Z * VOXEL_SIZE};
-
-    BoundingBox player_box_local = {
-        Vector3Subtract(body.collision_shape.min, chunk_world_offset),
-        Vector3Subtract(body.collision_shape.max, chunk_world_offset)};
-
-    BoundingBox v_box_local = GetVoxelBoundingBox(v);
-    if (CheckCollisionBoxes(v_box_local, player_box_local)) {
-      is_colliding = true;
-      SetDebugMessage("Collision at x:%d z:%d y:%d", x, z, y);
-    }
-  }
+  // if (Voxel_IsActive(v)) {
+  //   // Transform player's world AABB to chunk's local AABB
+  //   Vector3 chunk_world_offset = {
+  //       (float)current_chunk.position.x * N_VOXEL_X * VOXEL_SIZE, 0.0f,
+  //       (float)current_chunk.position.z * N_VOXEL_Z * VOXEL_SIZE};
+  //
+  //   BoundingBox player_box_local = {
+  //       Vector3Subtract(body.collision_shape.min, chunk_world_offset),
+  //       Vector3Subtract(body.collision_shape.max, chunk_world_offset)};
+  //
+  //   BoundingBox v_box_local = GetVoxelBoundingBox(v);
+  //   BoundingBox a = body.collision_shape;
+  //   if (CheckCollisionBoxes(v_box_local, body.collision_shape)) {
+  //     is_colliding = true;
+  //     SetDebugMessage("Collision at x:%d z:%d y:%d", x, z, y);
+  //   }
+  // }
   EndPerformanceTracker("  └> Check Collision");
   return is_colliding;
 }
@@ -154,12 +111,17 @@ void UpdatePlayer(Player *player, Chunk *chunk_data) {
   EndPerformanceTracker("Update Player");
 }
 BoundingBox UpdateBodyCollisionShape(Vector3 player_position) {
-  return (BoundingBox){(Vector3){player_position.x - PLAYER_COLLISION_SHAPE_X,
-                                 player_position.y,
-                                 player_position.z - PLAYER_COLLISION_SHAPE_Z},
-                       (Vector3){player_position.x + PLAYER_COLLISION_SHAPE_X,
-                                 player_position.y + PLAYER_COLLISION_SHAPE_Y,
-                                 player_position.z + PLAYER_COLLISION_SHAPE_Z}};
+
+  float x = player_position.x;
+  float z = player_position.z;
+  float y = player_position.y;
+
+  return (BoundingBox){(Vector3){x - HALF_PLAYER_COLLISION_SHAPE_X,
+                                 y - HALF_PLAYER_COLLISION_SHAPE_Y,
+                                 -HALF_PLAYER_COLLISION_SHAPE_X},
+                       (Vector3){x + HALF_PLAYER_COLLISION_SHAPE_X,
+                                 y + HALF_PLAYER_COLLISION_SHAPE_Y,
+                                 +HALF_PLAYER_COLLISION_SHAPE_X}};
 }
 
 void UpdateBody(Body *body, float rot, char side, char forward,
@@ -225,19 +187,22 @@ void UpdateBody(Body *body, float rot, char side, char forward,
   body->velocity.x = hvel.x;
   body->velocity.z = hvel.z;
 
+  body->collision_shape = UpdateBodyCollisionShape(body->position);
   // If player moves xz direction, check for collision
-  // if (desiredDir.x != 0) {
-  if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
-                     X_NEIGHBOUR_OFFSET)) {
-    body->velocity.x = 0.0f;
+  if (desiredDir.x != 0) {
+    if (desiredDir.x < 0) {
+      if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
+                         (s64Vector3D){1, 0, 0})) {
+        body->velocity.x = 0.0f;
+      }
+    } else {
+      if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
+                         (s64Vector3D){-1, 0, 0})) {
+        body->velocity.x = 0.0f;
+      }
+    }
   }
-  // }
 
-  // if (desiredDir.z != 0) {
-  if (AABB_Collision(voxel_data, *body, current_chunk, desiredDir,
-                     Z_NEIGHBOUR_OFFSET)) {
-    body->velocity.z = 0.0f;
-  }
   // }
   Vector3 new_position =
       Vector3Add(body->position, Vector3Scale(body->velocity, delta));

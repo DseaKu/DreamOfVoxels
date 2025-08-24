@@ -24,6 +24,9 @@
 #define PLAYER_COLLISION_SHAPE_X VOXEL_SIZE
 #define PLAYER_COLLISION_SHAPE_Z VOXEL_SIZE
 #define PLAYER_COLLISION_SHAPE_Y VOXEL_SIZE * 2
+#define HALF_PLAYER_COLLISION_SHAPE_X PLAYER_COLLISION_SHAPE_X / 2.0f
+#define HALF_PLAYER_COLLISION_SHAPE_Z PLAYER_COLLISION_SHAPE_Z / 2.0f
+#define HALF_PLAYER_COLLISION_SHAPE_Y PLAYER_COLLISION_SHAPE_Y / 2.0f
 #define NORMALIZE_INPUT 0
 
 void UpdateCameraAngle(Player *player);
@@ -33,6 +36,7 @@ void UpdateBody(Body *body, float rot, char side, char forward,
 Vector3 UpdateBodyPosition(Vector3 velocity, float delta);
 Player InitPlayer(void);
 void UpdatePlayer(Player *player, Chunk *chunk_data);
+BoundingBox UpdateBodyCollisionShape(Vector3 player_position);
 s16Vector2D GetXZCurrentChunk(Player *player);
 u32 GetIndexCurrentChunk(Player *player);
 

@@ -40,14 +40,15 @@ int Scene3DGame() {
     StartPerformanceTracker("CompleteLoop");
     BeginDrawing();
 
-    if (GetTime() > 10) {
+    if (GetTime() > 5) {
       {
+        s8 a = 0;
       }
     }
     //----------------------------------------------------------------------------------
     // Get and process inputs
     //----------------------------------------------------------------------------------
-    if (IsKeyPressed(KEY_F1)) {
+    if (IsKeyPressed(KEY_F1) || IsKeyPressed(KEY_G)) {
       show_3d_debug_info = !show_3d_debug_info;
     }
     if (IsKeyPressed(KEY_F2)) {
